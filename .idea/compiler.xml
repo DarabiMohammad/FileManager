@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="dependencies" target="1.7" />
+      <module name="dependencis" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

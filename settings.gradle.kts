@@ -1,1 +1,2 @@
+include(":dependencis")
 include(":app")
