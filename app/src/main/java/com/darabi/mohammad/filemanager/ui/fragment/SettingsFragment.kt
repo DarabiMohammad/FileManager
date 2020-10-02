@@ -4,7 +4,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.BaseFragment
 import javax.inject.Inject
 
-class DirsListFragment @Inject constructor() : BaseFragment() {
+class SettingsFragment @Inject constructor() : BaseFragment() {
 
-    override val layoutRes: Int get() = R.layout.fragment_dirs_list
+    override val layoutRes: Int get() = R.layout.fragment_settings
 }

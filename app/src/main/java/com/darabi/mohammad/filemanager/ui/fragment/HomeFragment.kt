@@ -10,7 +10,7 @@ import com.darabi.mohammad.filemanager.ui.BaseFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import com.darabi.mohammad.filemanager.view.adapter.RecyclerAdapter
-import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 class HomeFragment @Inject constructor(
@@ -19,7 +19,7 @@ class HomeFragment @Inject constructor(
     private val adapter: RecyclerAdapter
 ) : BaseFragment(), PermissionManager.PermissionCallback {
 
-    override val layoutRes: Int get() = R.layout.home_fragment
+    override val layoutRes: Int get() = R.layout.fragment_home
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
