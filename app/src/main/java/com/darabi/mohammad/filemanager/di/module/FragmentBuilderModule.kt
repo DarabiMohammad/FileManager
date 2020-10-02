@@ -2,6 +2,7 @@ package com.darabi.mohammad.filemanager.di.module
 
 import androidx.fragment.app.Fragment
 import com.darabi.mohammad.filemanager.di.FragmentKey
+import com.darabi.mohammad.filemanager.ui.fragment.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.HomeFragment
 import dagger.Binds
 import dagger.Module
@@ -14,4 +15,9 @@ abstract class FragmentBuilderModule {
     @IntoMap
     @FragmentKey(HomeFragment::class)
     abstract fun bindHomeFragment(homeFragment: HomeFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(DirsListFragment::class)
+    abstract fun bindDirsListFragment(dirsListFragment: DirsListFragment): Fragment
 }

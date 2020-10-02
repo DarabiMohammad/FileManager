@@ -1,30 +1,32 @@
 package com.darabi.mohammad.filemanager.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.BaseFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
-import com.darabi.mohammad.filemanager.util.StorageManager
+import com.darabi.mohammad.filemanager.util.storage.VolumeManager
+import com.darabi.mohammad.filemanager.view.adapter.RecyclerAdapter
 import kotlinx.android.synthetic.main.home_fragment.*
-import java.io.File
 import javax.inject.Inject
 
 class HomeFragment @Inject constructor(
-    private val storageManager: StorageManager,
-    private val permissionManager: PermissionManager
-) : BaseFragment(), PermissionManager.PermissionCallback, View.OnClickListener {
+    private val volumeManager: VolumeManager,
+    private val permissionManager: PermissionManager,
+    private val adapter: RecyclerAdapter
+) : BaseFragment(), PermissionManager.PermissionCallback {
 
     override val layoutRes: Int get() = R.layout.home_fragment
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btn_req.setOnClickListener(this)
-        val sdf = File(context?.getExternalFilesDir(null)?.parent?.split("/Andro")?.get(0))
-        val ssdf = storageManager.getPrimaryExternalStorageDirs()
-        val d = 3
+        adapter.setSource(volumeManager.getAvailableStorageNames())
+        rcv_storage.adapter = adapter
     }
 
     override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) {
@@ -45,13 +47,13 @@ class HomeFragment @Inject constructor(
         Log.d("test", "==========onPermissionWasDeniedForever")
     }
 
-    override fun onClick(v: View?) {
-        activity?.let { permissionManager.checkPermissionsAndRun(it, this, PermissionManager.Permissions.Storage) }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         if(permissionManager.isPermissionsGrant(grantResults)) {
-            val sdf = File(context?.getExternalFilesDir(null)?.parent?.split("/Andro")?.get(0)).listFiles()
+//            val sdf = File(context?.getExternalFilesDir(null)?.parent?.split("/Andro")?.get(0)).listFiles()
             Log.d("test", "=========== onRequestPermissionsResult ==== ok")
         } else {
             Log.d("test", "=========== onRequestPermissionsResult ==== no")
