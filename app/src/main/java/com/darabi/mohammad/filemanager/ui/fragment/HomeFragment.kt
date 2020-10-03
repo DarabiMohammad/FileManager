@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.BaseFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
@@ -23,8 +24,17 @@ class HomeFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        adapter.setSource(volumeManager.getAvailableStorageNames())
-//        rcv_storage.adapter = adapter
+        observeViewModel()
+        viewModel.getAvailableStorageDevices()
+
+        rcv_storage.adapter = adapter
+    }
+
+    private fun observeViewModel() {
+
+        viewModel.availableStorageDevices.observe(viewLifecycleOwner, {
+            adapter.setSource(it)
+        })
     }
 
 //    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) {

@@ -2,6 +2,7 @@ package com.darabi.mohammad.filemanager.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.BaseFragment
 import com.darabi.mohammad.filemanager.util.navigateTo
@@ -23,11 +24,21 @@ class DrawerFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         adapter.callback = this
-        adapter.setSource(getItems())
+        observeAndSetItems()
         rcv_nav_items.adapter = adapter
     }
 
+    private fun observeAndSetItems() {
+        viewModel.availableStorageDevices.observe(viewLifecycleOwner, {
+            val items = ArrayList<DrawerItem>()
+            it.forEach { items.add(DrawerItem.Item(it, R.drawable.ic_settings_black)) }
+            items.addAll(getItems())
+            adapter.setSource(items)
+        })
+    }
+
     private fun getItems(): ArrayList<DrawerItem> = arrayListOf(
+        DrawerItem.Divider,
         DrawerItem.Item(getString(R.string.dcim), R.drawable.ic_settings_black),
         DrawerItem.Item(getString(R.string.download), R.drawable.ic_settings_black),
         DrawerItem.Item(getString(R.string.movies), R.drawable.ic_settings_black),

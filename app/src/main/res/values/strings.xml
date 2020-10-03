@@ -2,6 +2,11 @@
     <string name="app_name">File Manager</string>
     <string name="content_description">contentDescription</string>
 
+    <string name="storage">Storage</string>
+    <string name="internal_storage">Phone Internal Storage</string>
+    <string name="sd_card">Sd Card</string>
+    <string name="usb_storage">Usb</string>
+
     <string name="settings">Settings</string>
     <string name="app_manager">App Manager</string>
     <string name="apks">APKs</string>

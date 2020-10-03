@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.util
 
 import android.app.Activity
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +11,17 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.darabi.mohammad.filemanager.App
 import com.darabi.mohammad.filemanager.R
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.FileReader
-import java.io.IOException
+import com.darabi.mohammad.filemanager.util.storage.VolumeManager
+import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 fun Activity.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+fun Application.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
 private fun beginTransaction(
     fragmentManager: FragmentManager, containerId: Int, fragment: Fragment, addToBackstack: Boolean, isReplace: Boolean
@@ -57,6 +59,16 @@ fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
     LayoutInflater.from(view.context).inflate(layout, view, false)
 
 
+
+
+//private fun getParentPathExternalStorageFileDir(type: String? = null) =
+//    application.getExternalFilesDir(type)?.parent ?: throw VolumeManager.StoragManagerException("Parent path must not be null.")
+//
+//private fun getExternalFileDir(type: String? = null) =
+//    File(getParentPathExternalStorageFileDir(type).split("/Android")[0])
+//
+//fun getPrimaryExternalStorageDirs(): Array<File>? =
+//    getExternalFileDir().listFiles()
 
 
 //val storageList: List<StorageInfo>

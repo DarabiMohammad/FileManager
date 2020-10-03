@@ -1,10 +1,7 @@
 package com.darabi.mohammad.filemanager.di
 
 import com.darabi.mohammad.filemanager.App
-import com.darabi.mohammad.filemanager.di.module.ActivityBuilderModule
-import com.darabi.mohammad.filemanager.di.module.AppModule
-import com.darabi.mohammad.filemanager.di.module.FragmentBuilderModule
-import com.darabi.mohammad.filemanager.di.module.ViewModelBuilderModule
+import com.darabi.mohammad.filemanager.di.module.*
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
@@ -14,6 +11,7 @@ import dagger.android.support.AndroidSupportInjectionModule
         AndroidSupportInjectionModule::class,
         AppModule::class,
         ActivityBuilderModule::class,
+        BroadCastReceiverBuilderModule::class,
         FragmentBuilderModule::class,
         ViewModelBuilderModule::class
     ]
