@@ -14,10 +14,8 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 class HomeFragment @Inject constructor(
-    private val volumeManager: VolumeManager,
-    private val permissionManager: PermissionManager,
     private val adapter: RecyclerAdapter
-) : BaseFragment(), PermissionManager.PermissionCallback {
+) : BaseFragment() {
 
     override val layoutRes: Int get() = R.layout.fragment_home
 
@@ -25,39 +23,39 @@ class HomeFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter.setSource(volumeManager.getAvailableStorageNames())
-        rcv_storage.adapter = adapter
+//        adapter.setSource(volumeManager.getAvailableStorageNames())
+//        rcv_storage.adapter = adapter
     }
 
-    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) {
-        permissionManager.requestPermissions(permissionGroup, this)
-        Log.d("test", "==========onFirstAskPermission")
-    }
-
-    override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
-        Log.d("test", "==========onPermissionGranted")
-    }
-
-    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) {
-        permissionManager.requestPermissions(permissionGroup, this)
-        Log.d("test", "==========onPermissionDenied")
-    }
-
-    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) {
-        Log.d("test", "==========onPermissionWasDeniedForever")
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if(permissionManager.isPermissionsGrant(grantResults)) {
+//    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) {
+//        permissionManager.requestPermissions(permissionGroup, this)
+//        Log.d("test", "==========onFirstAskPermission")
+//    }
+//
+//    override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
+//        Log.d("test", "==========onPermissionGranted")
+//    }
+//
+//    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) {
+//        permissionManager.requestPermissions(permissionGroup, this)
+//        Log.d("test", "==========onPermissionDenied")
+//    }
+//
+//    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) {
+//        Log.d("test", "==========onPermissionWasDeniedForever")
+//    }
+//
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        if(permissionManager.isPermissionsGrant(grantResults)) {
 //            val sdf = File(context?.getExternalFilesDir(null)?.parent?.split("/Andro")?.get(0)).listFiles()
-            Log.d("test", "=========== onRequestPermissionsResult ==== ok")
-        } else {
-            Log.d("test", "=========== onRequestPermissionsResult ==== no")
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+//            Log.d("test", "=========== onRequestPermissionsResult ==== ok")
+//        } else {
+//            Log.d("test", "=========== onRequestPermissionsResult ==== no")
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//    }
 }

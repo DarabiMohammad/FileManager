@@ -26,6 +26,7 @@ class VolumeManager @Inject constructor(private val application: Application) {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun getStorageVolumes() = getStorageManager().storageVolumes
 
+    //todo fix this method for returning names for devices run on api 23 and older
     private fun getStoragesNameLegacy(): ArrayList<String> = arrayListOf("", "")
 
     fun getAvailableStorageNames(): ArrayList<String> {

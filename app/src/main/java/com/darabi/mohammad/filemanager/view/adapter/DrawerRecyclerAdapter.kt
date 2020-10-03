@@ -4,14 +4,18 @@ import android.view.ViewGroup
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.view.DrawerItem
 import com.darabi.mohammad.filemanager.util.inflateLayout
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
 import com.darabi.mohammad.filemanager.view.vh.drawer.DrawerViewHolder
 import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 import com.darabi.mohammad.filemanager.view.vh.drawer.DrawerDividerViewHolder
+import com.darabi.mohammad.filemanager.view.vh.drawer.OnDrawerItemClickListener
 import javax.inject.Inject
 
 class DrawerRecyclerAdapter @Inject constructor() : BaseAdapter<DrawerItem, BaseViewHolder<DrawerItem>>() {
 
     private val dividerViewType = 1
+
+    lateinit var callback: OnDrawerItemClickListener
 
     override fun getItemViewType(position: Int): Int =
         if(objects[position] is DrawerItem.Divider)
@@ -22,5 +26,5 @@ class DrawerRecyclerAdapter @Inject constructor() : BaseAdapter<DrawerItem, Base
         if(viewType == dividerViewType)
             DrawerDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_divider))
         else
-            DrawerViewHolder(inflateLayout(parent, R.layout.rcv_item_nav_drawer))
+            DrawerViewHolder(inflateLayout(parent, R.layout.rcv_item_nav_drawer), callback)
 }
