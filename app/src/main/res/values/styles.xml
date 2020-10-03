@@ -10,6 +10,7 @@
     <style name="RecyclerStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:overScrollMode">never</item>
+        <item name="layoutManager">"androidx.recyclerview.widget.LinearLayoutManager"</item>
     </style>
 
 </resources>

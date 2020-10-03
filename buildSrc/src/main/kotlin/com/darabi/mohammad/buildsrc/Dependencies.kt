@@ -25,6 +25,7 @@ object Dependencies {
     private const val MATERIAL_VERSION = "1.2.1"
     private const val LIFECYCLE_VERSION = "2.2.0"
     private const val DAGGER_VERSION = "2.27"
+    private const val GLIDE_VERSION = "4.11.0"
 
     const val TOOLS_PLUGIN = "com.android.tools.build:gradle:${KOTLIN_VERSION}"
     const val KOTLIN_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:${ANDROID_PLUGIN_VERSION}"
@@ -45,12 +46,14 @@ object Dependencies {
         // lifeccyle libs
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${LIFECYCLE_VERSION}",
         "androidx.lifecycle:lifecycle-extensions:${LIFECYCLE_VERSION}",
-        "androidx.lifecycle:lifecycle-livedata-ktx:${LIFECYCLE_VERSION}"
+        "androidx.lifecycle:lifecycle-livedata-ktx:${LIFECYCLE_VERSION}",
+        "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
     )
 
     private val proccessors = listOf (
         "com.google.dagger:dagger-android-processor:${DAGGER_VERSION}",
-        "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
+        "com.google.dagger:dagger-compiler:${DAGGER_VERSION}",
+        "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
     )
 
     fun DependencyHandler.dependencies() {
