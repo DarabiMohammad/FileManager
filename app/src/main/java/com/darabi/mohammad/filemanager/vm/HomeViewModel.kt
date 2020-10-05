@@ -3,6 +3,7 @@ package com.darabi.mohammad.filemanager.vm
 import android.app.Application
 import androidx.annotation.StringRes
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
 
@@ -21,6 +22,9 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getPrimaryExternalStorageVolume() = volumeManager.getPrimaryExternalStprageVolume()
+
+    fun convertToDirItem(volume: VolumeManager.Volume): DirItem.Item =
+        DirItem.Item(volume.name, volume.path)
 
     protected fun getString(@StringRes string: Int) = app.getString(string)
 }

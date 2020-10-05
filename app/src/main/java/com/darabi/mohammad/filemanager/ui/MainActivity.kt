@@ -78,8 +78,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         viewModel.onItemClicke.observe(this, {
             when(it.itemType) {
                 ItemType.DRAWER_ITEM -> onDrawerItemClick(it)
-                ItemType.LIST_FOLDER_ITEM -> {}
-                else -> {}
+                ItemType.LIST_FOLDER_ITEM -> navigateTo(fragment = dirsListFragment, addToBackstack = true)
             }
         })
     }

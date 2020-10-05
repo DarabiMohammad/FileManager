@@ -15,7 +15,7 @@ class DrawerRecyclerAdapter @Inject constructor() : BaseAdapter<DrawerItem, Base
 
     private val dividerViewType = 1
 
-    lateinit var callback: OnDrawerItemClickListener
+    var callback: OnDrawerItemClickListener? = null
 
     override fun getItemViewType(position: Int): Int =
         if(objects[position] is DrawerItem.Divider)

@@ -26,19 +26,17 @@ class DrawerFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter.callback = this
-        adapter.setSource(drawerViewModel.getStaticDrawerItems())
+        adapter.apply {
+            callback = this@DrawerFragment
+            setSource(drawerViewModel.getStaticDrawerItems())
+        }
         rcv_nav_items.adapter = adapter
         observeAndSetItems()
     }
 
     private fun observeAndSetItems() {
-        viewModel.removableStorages.observe(viewLifecycleOwner, { volumes ->
-            val removableStorages = arrayListOf<DrawerItem>()
-            volumes.forEach {
-                removableStorages.add(DrawerItem.Item(it.name, it.path, R.drawable.ic_settings_black))
-            }
-            adapter.addSource(removableStorages, FIRST_POSITION)
+        viewModel.removableStorages.observe(viewLifecycleOwner, {
+//            adapter.addSource(it, FIRST_POSITION)
         })
     }
 
