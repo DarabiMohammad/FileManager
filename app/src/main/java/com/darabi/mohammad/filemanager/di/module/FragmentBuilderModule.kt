@@ -3,6 +3,8 @@ package com.darabi.mohammad.filemanager.di.module
 import androidx.fragment.app.Fragment
 import com.darabi.mohammad.filemanager.di.FragmentKey
 import com.darabi.mohammad.filemanager.ui.fragment.*
+import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
+import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

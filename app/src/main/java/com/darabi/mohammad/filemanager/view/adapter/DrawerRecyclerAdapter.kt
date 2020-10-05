@@ -2,7 +2,7 @@ package com.darabi.mohammad.filemanager.view.adapter
 
 import android.view.ViewGroup
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.view.DrawerItem
+import com.darabi.mohammad.filemanager.model.DrawerItem
 import com.darabi.mohammad.filemanager.util.inflateLayout
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
 import com.darabi.mohammad.filemanager.view.vh.drawer.DrawerViewHolder

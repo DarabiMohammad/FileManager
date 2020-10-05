@@ -1,71 +1,40 @@
 package com.darabi.mohammad.filemanager.ui.fragment
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.ui.BaseFragment
-import com.darabi.mohammad.filemanager.util.PermissionManager
-import com.darabi.mohammad.filemanager.util.storage.VolumeManager
-import com.darabi.mohammad.filemanager.view.adapter.RecyclerAdapter
+import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
+import com.darabi.mohammad.filemanager.view.adapter.HomwRecyclerAdapter
+import com.darabi.mohammad.filemanager.vm.BaseViewModel
+import com.darabi.mohammad.filemanager.vm.HomeViewModel
+import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 class HomeFragment @Inject constructor(
-    private val adapter: RecyclerAdapter
+    private val howeViewModel: HomeViewModel,
+    private val mainViewModel: MainViewModel,
+    private val adapter: HomwRecyclerAdapter
 ) : BaseFragment() {
 
+    override val TAG: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.fragment_home
+    override val viewModel: HomeViewModel get() = howeViewModel
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    private val volumes by lazy { listOf(viewModel.getPrimaryExternalStorageVolume()) }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
-        viewModel.getAvailableStorageDevices()
-
+        adapter.setSource(volumes)
         rcv_storage.adapter = adapter
+        observeViewModel()
     }
 
     private fun observeViewModel() {
 
-        viewModel.availableStorageDevices.observe(viewLifecycleOwner, {
-            adapter.setSource(it)
+        mainViewModel.removableStorages.observe(viewLifecycleOwner, {
+            adapter.addSource(it, adapter.itemCount)
         })
     }
-
-//    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) {
-//        permissionManager.requestPermissions(permissionGroup, this)
-//        Log.d("test", "==========onFirstAskPermission")
-//    }
-//
-//    override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
-//        Log.d("test", "==========onPermissionGranted")
-//    }
-//
-//    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) {
-//        permissionManager.requestPermissions(permissionGroup, this)
-//        Log.d("test", "==========onPermissionDenied")
-//    }
-//
-//    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) {
-//        Log.d("test", "==========onPermissionWasDeniedForever")
-//    }
-//
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        if(permissionManager.isPermissionsGrant(grantResults)) {
-//            val sdf = File(context?.getExternalFilesDir(null)?.parent?.split("/Andro")?.get(0)).listFiles()
-//            Log.d("test", "=========== onRequestPermissionsResult ==== ok")
-//        } else {
-//            Log.d("test", "=========== onRequestPermissionsResult ==== no")
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
 }

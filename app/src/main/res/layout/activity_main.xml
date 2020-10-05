@@ -33,11 +33,20 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_add_white"
+            app:fabSize="normal"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_drawer"
-        android:name="com.darabi.mohammad.filemanager.ui.fragment.DrawerFragment"
+        android:name="com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment"
         android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"/>

@@ -61,14 +61,6 @@ fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
 
 
 
-//private fun getParentPathExternalStorageFileDir(type: String? = null) =
-//    application.getExternalFilesDir(type)?.parent ?: throw VolumeManager.StoragManagerException("Parent path must not be null.")
-//
-//private fun getExternalFileDir(type: String? = null) =
-//    File(getParentPathExternalStorageFileDir(type).split("/Android")[0])
-//
-//fun getPrimaryExternalStorageDirs(): Array<File>? =
-//    getExternalFileDir().listFiles()
 
 
 //val storageList: List<StorageInfo>

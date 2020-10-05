@@ -7,9 +7,18 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
 
     protected val objects = ArrayList<O>()
 
+    companion object {
+        const val FIRST_POSITION = 0
+    }
+
     fun setSource(source: List<O>) {
         objects.addAll(source)
-        notifyItemRangeRemoved(objects.size -1, source.size)
+        notifyItemRangeChanged(objects.size -1, source.size)
+    }
+
+    fun addSource(source: List<O>, position: Int) {
+        objects.addAll(position, source)
+        notifyItemRangeChanged(position, source.size)
     }
 
     fun clear() {
