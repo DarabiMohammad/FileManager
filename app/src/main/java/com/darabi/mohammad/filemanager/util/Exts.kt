@@ -2,6 +2,10 @@ package com.darabi.mohammad.filemanager.util
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +49,7 @@ private fun beginTransaction(
 fun FragmentActivity.navigateTo(
     @IdRes containerId: Int = R.id.container_main, fragment: Fragment,
     addToBackstack: Boolean = false, isReplace: Boolean = false
-){
+) {
     beginTransaction(supportFragmentManager, containerId, fragment, addToBackstack, isReplace)
 }
 
@@ -58,6 +62,14 @@ fun Fragment.navigateTo(
 fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
     LayoutInflater.from(view.context).inflate(layout, view, false)
 
+private fun openAppInfoScreen(context: Context) {
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+    intent.addCategory(Intent.CATEGORY_DEFAULT)
+    intent.data = Uri.parse("package:${context.packageName}")
+    context.startActivity(intent)
+}
+
+fun Fragment.openAppInfoScreen() = this.context?.let { openAppInfoScreen(it) }
 
 
 

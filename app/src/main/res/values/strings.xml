@@ -2,10 +2,21 @@
     <string name="app_name">File Manager</string>
     <string name="content_description">contentDescription</string>
 
+    <string name="ok">OK</string>
+    <string name="exit">Exit</string>
+    <string name="app_info">App Info</string>
+
     <string name="storage">Storage</string>
     <string name="internal_storage">Phone Internal Storage</string>
     <string name="sd_card">Sd Card</string>
     <string name="usb_storage">Usb</string>
+
+    <string name="category_recent_files">category_recent_files</string>
+    <string name="category_images">category_images</string>
+    <string name="category_videos">category_videos</string>
+    <string name="category_audio">category_audio</string>
+    <string name="category_documents">category_documents</string>
+    <string name="category_apks">category_apks</string>
 
     <string name="settings">Settings</string>
     <string name="app_manager">App Manager</string>
@@ -21,4 +32,8 @@
     <string name="movies">Movies</string>
     <string name="download">Download</string>
     <string name="dcim">DCIM</string>
+
+    <string name="permission_elementary_description">This App Needs Read And Write Permission To Work Properly.</string>
+    <string name="permission_detailed_description">This App Can\'t Work Without Read And Write Permission.</string>
+    <string name="permission_final_description">For Allowing The App To Access To Storage Grant Storage Permission In App Info Screen, Otherwise Exit.</string>
 </resources>

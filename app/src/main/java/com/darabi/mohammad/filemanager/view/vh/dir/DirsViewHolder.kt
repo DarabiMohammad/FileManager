@@ -17,20 +17,18 @@ class DirsViewHolder constructor(
     private val image: ImageView = view.findViewById(R.id.img_rcv_item_dir_icon)
     private val imageMore: ImageView = view.findViewById(R.id.img_rcv_item_dir_more)
 
+    private val glide by lazy { Glide.with(view) }
+
     override fun bindModel(model: DirItem) {
         if(model is DirItem.Item) {
             //todo add separate view holder for dividing items
             title.text = model.itemName
-            if(model.imageRes == null) {
-                image.visibility = View.INVISIBLE
-                imageMore.visibility = View.GONE
-                return
-            }
-            Glide.with(view).load(model.imageRes).into(image)
-            image.setOnClickListener { callback.onLongClick(adapterPosition) }
-            view.setOnLongClickListener { callback.onLongClick(adapterPosition) }
-            imageMore.setOnClickListener { callback.onMoreClick(adapterPosition) }
-            view.setOnClickListener { callback.onClick(adapterPosition) }
+            image.setOnClickListener { callback.onLongClick(model) }
+            view.setOnLongClickListener { callback.onLongClick(model) }
+            imageMore.setOnClickListener { callback.onMoreClick(model) }
+            view.setOnClickListener { callback.onClick(model) }
+            glide.asDrawable().load(model.imageRes).into(image)
+            glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }
     }
 }

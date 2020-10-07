@@ -16,7 +16,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
         tools:srcCompat="@drawable/ic_settings_black"/>
 
     <TextView

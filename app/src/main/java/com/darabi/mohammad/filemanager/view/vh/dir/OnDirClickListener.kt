@@ -1,10 +1,13 @@
 package com.darabi.mohammad.filemanager.view.vh.dir
 
-interface OnDirClickListener {
+import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 
-    fun onMoreClick(position: Int)
+interface OnDirClickListener : BaseAdapterCallback {
 
-    fun onLongClick(positon: Int): Boolean
+    fun onMoreClick(item: DirItem.Item)
 
-    fun onClick(position: Int)
+    fun onLongClick(item: DirItem.Item): Boolean
+
+    fun onClick(item: DirItem.Item)
 }

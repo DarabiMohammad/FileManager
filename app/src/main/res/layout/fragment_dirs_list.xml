@@ -11,6 +11,13 @@
         style="@style/RecyclerStyle"
         android:id="@+id/rcv_dirs"
         android:layout_height="match_parent"
-        tools:ignore="MissingConstraints" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:ignore="MissingConstraints"
+        tools:listitem="@layout/rcv_item_dir"/>
+
+    <FrameLayout
+        android:id="@+id/container_home"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

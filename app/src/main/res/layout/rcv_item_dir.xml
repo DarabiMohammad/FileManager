@@ -12,10 +12,10 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_margin="8dp"
+        android:contentDescription="@string/content_description"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/content_description"
         tools:srcCompat="@drawable/ic_settings_black"/>
 
     <TextView
@@ -23,10 +23,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:singleLine="true"
+        android:textSize="24sp"
+        android:gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintStart_toEndOf="@+id/img_rcv_item_dir_icon"
         app:layout_constraintEnd_toStartOf="@+id/img_rcv_item_dir_more"
         app:layout_constraintTop_toTopOf="@+id/img_rcv_item_dir_icon"
-        app:layout_constraintBottom_toBottomOf="@+id/img_rcv_item_dir_icon" />
+        app:layout_constraintBottom_toBottomOf="@+id/img_rcv_item_dir_icon"
+        tools:text="Downloads"/>
 
     <ImageView
         android:id="@+id/img_rcv_item_dir_more"

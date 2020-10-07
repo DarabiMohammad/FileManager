@@ -5,6 +5,8 @@ import com.darabi.mohammad.filemanager.di.FragmentKey
 import com.darabi.mohammad.filemanager.ui.fragment.*
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
+import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
+import com.darabi.mohammad.filemanager.ui.fragment.home.PermissionDescriptionDialog
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,4 +38,10 @@ abstract class FragmentBuilderModule {
     @IntoMap
     @FragmentKey(AppManagerFragment::class)
     abstract fun bindAppManagerFragment(appManagerFragment: AppManagerFragment): Fragment
+
+    // DialogFragments
+    @Binds
+    @IntoMap
+    @FragmentKey(PermissionDescriptionDialog::class)
+    abstract fun bindPermissionDescriptionDialog(permissionDescriptionDialog: PermissionDescriptionDialog): Fragment
 }

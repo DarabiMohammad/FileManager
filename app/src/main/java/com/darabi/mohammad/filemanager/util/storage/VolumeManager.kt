@@ -10,6 +10,8 @@ import android.os.storage.StorageManager
 import androidx.annotation.RequiresApi
 import com.darabi.mohammad.filemanager.R
 import java.io.File
+import java.lang.Exception
+import java.lang.NullPointerException
 
 class VolumeManager @Inject constructor (
     private val application: Application,
@@ -23,11 +25,17 @@ class VolumeManager @Inject constructor (
     private val sdCardStorage = application.getString(R.string.sd_card)
     private val usbStorage = application.getString(R.string.usb_storage)
 
-    val dcimPath by lazy { getExternalStoragePublicDirectory(DIRECTORY_DCIM).path }
-    val downloadPath by lazy { getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).path }
-    val moviesPath by lazy { getExternalStoragePublicDirectory(DIRECTORY_MOVIES).path }
-    val musicsPath by lazy { getExternalStoragePublicDirectory(DIRECTORY_MUSIC).path }
-    val picturesPath by lazy { getExternalStoragePublicDirectory(DIRECTORY_PICTURES).path }
+    val dcimPath: String by lazy { getExternalStoragePublicDirectory(DIRECTORY_DCIM).path }
+    val downloadPath: String by lazy { getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).path }
+    val moviesPath: String by lazy { getExternalStoragePublicDirectory(DIRECTORY_MOVIES).path }
+    val musicsPath: String by lazy { getExternalStoragePublicDirectory(DIRECTORY_MUSIC).path }
+    val picturesPath: String by lazy { getExternalStoragePublicDirectory(DIRECTORY_PICTURES).path }
+    val recentFilesPath: String by lazy { application.getString(R.string.category_recent_files) }
+    val imagesPath: String by lazy { application.getString(R.string.category_images) }
+    val videosPath: String by lazy { application.getString(R.string.category_videos) }
+    val audioPath : String by lazy { application.getString(R.string.category_audio) }
+    val documentsPath: String by lazy { application.getString(R.string.category_documents) }
+    val apksPath: String by lazy { application.getString(R.string.category_apks) }
 
     init {
         otgReceiver.callback = otgConnectionCallback
@@ -49,28 +57,59 @@ class VolumeManager @Inject constructor (
         val volumes = arrayListOf<Volume>()
         getStorageVolumes().forEach {
             when (val storageDesc = it.getDescription(application)) {
-                "Internal shared storage" -> volumes.add(Volume(internalStorage, "${it.directory?.path}"))
-                "SDCARD" -> volumes.add(Volume(sdCardStorage, "${it.directory?.path}"))
-                else -> volumes.add(Volume("$usbStorage $storageDesc", "${it.directory?.path}"))
+
+                "Internal shared storage" ->
+                    volumes.add(getVolume(internalStorage, "${it.directory?.path}"))
+
+                "SDCARD" ->
+                    volumes.add(getVolume(sdCardStorage, "${it.directory?.path}"))
+
+                else -> volumes.add(getVolume("$usbStorage $storageDesc", "${it.directory?.path}"))
             }
         }
         return volumes
     }
 
+    private fun getVolume(name: String, path: String) =
+        Volume(name, path, isFile = false, isHidden = false)
+
     private fun getDirName(path: String): String =
-        if(!path.startsWith(File.separator))
-            path.substring(path.lastIndexOf(File.separator), path.length - 1)
+        if(path.startsWith(File.separator))
+            path.substring(path.lastIndexOf(File.separator) + 1, path.length)
         else EMPTY_STRING
 
     private fun getPrimaryExternalStorageDirs() = Environment.getExternalStorageDirectory()
 
     private fun getLegacyVolumes(): ArrayList<Volume> {
         //TODO fix volumes fo returning sd card and other available storages
-        val volumes = arrayListOf(Volume("",""))
+        val volumes = arrayListOf(Volume("","", isFile = false, isHidden = false))
         return volumes
     }
 
-    fun getPrimaryExternalStprageVolume() = Volume(internalStorage, getPrimaryExternalStorageDirs().path)
+    private fun getSubFilesAndDirs(path: String): ArrayList<Volume> {
+        val volumes = arrayListOf<Volume>()
+        val currentFile = File(path)
+        val files: Array<File>
+        try {
+            files = currentFile.listFiles()!!
+        } catch (exception: NullPointerException) {
+            //todo  this exception means that storage R/W permission check must happen
+            throw VolumeManagerException("Attemped Call To Null Refrence In : ${exception.stackTrace[0].methodName}")
+        }
+        if(currentFile.isAbsolute) {
+            for(file in files) {
+                volumes.add(Volume(getDirName(file.path), file.path, file.isFile, file.isHidden))
+            }
+        }
+        return volumes
+    }
+
+    private fun getCategoryFiles(path: String): ArrayList<Volume> {
+        return arrayListOf(getVolume("",""))
+    }
+
+    fun getPrimaryExternalStprageVolume() =
+        Volume(internalStorage, getPrimaryExternalStorageDirs().path, isFile = false, isHidden = false)
 
     fun getRemovableVolumes(): ArrayList<Volume> =
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
@@ -78,20 +117,20 @@ class VolumeManager @Inject constructor (
         else
             getLegacyVolumes()
 
-    fun getSubDirectoriesPath(path: String): ArrayList<String> {
-        val paths = arrayListOf<String>()
-        for(file in File(path).listFiles()!!) {
-            paths.add(file.path)
+    fun getSubDirectoriesPath(path: String): ArrayList<Volume> =
+        try {
+            getSubFilesAndDirs(path)
+        } catch (exception: VolumeManagerException) {
+            throw exception
+        } catch (exception: Exception) {
+            getCategoryFiles(path)
         }
-        return paths
-    }
-
-    fun getPrimaryExtStorageSubDirsPath() =
-        getSubDirectoriesPath(getPrimaryExternalStorageDirs().path)
 
     fun onDestroy() = application.unregisterReceiver(otgReceiver)
 
-    data class Volume internal constructor(val name: String, val path: String)
+    data class Volume internal constructor(
+        val name: String, val path: String, val isFile: Boolean, val isHidden: Boolean
+    )
 
     data class VolumeManagerException internal constructor(override val message: String) : Throwable()
 }

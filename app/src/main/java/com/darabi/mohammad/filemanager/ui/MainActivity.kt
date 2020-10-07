@@ -9,12 +9,11 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
-import com.darabi.mohammad.filemanager.ui.fragment.HomeFragment
+import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.ui.fragment.SettingsFragment
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.util.navigateTo
-import com.darabi.mohammad.filemanager.vm.DrawerViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import dagger.android.AndroidInjection
@@ -78,7 +77,8 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         viewModel.onItemClicke.observe(this, {
             when(it.itemType) {
                 ItemType.DRAWER_ITEM -> onDrawerItemClick(it)
-                ItemType.LIST_FOLDER_ITEM -> navigateTo(fragment = dirsListFragment, addToBackstack = true)
+                ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
+                else -> {}
             }
         })
     }
@@ -93,6 +93,13 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         navigateTo(fragment = destinationFragment, addToBackstack = true)
         layout_drawer.closeDrawer(GravityCompat.START)
     }
+
+    private fun onDirectoryClick() =
+        if(!dirsListFragment.isAdded)
+            navigateTo(fragment = dirsListFragment, addToBackstack = true)
+        else
+            //todo there is issues with field injection, we need new instance of dirsListFragment for passing in this method
+            dirsListFragment.navigateTo(R.id.container_home, dirsListFragment, addToBackstack = true)
 
     private fun openNavDrawer() = layout_drawer.openDrawer(GravityCompat.START)
 
@@ -110,7 +117,12 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     override fun onBackPressed() {
         if(layout_drawer.isDrawerOpen(GravityCompat.START))
             closeNavDrawer()
-        else
-            super.onBackPressed()
+        else {
+            //todo there is issues with back button in recursive fragments like dirsListFragment
+            val lastChildFragmentManager = supportFragmentManager.fragments.last().childFragmentManager
+            if(lastChildFragmentManager.backStackEntryCount >= 1)
+                lastChildFragmentManager.popBackStack()
+            else super.onBackPressed()
+        }
     }
 }
