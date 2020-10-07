@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.darabi.mohammad.filemanager.App
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.ui.MainActivity
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import java.io.*
 import java.util.*
@@ -62,14 +63,6 @@ fun Fragment.navigateTo(
 fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
     LayoutInflater.from(view.context).inflate(layout, view, false)
 
-private fun openAppInfoScreen(context: Context) {
-    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-    intent.addCategory(Intent.CATEGORY_DEFAULT)
-    intent.data = Uri.parse("package:${context.packageName}")
-    context.startActivity(intent)
-}
-
-fun Fragment.openAppInfoScreen() = this.context?.let { openAppInfoScreen(it) }
 
 
 

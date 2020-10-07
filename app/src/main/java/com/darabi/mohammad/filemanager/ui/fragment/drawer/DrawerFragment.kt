@@ -7,7 +7,6 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DrawerItem
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.view.adapter.DrawerRecyclerAdapter
-import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter.Companion.FIRST_POSITION
 import com.darabi.mohammad.filemanager.view.vh.drawer.OnDrawerItemClickListener
 import com.darabi.mohammad.filemanager.vm.DrawerViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
@@ -17,10 +16,9 @@ import javax.inject.Inject
 class DrawerFragment @Inject constructor(
     private val drawerViewModel: DrawerViewModel,
     private val adapter: DrawerRecyclerAdapter
-) : BaseFragment(), OnDrawerItemClickListener {
+) : BaseFragment(R.layout.fragment_drawer), OnDrawerItemClickListener {
 
     override val TAG: String get() = this.javaClass.simpleName
-    override val layoutRes: Int get() = R.layout.fragment_drawer
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -2,15 +2,11 @@ package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
 import androidx.annotation.StringRes
-import androidx.lifecycle.MutableLiveData
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
-import com.darabi.mohammad.filemanager.ui.fragment.home.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 open class HomeViewModel @Inject constructor(
     private val app: Application,
     private val volumeManager: VolumeManager
@@ -24,8 +20,6 @@ open class HomeViewModel @Inject constructor(
         val MUSICS = R.string.musics to R.drawable.ic_settings_black
         val PICTURES = R.string.pictures to R.drawable.ic_settings_black
     }
-
-    val onPermissionDIalogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
 
     fun getPrimaryExternalStorageVolume() = volumeManager.getPrimaryExternalStprageVolume()
 

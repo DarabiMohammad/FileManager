@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.ui.fragment.home
+package com.darabi.mohammad.filemanager.ui.dialog
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
 import com.darabi.mohammad.filemanager.vm.HomeViewModel
+import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_permission_description.*
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class PermissionDescriptionDialog @Inject constructor(
     enum class DialogAction { ACTION_OK, ACTION_OPEN_SETTINGS, ACTION_EXIT }
     private enum class DialogType { COMMON_TYPE, DETAILED_TYPE, SETTINGS_TYPE }
 
-    private val viewModel: HomeViewModel by viewModels { viewModelFactory }
+    private val viewModel: MainViewModel by viewModels { viewModelFactory }
     private var type = DialogType.COMMON_TYPE
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

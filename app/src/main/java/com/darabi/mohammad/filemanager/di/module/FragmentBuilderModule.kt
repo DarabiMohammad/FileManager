@@ -6,7 +6,7 @@ import com.darabi.mohammad.filemanager.ui.fragment.*
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
-import com.darabi.mohammad.filemanager.ui.fragment.home.PermissionDescriptionDialog
+import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

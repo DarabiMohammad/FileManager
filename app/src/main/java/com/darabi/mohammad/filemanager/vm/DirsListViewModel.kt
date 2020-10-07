@@ -14,7 +14,7 @@ class DirsListViewModel @Inject constructor(
 
     fun getSubFiles(path: String) = volumeManager.getSubDirectoriesPath(path).map {
         val itemType = if(it.isFile) ItemType.LIST_FILE_ITEM else ItemType.LIST_FOLDER_ITEM
-        val imageRes = if(itemType == ItemType.LIST_FILE_ITEM) R.drawable.ic_more_vert_black else R.drawable.ic_settings_black
+        val imageRes = if(itemType == ItemType.LIST_FILE_ITEM) R.drawable.ic_file_black else R.drawable.ic_folder_black
         DirItem.Item(it.name, it.path, itemType, imageRes)
     }
 }
