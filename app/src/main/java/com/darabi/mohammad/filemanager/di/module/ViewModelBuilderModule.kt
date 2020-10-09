@@ -7,7 +7,6 @@ import com.darabi.mohammad.filemanager.vm.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import javax.inject.Singleton
 
 @Module
 abstract class ViewModelBuilderModule {

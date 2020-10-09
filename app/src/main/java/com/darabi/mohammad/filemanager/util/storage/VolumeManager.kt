@@ -5,13 +5,11 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Environment
 import android.os.Environment.*
-import javax.inject.Inject
 import android.os.storage.StorageManager
 import androidx.annotation.RequiresApi
 import com.darabi.mohammad.filemanager.R
 import java.io.File
-import java.lang.Exception
-import java.lang.NullPointerException
+import javax.inject.Inject
 
 class VolumeManager @Inject constructor (
     private val application: Application,
@@ -125,6 +123,14 @@ class VolumeManager @Inject constructor (
         } catch (exception: Exception) {
             getCategoryFiles(path)
         }
+
+    fun createFileOrFolder(name: String, isFile: Boolean): Volume? {
+        val newFile = File(name)
+        var isCreated = false
+        if(!newFile.exists())
+            isCreated = if(isFile) newFile.createNewFile() else newFile.mkdir()
+        return if (isCreated) Volume(getDirName(name), name, newFile.isFile, newFile.isHidden) else null
+    }
 
     fun onDestroy() = application.unregisterReceiver(otgReceiver)
 

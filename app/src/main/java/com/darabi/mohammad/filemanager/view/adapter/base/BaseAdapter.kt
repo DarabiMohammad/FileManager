@@ -2,6 +2,8 @@ package com.darabi.mohammad.filemanager.view.adapter.base
 
 import androidx.recyclerview.widget.RecyclerView
 import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): RecyclerView.Adapter<VH>() {
 
@@ -16,9 +18,14 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
         notifyItemRangeChanged(objects.size -1, source.size)
     }
 
-    fun addSource(source: List<O>, position: Int) {
-        objects.addAll(position, source)
+    fun addSource(vararg source: O, position: Int) {
+        objects.addAll(position, source.toList())
         notifyItemRangeChanged(position, source.size)
+    }
+
+    fun updateSource(model: O) {
+        objects.add(model)
+        notifyItemInserted(objects.indexOf(model))
     }
 
     fun clear() {

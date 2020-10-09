@@ -5,6 +5,7 @@
     <string name="ok">OK</string>
     <string name="exit">Exit</string>
     <string name="app_info">App Info</string>
+    <string name="create">Create</string>
 
     <string name="storage">Storage</string>
     <string name="internal_storage">Phone Internal Storage</string>
@@ -36,4 +37,7 @@
     <string name="permission_elementary_description">This App Needs Read And Write Permission To Work Properly.</string>
     <string name="permission_detailed_description">This App Can\'t Work Without Read And Write Permission.</string>
     <string name="permission_final_description">For Allowing The App To Access To Storage Grant Storage Permission In App Info Screen, Otherwise Exit.</string>
+
+    <string name="not_found_file_error">Nothing To Show.</string>
+    <string name="simple_txt_format">".txt"</string>
 </resources>

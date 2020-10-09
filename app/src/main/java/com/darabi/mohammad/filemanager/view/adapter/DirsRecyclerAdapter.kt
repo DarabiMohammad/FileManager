@@ -4,16 +4,15 @@ import android.view.ViewGroup
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.util.inflateLayout
-import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter
+import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 import com.darabi.mohammad.filemanager.view.vh.dir.DirsViewHolder
-import com.darabi.mohammad.filemanager.view.vh.dir.OnDirClickListener
 import javax.inject.Inject
 
-class DirsRecyclerAdapter @Inject constructor() : BaseAdapter<DirItem, BaseViewHolder<DirItem>>() {
+class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, CheckableViewHolder<DirItem>>() {
 
-    lateinit var callback: OnDirClickListener
+    override lateinit var adapterCallback: CheckableAdapterCallback<DirItem>
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<DirItem> =
-        DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), callback)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<DirItem> =
+        DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this, this)
 }

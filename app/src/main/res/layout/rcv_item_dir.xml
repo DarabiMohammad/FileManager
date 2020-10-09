@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/selector_background_rcv_item_dir"
     android:padding="8dp">
 
     <ImageView
@@ -27,6 +28,7 @@
         android:gravity="center_vertical"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:textColor="@drawable/selector_text_tint_dir_item"
         app:layout_constraintStart_toEndOf="@+id/img_rcv_item_dir_icon"
         app:layout_constraintEnd_toStartOf="@+id/img_rcv_item_dir_more"
         app:layout_constraintTop_toTopOf="@+id/img_rcv_item_dir_icon"

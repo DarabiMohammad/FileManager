@@ -6,12 +6,14 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.checkable.CheckableAdapter
+import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 
 class DirsViewHolder constructor(
     val view: View,
-    val callback: OnDirClickListener
-) : BaseViewHolder<DirItem>(view) {
+    val viewHolderCallback: CheckableViewHolderCallback<DirItem>,
+    val adapterCallback: CheckableAdapter
+) : CheckableViewHolder<DirItem>(view, viewHolderCallback, adapterCallback) {
 
     private val title: TextView = view.findViewById(R.id.txt_rcv_item_dir_name)
     private val image: ImageView = view.findViewById(R.id.img_rcv_item_dir_icon)
@@ -21,12 +23,11 @@ class DirsViewHolder constructor(
 
     override fun bindModel(model: DirItem) {
         if(model is DirItem.Item) {
+            super.bindModel(model)
             //todo add separate view holder for dividing items
             title.text = model.itemName
-            image.setOnClickListener { callback.onLongClick(model) }
-            view.setOnLongClickListener { callback.onLongClick(model) }
-            imageMore.setOnClickListener { callback.onMoreClick(model) }
-            view.setOnClickListener { callback.onClick(model) }
+            image.setOnClickListener { notifyItemCheckedStateChanged() }
+            imageMore.setOnClickListener { viewHolderCallback.onMoreOptionClick(model) }
             glide.asDrawable().load(model.imageRes).into(image)
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }

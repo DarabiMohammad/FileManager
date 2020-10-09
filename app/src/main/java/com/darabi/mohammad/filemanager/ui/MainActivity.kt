@@ -11,6 +11,7 @@ import androidx.core.view.GravityCompat
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.ItemType
+import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.SettingsFragment
@@ -85,14 +86,12 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         // initializing toolbar
         layout_toolbar.visibility = View.VISIBLE
         layout_toolbar.img_toggle.setOnClickListener(this)
-
-        // initializing buttons
-        btn_fab.setOnClickListener(this)
     }
 
     private fun observeViewModel() {
 
         viewModel.onItemClicke.observe(this, {
+            //todo wrong flow for checking storage permission. we don't need permission when user taps on settings item in drawer view
             selectedItem = it
             if(it.itemType == ItemType.DRAWER_ITEM) closeNavDrawer()
             permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
@@ -155,7 +154,6 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     override fun onClick(view: View?) =
         when(view?.id) {
             R.id.img_toggle -> openNavDrawer()
-            R.id.btn_fab -> {}
             else -> {}
         }
 
