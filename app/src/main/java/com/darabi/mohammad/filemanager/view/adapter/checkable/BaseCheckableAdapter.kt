@@ -1,28 +1,29 @@
 package com.darabi.mohammad.filemanager.view.adapter.checkable
 
-import android.util.SparseBooleanArray
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 
-abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal constructor()
-    : BaseAdapter<O, VH>(), CheckableAdapter, CheckableViewHolder.CheckableViewHolderCallback<O> {
+abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal constructor() : BaseAdapter<O, VH>(),
+    CheckableAdapter, CheckableViewHolder.CheckableViewHolderCallback<O> {
 
     abstract var adapterCallback: CheckableAdapterCallback<O>
 
     override var checkedItemCount: Int = 0
 
-    private var checkedItemPositions = SparseBooleanArray()
-    
+    val selectedModelIds = arrayListOf<Int>()
+
     private val selectedModels = arrayListOf<O>()
 
     override fun onItemCheckedChangeState(position: Int, isChecked: Boolean) {
-        if(!isChecked && checkedItemCount == 0) {
-            clearCalculations()
+        if (!isChecked && checkedItemCount == 0) {
+            clearSelections()
         }
         if(isChecked) {
+            selectedModelIds.add(position)
             selectedModels.add(objects[position])
             checkedItemCount++
         } else {
+            selectedModelIds.remove(position)
             selectedModels.remove(objects[position])
             checkedItemCount--
         }
@@ -31,12 +32,10 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
     override fun onItemClick(model: O) = adapterCallback.onItemClick(model)
 
-    override fun onMoreOptionClick(model: O) = adapterCallback.onMoreOptionClick(model)
-
-    private fun clearCalculations() {
+    fun clearSelections() {
         checkedItemCount = 0
-        checkedItemPositions.clear()
         selectedModels.clear()
+        selectedModelIds.clear()
     }
 
     interface CheckableAdapterCallback<M> {
@@ -47,5 +46,4 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
         fun onCheckStateChange(models: List<M>, checkedItemCount: Int)
     }
-
 }

@@ -10,13 +10,6 @@ abstract class CheckableViewHolder<M> constructor(
     private val checkableAdapter: CheckableAdapter
 ) : BaseViewHolder<M>(view) {
 
-    interface CheckableViewHolderCallback<M> {
-
-        fun onItemClick(model: M)
-
-        fun onMoreOptionClick(model: M)
-    }
-
     protected fun notifyItemCheckedStateChanged() {
         itemView.isActivated = !itemView.isActivated
         checkableAdapter.onItemCheckedChangeState(adapterPosition, itemView.isActivated)
@@ -35,5 +28,10 @@ abstract class CheckableViewHolder<M> constructor(
             notifyItemCheckedStateChanged()
             return@setOnLongClickListener true
         }
+    }
+
+    interface CheckableViewHolderCallback<M> {
+
+        fun onItemClick(model: M)
     }
 }

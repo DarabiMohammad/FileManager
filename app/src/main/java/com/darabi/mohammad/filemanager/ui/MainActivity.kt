@@ -19,6 +19,8 @@ import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
+import com.darabi.mohammad.filemanager.util.fadeIn
+import com.darabi.mohammad.filemanager.util.fadeOut
 import com.darabi.mohammad.filemanager.util.navigateTo
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
@@ -27,6 +29,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_toolbar.*
 import kotlinx.android.synthetic.main.layout_toolbar.view.*
 import javax.inject.Inject
 import kotlin.system.exitProcess
@@ -88,6 +91,20 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         layout_toolbar.img_toggle.setOnClickListener(this)
     }
 
+    private fun showSelectionActionMode(checkedItemCount: Int) {
+        img_toggle.fadeOut()
+        chb_select_all.fadeIn()
+        container_more_options.fadeIn()
+        txt_toolbar_title.text = checkedItemCount.toString()
+    }
+
+    private fun hideSelectionActionMode() {
+        img_toggle.fadeIn()
+        chb_select_all.fadeOut()
+        container_more_options.fadeOut()
+        txt_toolbar_title.text = viewModel.onItemClicke.value?.itemName
+    }
+
     private fun observeViewModel() {
 
         viewModel.onItemClicke.observe(this, {
@@ -104,6 +121,12 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
                 PermissionDescriptionDialog.DialogAction.ACTION_OPEN_SETTINGS -> openAppInfoScreen()
                 else -> closeApp()
             }
+        })
+
+        viewModel.onActionModeChange.observe(this, {
+            if(it > 0)
+                showSelectionActionMode(it)
+            else hideSelectionActionMode()
         })
     }
 
@@ -158,6 +181,12 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         }
 
     override fun onBackPressed() {
+        viewModel.onActionModeChange.value?.let {
+            if(it > 0) {
+                viewModel.onActionModeChange.value = 0
+                return@onBackPressed
+            }
+        }
         if(layout_drawer.isDrawerOpen(GravityCompat.START))
             closeNavDrawer()
         else {

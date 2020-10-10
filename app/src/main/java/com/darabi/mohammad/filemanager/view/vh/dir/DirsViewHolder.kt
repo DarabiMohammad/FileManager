@@ -10,9 +10,9 @@ import com.darabi.mohammad.filemanager.view.adapter.checkable.CheckableAdapter
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 
 class DirsViewHolder constructor(
-    val view: View,
-    val viewHolderCallback: CheckableViewHolderCallback<DirItem>,
-    val adapterCallback: CheckableAdapter
+    private val view: View,
+    private val viewHolderCallback: DirsViewHolderCallback<DirItem>,
+    adapterCallback: CheckableAdapter
 ) : CheckableViewHolder<DirItem>(view, viewHolderCallback, adapterCallback) {
 
     private val title: TextView = view.findViewById(R.id.txt_rcv_item_dir_name)
@@ -31,5 +31,10 @@ class DirsViewHolder constructor(
             glide.asDrawable().load(model.imageRes).into(image)
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }
+    }
+
+    interface DirsViewHolderCallback<M> : CheckableViewHolderCallback<M> {
+
+        fun onMoreOptionClick(model: M)
     }
 }

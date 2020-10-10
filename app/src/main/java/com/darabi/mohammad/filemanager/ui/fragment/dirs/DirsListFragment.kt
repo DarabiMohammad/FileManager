@@ -16,11 +16,12 @@ import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
 import javax.inject.Inject
 
-class DirsListFragment @Inject constructor(
+class DirsListFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val dirsListViewModel: DirsListViewModel,
     private val adapter: DirsRecyclerAdapter
-) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
+) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener,
+    BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
 
     override val TAG: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
@@ -47,6 +48,15 @@ class DirsListFragment @Inject constructor(
             }
         })
 
+        viewModel.onActionModeChange.observe(viewLifecycleOwner, {
+            if(it == 0) {
+                adapter.selectedModelIds.forEach { position ->
+                    rcv_dirs.findViewHolderForAdapterPosition(position)?.itemView?.isActivated = false
+                }
+                adapter.clearSelections()
+            }
+        })
+
         dirsListViewModel.fileOrFolderCreation.observe(viewLifecycleOwner, { adapter.updateSource(it) })
     }
 
@@ -64,7 +74,7 @@ class DirsListFragment @Inject constructor(
     }
 
     override fun onItemClick(model: DirItem) {
-        if(model is DirItem.Item)
+        if (model is DirItem.Item)
             viewModel.onItemClicke.value = model
     }
 
@@ -73,5 +83,6 @@ class DirsListFragment @Inject constructor(
     }
 
     override fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int) {
+        viewModel.onActionModeChange.value = checkedItemCount
     }
 }

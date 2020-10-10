@@ -9,9 +9,12 @@ import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 import com.darabi.mohammad.filemanager.view.vh.dir.DirsViewHolder
 import javax.inject.Inject
 
-class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, CheckableViewHolder<DirItem>>() {
+class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, CheckableViewHolder<DirItem>>(),
+    DirsViewHolder.DirsViewHolderCallback<DirItem> {
 
     override lateinit var adapterCallback: CheckableAdapterCallback<DirItem>
+
+    override fun onMoreOptionClick(model: DirItem) = adapterCallback.onMoreOptionClick(model)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<DirItem> =
         DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this, this)
