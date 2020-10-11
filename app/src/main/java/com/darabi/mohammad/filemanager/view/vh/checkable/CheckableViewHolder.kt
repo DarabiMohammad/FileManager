@@ -10,22 +10,22 @@ abstract class CheckableViewHolder<M> constructor(
     private val checkableAdapter: CheckableAdapter
 ) : BaseViewHolder<M>(view) {
 
-    protected fun notifyItemCheckedStateChanged() {
+    protected fun notifyItemCheckedStateChanged(position: Int) {
         itemView.isActivated = !itemView.isActivated
-        checkableAdapter.onItemCheckedChangeState(adapterPosition, itemView.isActivated)
+        checkableAdapter.onItemCheckedChangeState(position, itemView.isActivated)
     }
 
-    override fun bindModel(model: M) {
-
+    open fun bindModel(model: M, position: Int) {
+        itemView.isActivated = checkableAdapter.isChecked(position)
         view.setOnClickListener {
             if(checkableAdapter.checkedItemCount > 0)
-                notifyItemCheckedStateChanged()
+                notifyItemCheckedStateChanged(position)
             else
                 callback.onItemClick(model)
         }
 
         view.setOnLongClickListener {
-            notifyItemCheckedStateChanged()
+            notifyItemCheckedStateChanged(position)
             return@setOnLongClickListener true
         }
     }

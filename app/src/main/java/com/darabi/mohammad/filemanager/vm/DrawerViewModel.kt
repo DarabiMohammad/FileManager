@@ -3,6 +3,8 @@ package com.darabi.mohammad.filemanager.vm
 import android.app.Application
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DrawerItem
+import com.darabi.mohammad.filemanager.model.ItemType
+import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
 
@@ -25,26 +27,25 @@ class DrawerViewModel @Inject constructor(
 
     fun getStaticDrawerItems(): ArrayList<DrawerItem> = arrayListOf(
         DrawerItem.Item(
-            getPrimaryExternalStorageVolume().itemName,
-            getPrimaryExternalStorageVolume().itemPath,
-            PRIMARY_EXTERNAL_STORAGE_ICON
+            getPrimaryExternalStorageVolume().itemName, getPrimaryExternalStorageVolume().itemPath,
+            itemImageRes = PRIMARY_EXTERNAL_STORAGE_ICON
         ),
         DrawerItem.Divider,
-        DrawerItem.Item(getString(DCIM.first), volumeManager.dcimPath, DCIM.second),
-        DrawerItem.Item(getString(DOWNLOAD.first), volumeManager.downloadPath, DOWNLOAD.second),
-        DrawerItem.Item(getString(MOVIES.first), volumeManager.moviesPath, MOVIES.second),
-        DrawerItem.Item(getString(MUSICS.first), volumeManager.musicsPath, MUSICS.second),
-        DrawerItem.Item(getString(PICTURES.first), volumeManager.picturesPath, PICTURES.second),
-        DrawerItem.Item(getString(QUICK_ACCESS.first), "", QUICK_ACCESS.second),
+        DrawerItem.Item(getString(DCIM.first), volumeManager.dcimPath, itemImageRes = DCIM.second),
+        DrawerItem.Item(getString(DOWNLOAD.first), volumeManager.downloadPath, itemImageRes = DOWNLOAD.second),
+        DrawerItem.Item(getString(MOVIES.first), volumeManager.moviesPath, itemImageRes = MOVIES.second),
+        DrawerItem.Item(getString(MUSICS.first), volumeManager.musicsPath, itemImageRes = MUSICS.second),
+        DrawerItem.Item(getString(PICTURES.first), volumeManager.picturesPath, itemImageRes = PICTURES.second),
+        DrawerItem.Item(getString(QUICK_ACCESS.first), "", itemImageRes = QUICK_ACCESS.second),
         DrawerItem.Divider,
-        DrawerItem.Item(getString(RECENT_FILES.first), volumeManager.recentFilesPath, RECENT_FILES.second),
-        DrawerItem.Item(getString(IMAGES.first), volumeManager.imagesPath, IMAGES.second),
-        DrawerItem.Item(getString(VIDEOS.first), volumeManager.videosPath, VIDEOS.second),
-        DrawerItem.Item(getString(AUDIO.first), volumeManager.audioPath, AUDIO.second),
-        DrawerItem.Item(getString(DOCUMENTS.first), volumeManager.documentsPath, DOCUMENTS.second),
-        DrawerItem.Item(getString(APKS.first), volumeManager.apksPath, APKS.second),
+        DrawerItem.Item(getString(RECENT_FILES.first), volumeManager.recentFilesPath, itemImageRes = RECENT_FILES.second),
+        DrawerItem.Item(getString(IMAGES.first), volumeManager.imagesPath, itemImageRes = IMAGES.second),
+        DrawerItem.Item(getString(VIDEOS.first), volumeManager.videosPath, itemImageRes = VIDEOS.second),
+        DrawerItem.Item(getString(AUDIO.first), volumeManager.audioPath, itemImageRes = AUDIO.second),
+        DrawerItem.Item(getString(DOCUMENTS.first), volumeManager.documentsPath, itemImageRes = DOCUMENTS.second),
+        DrawerItem.Item(getString(APKS.first), volumeManager.apksPath, itemImageRes = APKS.second),
         DrawerItem.Divider,
-        DrawerItem.Item(getString(APP_MANAGER.first), "", APP_MANAGER.second),
-        DrawerItem.Item(getString(SETTINGS.first), "", SETTINGS.second),
+        DrawerItem.Item(getString(APP_MANAGER.first), EMPTY_STRING, ItemType.DRAWER_ITEM_OTHER, itemImageRes = APP_MANAGER.second),
+        DrawerItem.Item(getString(SETTINGS.first), EMPTY_STRING, ItemType.DRAWER_ITEM_OTHER, itemImageRes = SETTINGS.second),
     )
 }

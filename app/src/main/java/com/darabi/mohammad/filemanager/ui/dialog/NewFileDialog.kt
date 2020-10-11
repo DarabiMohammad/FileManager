@@ -7,9 +7,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
+import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.invisible
-import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_new_file.*
@@ -48,7 +48,7 @@ class NewFileDialog @Inject constructor(
         btn_create_file.setOnClickListener(this)
 
         if(type == Type.FOLDER_TYPE)
-            edt_file_name.setText(VolumeManager.EMPTY_STRING)
+            edt_file_name.setText(EMPTY_STRING)
         else if (type == Type.FILE_TYPE)
             edt_file_name.setText(R.string.simple_txt_format)
     }

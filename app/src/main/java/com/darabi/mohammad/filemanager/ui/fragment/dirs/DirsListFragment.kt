@@ -14,7 +14,7 @@ import com.darabi.mohammad.filemanager.util.fadeOut
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import com.darabi.mohammad.filemanager.view.adapter.DirsRecyclerAdapter
 import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter
-import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter.Companion.SELECTION_ACTION_MODE_DESTROYED
+import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter.Companion.DESTROY_SELECTION_ACTION_MODE
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
@@ -24,7 +24,8 @@ class DirsListFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val dirsListViewModel: DirsListViewModel,
     private val adapter: DirsRecyclerAdapter
-) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
+) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener,
+    BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
 
     override val TAG: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
@@ -47,7 +48,7 @@ class DirsListFragment @Inject constructor (
         viewModel.onItemClicke.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
 
         viewModel.onActionModeChange.observe(viewLifecycleOwner, {
-            if(it == SELECTION_ACTION_MODE_DESTROYED) {
+            if(it == DESTROY_SELECTION_ACTION_MODE) {
                 adapter.selectedModelIds.forEach { position ->
                     rcv_dirs.findViewHolderForAdapterPosition(position)?.itemView?.isActivated = false
                 }
@@ -78,9 +79,7 @@ class DirsListFragment @Inject constructor (
         }.show(childFragmentManager, newFileDialog.TAG)
     }
 
-    fun onBackPressed() {
-        getSubDirs(dirsListViewModel.removeLastPath())
-    }
+    fun onBackPressed() { getSubDirs(dirsListViewModel.removeLastPath()) }
 
     override fun onClick(view: View?) {
         when(view?.id) {

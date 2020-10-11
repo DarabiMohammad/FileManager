@@ -21,12 +21,12 @@ class DirsViewHolder constructor(
 
     private val glide by lazy { Glide.with(view) }
 
-    override fun bindModel(model: DirItem) {
+    override fun bindModel(model: DirItem, position: Int) {
         if(model is DirItem.Item) {
-            super.bindModel(model)
+            super.bindModel(model, position)
             //todo add separate view holder for dividing items
             title.text = model.itemName
-            image.setOnClickListener { notifyItemCheckedStateChanged() }
+            image.setOnClickListener { notifyItemCheckedStateChanged(position) }
             imageMore.setOnClickListener { viewHolderCallback.onMoreOptionClick(model) }
             glide.asDrawable().load(model.itemImageRes).into(image)
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)

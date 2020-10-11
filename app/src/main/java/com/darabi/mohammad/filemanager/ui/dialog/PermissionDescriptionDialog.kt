@@ -53,10 +53,8 @@ class PermissionDescriptionDialog @Inject constructor(
 
     private fun onOkButtonClick() {
         this.dismiss()
-        when(type) {
-            DialogType.SETTINGS_TYPE -> viewModel.onPermissionDIalogDescButtonClick.value = DialogAction.ACTION_OPEN_SETTINGS
-            else -> viewModel.onPermissionDIalogDescButtonClick.value = DialogAction.ACTION_OK
-        }
+        val buttonAction = if (type == DialogType.SETTINGS_TYPE) DialogAction.ACTION_OPEN_SETTINGS else DialogAction.ACTION_OK
+        viewModel.onPermissionDIalogDescButtonClick.value = buttonAction
     }
 
     private fun onExitButtonClick() {

@@ -7,7 +7,7 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
     CheckableAdapter, CheckableViewHolder.CheckableViewHolderCallback<O> {
 
     companion object {
-        const val SELECTION_ACTION_MODE_DESTROYED = 0
+        const val DESTROY_SELECTION_ACTION_MODE = 0
     }
 
     abstract var adapterCallback: CheckableAdapterCallback<O>
@@ -17,6 +17,8 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
     val selectedModelIds = arrayListOf<Int>()
 
     private val selectedModels = arrayListOf<O>()
+
+    override fun isChecked(position: Int): Boolean = selectedModels.contains(objects[position])
 
     override fun onItemCheckedChangeState(position: Int, isChecked: Boolean) {
         if (!isChecked && checkedItemCount == 0) {
@@ -35,6 +37,8 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
     }
 
     override fun onItemClick(model: O) = adapterCallback.onItemClick(model)
+
+    override fun onBindViewHolder(holder: VH, position: Int) = holder.bindModel(objects[position], position)
 
     fun clearSelections() {
         checkedItemCount = 0

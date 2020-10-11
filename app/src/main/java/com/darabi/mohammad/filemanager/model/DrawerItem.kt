@@ -7,8 +7,7 @@ sealed class DrawerItem {
     data class Item(
         override val itemName: String,
         override val itemPath: String,
+        override val itemType: ItemType = ItemType.DRAWER_ITEM_STORAGE,
         override val itemImageRes: Int?
-    ) : DrawerItem(), BaseItem {
-        override val itemType: ItemType get() = ItemType.DRAWER_ITEM
-    }
+    ) : DrawerItem(), BaseItem
 }

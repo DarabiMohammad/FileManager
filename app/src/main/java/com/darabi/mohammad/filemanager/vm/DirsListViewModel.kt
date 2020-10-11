@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.model.ItemType
+import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import java.io.File
 import javax.inject.Inject
@@ -17,7 +18,7 @@ class DirsListViewModel @Inject constructor (
 ) : BaseViewModel(app) {
 
     private val pathSeparator = File.pathSeparator
-    var currentPath = VolumeManager.EMPTY_STRING
+    var currentPath = EMPTY_STRING
     val fileOrFolderCreation = MutableLiveData<DirItem.Item>()
 
     private fun volumeToDirItem(volume: VolumeManager.Volume): DirItem.Item =
@@ -26,7 +27,7 @@ class DirsListViewModel @Inject constructor (
     private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
     fun removeLastPath(): String {
-        if(!currentPath.contains(pathSeparator)) return VolumeManager.EMPTY_STRING
+        if(!currentPath.contains(pathSeparator)) return EMPTY_STRING
         currentPath = currentPath.substring(currentPath.indexOf(File.separator), currentPath.lastIndexOf(pathSeparator))
         return currentPath
     }

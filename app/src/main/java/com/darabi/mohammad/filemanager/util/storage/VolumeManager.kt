@@ -8,6 +8,7 @@ import android.os.Environment.*
 import android.os.storage.StorageManager
 import androidx.annotation.RequiresApi
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import java.io.File
 import javax.inject.Inject
 
@@ -38,10 +39,6 @@ class VolumeManager @Inject constructor (
     init {
 //        otgReceiver.callback = otgConnectionCallback
 //        application.registerReceiver(otgReceiver, intentFilter)
-    }
-
-    companion object {
-        const val EMPTY_STRING = ""
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

@@ -5,4 +5,6 @@ interface CheckableAdapter {
     var checkedItemCount: Int
 
     fun onItemCheckedChangeState(position: Int, isChecked: Boolean)
+
+    fun isChecked(position: Int): Boolean
 }

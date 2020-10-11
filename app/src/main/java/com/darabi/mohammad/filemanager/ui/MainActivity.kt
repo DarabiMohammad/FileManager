@@ -4,26 +4,22 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.ItemType
-import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.SettingsFragment
-import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.fadeOut
 import com.darabi.mohammad.filemanager.util.navigateTo
-import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter.Companion.SELECTION_ACTION_MODE_DESTROYED
+import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter.Companion.DESTROY_SELECTION_ACTION_MODE
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import dagger.android.AndroidInjection
@@ -68,7 +64,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     lateinit var permissionManager: PermissionManager
 
     companion object {
-        const val OPEN_APP_INFO_CODE = 0
+        private const val OPEN_APP_INFO_CODE = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,13 +74,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         setContentView(R.layout.activity_main)
 
         initView()
-
         observeViewModel()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
         navigateTo(fragment = homeFragment, isReplace = true)
     }
 
@@ -111,11 +101,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
 
     private fun observeViewModel() {
 
-        viewModel.onItemClicke.observe(this, {
-            //todo wrong flow for checking storage permission. we don't need permission when user taps on settings item in drawer view
-            if(it.itemType == ItemType.DRAWER_ITEM) closeNavDrawer()
-            permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
-        })
+        viewModel.onItemClicke.observe(this, { performOnItemClick() })
 
         viewModel.onPermissionDIalogDescButtonClick.observe(this, {
             when(it) {
@@ -127,33 +113,34 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         })
 
         viewModel.onActionModeChange.observe(this, {
-            if(it > 0)
+            if(it > DESTROY_SELECTION_ACTION_MODE)
                 showSelectionActionMode(it)
             else hideSelectionActionMode()
         })
     }
 
-    private fun performOnItemClick() {
-        when(viewModel.onItemClicke.value!!.itemType) {
-            ItemType.DRAWER_ITEM -> onDrawerItemClick()
-            ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
-            else -> {}
-        }
+    private fun performOnItemClick() = when(viewModel.onItemClicke.value!!.itemType) {
+        ItemType.DRAWER_ITEM_OTHER -> onDrawerOtherItemClick()
+        ItemType.DRAWER_ITEM_STORAGE -> onDrawerCategoryItemClick()
+        ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
+        else -> {}
     }
 
-    private fun onDrawerItemClick() {
+    private fun onDrawerOtherItemClick() {
         val drawerItemName = viewModel.onItemClicke.value!!.itemName
+        val destinationFragment = if (drawerItemName == getString(R.string.settings)) settingsFragment else appManagerFragment
         layout_toolbar.txt_toolbar_title.text = drawerItemName
-        val destinationFragment: BaseFragment = when(drawerItemName) {
-            getString(R.string.settings) -> settingsFragment
-            getString(R.string.app_manager) -> appManagerFragment
-            else -> dirsListFragment
-        }
         navigateTo(fragment = destinationFragment, addToBackstack = true)
-        layout_drawer.closeDrawer(GravityCompat.START)
+        closeNavDrawer()
     }
 
-    private fun onDirectoryClick() = navigateTo(fragment = dirsListFragment, addToBackstack = true)
+    private fun onDrawerCategoryItemClick() {
+        closeNavDrawer()
+        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+    }
+
+    private fun onDirectoryClick() =
+        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
 
     private fun openNavDrawer() = layout_drawer.openDrawer(GravityCompat.START)
 
@@ -168,7 +155,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
         intent.data = Uri.parse("package:$packageName")
-        startActivityForResult(intent, MainActivity.OPEN_APP_INFO_CODE)
+        startActivityForResult(intent, OPEN_APP_INFO_CODE)
     }
 
     override fun androidInjector(): AndroidInjector<Any> = injector
@@ -182,7 +169,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     override fun onBackPressed() {
         viewModel.onActionModeChange.value?.let {
             if(it > 0) {
-                viewModel.onActionModeChange.value = SELECTION_ACTION_MODE_DESTROYED
+                viewModel.onActionModeChange.value = DESTROY_SELECTION_ACTION_MODE
                 return@onBackPressed
             }
         }
@@ -204,29 +191,24 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
 
     override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
         if(permissionGroup is PermissionManager.Permissions.Storage)
-            performOnItemClick()
+            navigateTo(fragment = dirsListFragment, addToBackstack = true)
     }
 
-    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) {
+    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
         dialogPermissionDescription.detailedDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
-    }
 
-    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) {
+    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
         dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if(permissionManager.isPermissionsGrant(grantResults))
-            performOnItemClick()
+            navigateTo(fragment = dirsListFragment, addToBackstack = true)
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == OPEN_APP_INFO_CODE) {
+        if(requestCode == OPEN_APP_INFO_CODE)
             permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
-        }
     }
 }
