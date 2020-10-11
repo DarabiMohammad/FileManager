@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.ui.fragment.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -21,16 +22,12 @@ class HomeFragment @Inject constructor(
     override val TAG: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
 
-    private val volumes by lazy {
-        listOf(howeViewModel.convertToDirItem(howeViewModel.getPrimaryExternalStorageVolume()))
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter.apply {
             callback = this@HomeFragment
-            setSource(volumes)
+            setSource(listOf(howeViewModel.getPrimaryExternalStorageVolume()))
         }
         rcv_storage.adapter = adapter
         observeViewModel()

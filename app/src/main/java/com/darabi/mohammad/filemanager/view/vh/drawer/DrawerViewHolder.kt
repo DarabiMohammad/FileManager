@@ -20,7 +20,7 @@ class DrawerViewHolder constructor(
         if(model is DrawerItem.Item) {
 
             title.text = model.itemName
-            Glide.with(view).load(model.imageRes).into(icon)
+            Glide.with(view).load(model.itemImageRes).into(icon)
             if(callback != null)
                 view.setOnClickListener { callback.onDrawerItemClick(model) }
         }

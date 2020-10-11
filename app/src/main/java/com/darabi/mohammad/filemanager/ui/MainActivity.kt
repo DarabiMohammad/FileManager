@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.fadeOut
 import com.darabi.mohammad.filemanager.util.navigateTo
+import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapter.Companion.SELECTION_ACTION_MODE_DESTROYED
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import dagger.android.AndroidInjection
@@ -65,8 +67,6 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     @Inject
     lateinit var permissionManager: PermissionManager
 
-    private lateinit var selectedItem: BaseItem
-
     companion object {
         const val OPEN_APP_INFO_CODE = 0
     }
@@ -77,11 +77,15 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigateTo(fragment = homeFragment, isReplace = true)
-
         initView()
 
         observeViewModel()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        navigateTo(fragment = homeFragment, isReplace = true)
     }
 
     private fun initView() {
@@ -109,7 +113,6 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
 
         viewModel.onItemClicke.observe(this, {
             //todo wrong flow for checking storage permission. we don't need permission when user taps on settings item in drawer view
-            selectedItem = it
             if(it.itemType == ItemType.DRAWER_ITEM) closeNavDrawer()
             permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
         })
@@ -131,16 +134,17 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     }
 
     private fun performOnItemClick() {
-        when(selectedItem.itemType) {
-            ItemType.DRAWER_ITEM -> onDrawerItemClick(selectedItem)
+        when(viewModel.onItemClicke.value!!.itemType) {
+            ItemType.DRAWER_ITEM -> onDrawerItemClick()
             ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
             else -> {}
         }
     }
 
-    private fun onDrawerItemClick(item: BaseItem) {
-        layout_toolbar.txt_toolbar_title.text = item.itemName
-        val destinationFragment: BaseFragment = when(item.itemName) {
+    private fun onDrawerItemClick() {
+        val drawerItemName = viewModel.onItemClicke.value!!.itemName
+        layout_toolbar.txt_toolbar_title.text = drawerItemName
+        val destinationFragment: BaseFragment = when(drawerItemName) {
             getString(R.string.settings) -> settingsFragment
             getString(R.string.app_manager) -> appManagerFragment
             else -> dirsListFragment
@@ -149,12 +153,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         layout_drawer.closeDrawer(GravityCompat.START)
     }
 
-    private fun onDirectoryClick() =
-        if(!dirsListFragment.isAdded)
-            navigateTo(fragment = dirsListFragment, addToBackstack = true)
-        else
-            //todo there is issues with field injection, we need new instance of dirsListFragment for passing in this method
-            dirsListFragment.navigateTo(R.id.container_home, dirsListFragment, addToBackstack = true)
+    private fun onDirectoryClick() = navigateTo(fragment = dirsListFragment, addToBackstack = true)
 
     private fun openNavDrawer() = layout_drawer.openDrawer(GravityCompat.START)
 
@@ -183,17 +182,19 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     override fun onBackPressed() {
         viewModel.onActionModeChange.value?.let {
             if(it > 0) {
-                viewModel.onActionModeChange.value = 0
+                viewModel.onActionModeChange.value = SELECTION_ACTION_MODE_DESTROYED
                 return@onBackPressed
             }
         }
         if(layout_drawer.isDrawerOpen(GravityCompat.START))
             closeNavDrawer()
         else {
-            //todo there is issues with back button in recursive fragments like dirsListFragment
-            val lastChildFragmentManager = supportFragmentManager.fragments.last().childFragmentManager
-            if(lastChildFragmentManager.backStackEntryCount >= 1) lastChildFragmentManager.popBackStack()
-            else super.onBackPressed()
+            supportFragmentManager.fragments.last().also {
+                when(it) {
+                    is DirsListFragment -> dirsListFragment.onBackPressed()
+                    else -> super.onBackPressed()
+                }
+            }
         }
     }
 

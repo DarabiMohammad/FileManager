@@ -25,8 +25,8 @@ class DrawerViewModel @Inject constructor(
 
     fun getStaticDrawerItems(): ArrayList<DrawerItem> = arrayListOf(
         DrawerItem.Item(
-            getPrimaryExternalStorageVolume().name,
-            getPrimaryExternalStorageVolume().path,
+            getPrimaryExternalStorageVolume().itemName,
+            getPrimaryExternalStorageVolume().itemPath,
             PRIMARY_EXTERNAL_STORAGE_ICON
         ),
         DrawerItem.Divider,

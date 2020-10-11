@@ -29,7 +29,7 @@
         tools:listitem="@layout/rcv_item_dir"/>
 
     <FrameLayout
-        android:id="@+id/container_home"
+        android:id="@+id/container_dirs_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class HomwRecyclerAdapter @Inject constructor() : BaseAdapter<DirItem, BaseViewHolder<DirItem>>() {
 
-    var callback: OnHoneVolumeItemsClickListener? = null
+    lateinit var callback: OnHoneVolumeItemsClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecyclerViewHolder =
         HomeRecyclerViewHolder(inflateLayout(parent, R.layout.rcv_item_storage_dev), callback)

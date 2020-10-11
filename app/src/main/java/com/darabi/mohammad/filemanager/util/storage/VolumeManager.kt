@@ -36,8 +36,8 @@ class VolumeManager @Inject constructor (
     val apksPath: String by lazy { application.getString(R.string.category_apks) }
 
     init {
-        otgReceiver.callback = otgConnectionCallback
-        application.registerReceiver(otgReceiver, intentFilter)
+//        otgReceiver.callback = otgConnectionCallback
+//        application.registerReceiver(otgReceiver, intentFilter)
     }
 
     companion object {
@@ -132,7 +132,9 @@ class VolumeManager @Inject constructor (
         return if (isCreated) Volume(getDirName(name), name, newFile.isFile, newFile.isHidden) else null
     }
 
-    fun onDestroy() = application.unregisterReceiver(otgReceiver)
+    fun onDestroy() {
+//        application.unregisterReceiver(otgReceiver)
+    }
 
     data class Volume internal constructor(
         val name: String, val path: String, val isFile: Boolean, val isHidden: Boolean

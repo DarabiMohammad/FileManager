@@ -7,13 +7,15 @@ import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
 
-open class HomeViewModel @Inject constructor(
+open class HomeViewModel @Inject constructor (
     private val app: Application,
     private val volumeManager: VolumeManager
 ) : BaseViewModel(app) {
 
     protected companion object {
         const val PRIMARY_EXTERNAL_STORAGE_ICON = R.drawable.ic_settings_black
+        const val SECONDARY_EXTERNAL_STORAGE_ICON = R.drawable.ic_settings_black
+        const val USB_OTG = R.drawable.ic_settings_black
         val DCIM = R.string.dcim to R.drawable.ic_settings_black
         val DOWNLOAD = R.string.download to R.drawable.ic_settings_black
         val MOVIES = R.string.movies to R.drawable.ic_settings_black
@@ -21,10 +23,8 @@ open class HomeViewModel @Inject constructor(
         val PICTURES = R.string.pictures to R.drawable.ic_settings_black
     }
 
-    fun getPrimaryExternalStorageVolume() = volumeManager.getPrimaryExternalStprageVolume()
-
-    fun convertToDirItem(volume: VolumeManager.Volume): DirItem.Item {
-        return DirItem.Item(volume.name, volume.path)
+    fun getPrimaryExternalStorageVolume() = volumeManager.getPrimaryExternalStprageVolume().run {
+        DirItem.Item(this.name, this.path, itemImageRes = PRIMARY_EXTERNAL_STORAGE_ICON)
     }
 
     protected fun getString(@StringRes string: Int) = app.getString(string)

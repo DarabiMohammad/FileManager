@@ -6,6 +6,10 @@ import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal constructor() : BaseAdapter<O, VH>(),
     CheckableAdapter, CheckableViewHolder.CheckableViewHolderCallback<O> {
 
+    companion object {
+        const val SELECTION_ACTION_MODE_DESTROYED = 0
+    }
+
     abstract var adapterCallback: CheckableAdapterCallback<O>
 
     override var checkedItemCount: Int = 0

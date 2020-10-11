@@ -19,7 +19,9 @@ class MainViewModel @Inject constructor(
     val onPermissionDIalogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
     val onActionModeChange = MutableLiveData<Int>()
 
-    init { volumeManager.otgConnectionCallback = this }
+    init {
+//        volumeManager.otgConnectionCallback = this
+    }
 
     override fun onAttachmentChange(msg: String) {
 //        removableStorages.value = volumeManager.getRemovableVolumes()

@@ -28,7 +28,7 @@ class DirsViewHolder constructor(
             title.text = model.itemName
             image.setOnClickListener { notifyItemCheckedStateChanged() }
             imageMore.setOnClickListener { viewHolderCallback.onMoreOptionClick(model) }
-            glide.asDrawable().load(model.imageRes).into(image)
+            glide.asDrawable().load(model.itemImageRes).into(image)
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }
     }
