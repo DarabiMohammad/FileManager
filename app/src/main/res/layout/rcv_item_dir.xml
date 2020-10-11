@@ -8,6 +8,19 @@
     android:background="@drawable/selector_background_rcv_item_dir"
     android:padding="8dp">
 
+    <CheckBox
+        style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+        android:id="@+id/chb_select_dir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:checked="true"
+        android:visibility="gone"
+        app:buttonTint="@android:color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/img_rcv_item_dir_icon"
         android:layout_width="32dp"
@@ -16,7 +29,7 @@
         android:contentDescription="@string/content_description"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/chb_select_dir"
         tools:srcCompat="@drawable/ic_settings_black"/>
 
     <TextView

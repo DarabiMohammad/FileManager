@@ -18,6 +18,9 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
     private val selectedModels = arrayListOf<O>()
 
+    private fun notifyItemCheckedStateChanged() =
+        adapterCallback.onCheckStateChange(selectedModels, checkedItemCount, checkedItemCount == objects.size)
+
     override fun isChecked(position: Int): Boolean = selectedModels.contains(objects[position])
 
     override fun onItemCheckedChangeState(position: Int, isChecked: Boolean) {
@@ -33,7 +36,7 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
             selectedModels.remove(objects[position])
             checkedItemCount--
         }
-        adapterCallback.onCheckStateChange(selectedModels, checkedItemCount)
+        notifyItemCheckedStateChanged()
     }
 
     override fun onItemClick(model: O) = adapterCallback.onItemClick(model)
@@ -43,7 +46,25 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
     fun clearSelections() {
         checkedItemCount = 0
         selectedModels.clear()
+        selectedModelIds.forEach {
+            notifyItemChanged(it)
+        }
         selectedModelIds.clear()
+        notifyItemCheckedStateChanged()
+    }
+
+    fun selectAll() {
+        clearSelections()
+        checkedItemCount = objects.size
+        selectedModels.addAll(objects)
+        objects.indices.forEach { selectedModelIds.add(it) }
+        notifyItemCheckedStateChanged()
+        notifyDataSetChanged()
+    }
+
+    fun deselectAll() {
+        clearSelections()
+        notifyItemCheckedStateChanged()
     }
 
     interface CheckableAdapterCallback<M> {
@@ -52,6 +73,6 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
         fun onMoreOptionClick(model: M)
 
-        fun onCheckStateChange(models: List<M>, checkedItemCount: Int)
+        fun onCheckStateChange(models: List<M>, checkedItemCount: Int, isSelectedAll: Boolean)
     }
 }

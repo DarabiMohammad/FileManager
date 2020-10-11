@@ -47,15 +47,6 @@ class DirsListFragment @Inject constructor (
 
         viewModel.onItemClicke.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
 
-        viewModel.onActionModeChange.observe(viewLifecycleOwner, {
-            if(it == DESTROY_SELECTION_ACTION_MODE) {
-                adapter.selectedModelIds.forEach { position ->
-                    rcv_dirs.findViewHolderForAdapterPosition(position)?.itemView?.isActivated = false
-                }
-                adapter.clearSelections()
-            }
-        })
-
         dirsListViewModel.fileOrFolderCreation.observe(viewLifecycleOwner, { adapter.updateSource(it) })
     }
 
@@ -79,7 +70,20 @@ class DirsListFragment @Inject constructor (
         }.show(childFragmentManager, newFileDialog.TAG)
     }
 
-    fun onBackPressed() { getSubDirs(dirsListViewModel.removeLastPath()) }
+    private fun deselectCheckedItems() {
+        adapter.clearSelections()
+    }
+
+    fun onBackPressed() {
+        if(viewModel.onActionModeChange.value?.first ?: DESTROY_SELECTION_ACTION_MODE > DESTROY_SELECTION_ACTION_MODE) {
+            deselectCheckedItems()
+        }
+        else getSubDirs(dirsListViewModel.removeLastPath())
+    }
+
+    fun selectAll() = adapter.selectAll()
+
+    fun deselectAll() = adapter.deselectAll()
 
     override fun onClick(view: View?) {
         when(view?.id) {
@@ -96,7 +100,7 @@ class DirsListFragment @Inject constructor (
         Log.d("test", "=========onMoreOptionClick")
     }
 
-    override fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int) {
-        viewModel.onActionModeChange.value = checkedItemCount
+    override fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int, isSelectedAll: Boolean) {
+        viewModel.onActionModeChange.value = Pair(checkedItemCount, isSelectedAll)
     }
 }

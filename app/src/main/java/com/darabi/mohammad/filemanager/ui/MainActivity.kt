@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.CompoundButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -33,7 +34,8 @@ import javax.inject.Inject
 import kotlin.system.exitProcess
 
 class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInjector,
-    View.OnClickListener, PermissionManager.PermissionCallback {
+    View.OnClickListener, PermissionManager.PermissionCallback,
+    CompoundButton.OnCheckedChangeListener {
 
     @Inject
     lateinit var injector: DispatchingAndroidInjector<Any>
@@ -85,11 +87,14 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         layout_toolbar.img_toggle.setOnClickListener(this)
     }
 
-    private fun showSelectionActionMode(checkedItemCount: Int) {
+    private fun showSelectionActionMode(checkedItemCount: Int, isSelectedAll: Boolean) {
         img_toggle.fadeOut()
         chb_select_all.fadeIn()
-        container_more_options.fadeIn()
+        chb_select_all.setOnCheckedChangeListener(null)
+        chb_select_all.isChecked = isSelectedAll
+        chb_select_all.setOnCheckedChangeListener(this)
         txt_toolbar_title.text = checkedItemCount.toString()
+        container_more_options.fadeIn()
     }
 
     private fun hideSelectionActionMode() {
@@ -113,8 +118,8 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         })
 
         viewModel.onActionModeChange.observe(this, {
-            if(it > DESTROY_SELECTION_ACTION_MODE)
-                showSelectionActionMode(it)
+            if(it.first > DESTROY_SELECTION_ACTION_MODE)
+                showSelectionActionMode(it.first, it.second)
             else hideSelectionActionMode()
         })
     }
@@ -166,13 +171,10 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
             else -> {}
         }
 
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) =
+        if(isChecked) dirsListFragment.selectAll() else dirsListFragment.deselectAll()
+
     override fun onBackPressed() {
-        viewModel.onActionModeChange.value?.let {
-            if(it > 0) {
-                viewModel.onActionModeChange.value = DESTROY_SELECTION_ACTION_MODE
-                return@onBackPressed
-            }
-        }
         if(layout_drawer.isDrawerOpen(GravityCompat.START))
             closeNavDrawer()
         else {
