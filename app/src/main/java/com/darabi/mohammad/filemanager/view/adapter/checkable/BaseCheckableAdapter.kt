@@ -62,11 +62,6 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
         notifyDataSetChanged()
     }
 
-    fun deselectAll() {
-        clearSelections()
-        notifyItemCheckedStateChanged()
-    }
-
     interface CheckableAdapterCallback<M> {
 
         fun onItemClick(model: M)

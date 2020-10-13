@@ -47,12 +47,13 @@ class DirsListFragment @Inject constructor (
 
         viewModel.onItemClicke.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
 
+        viewModel.onDeleteClicked.observe(viewLifecycleOwner, { showDeleteDialog() })
+
         dirsListViewModel.fileOrFolderCreation.observe(viewLifecycleOwner, { adapter.updateSource(it) })
     }
 
     private fun getSubDirs(path: String) = try {
         dirsListViewModel.getSubFiles(path).apply {
-            adapter.clear()
             if(this.isEmpty()) rcv_dirs.fadeOut() else {
                 rcv_dirs.fadeIn()
                 adapter.setSource(this)
@@ -63,32 +64,25 @@ class DirsListFragment @Inject constructor (
         activity?.supportFragmentManager?.popBackStack()
     }
 
-    private fun onFabClick() {
-        val isFile = false
-        newFileDialog.also {
-            if (isFile) it.fileType() else it.folderType()
-        }.show(childFragmentManager, newFileDialog.TAG)
-    }
+    private fun onFabClick(fileCreationDialog: Boolean) = newFileDialog.also {
+        if (fileCreationDialog) it.fileType() else it.folderType()
+    }.show(childFragmentManager, newFileDialog.TAG)
 
-    private fun deselectCheckedItems() {
-        adapter.clearSelections()
+    private fun showDeleteDialog() {
     }
 
     fun onBackPressed() {
-        if(viewModel.onActionModeChange.value?.first ?: DESTROY_SELECTION_ACTION_MODE > DESTROY_SELECTION_ACTION_MODE) {
-            deselectCheckedItems()
-        }
+        if(adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE) adapter.clearSelections()
         else getSubDirs(dirsListViewModel.removeLastPath())
     }
 
     fun selectAll() = adapter.selectAll()
 
-    fun deselectAll() = adapter.deselectAll()
+    fun deselectAll() = adapter.clearSelections()
 
-    override fun onClick(view: View?) {
-        when(view?.id) {
-            R.id.btn_fab -> onFabClick()
-        }
+    override fun onClick(view: View?) = when(view?.id) {
+        R.id.btn_fab -> onFabClick(false)
+        else -> {}
     }
 
     override fun onItemClick(model: DirItem) {

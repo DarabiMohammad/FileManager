@@ -4,11 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
@@ -33,41 +35,37 @@ import kotlinx.android.synthetic.main.layout_toolbar.view.*
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInjector,
+class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     View.OnClickListener, PermissionManager.PermissionCallback,
     CompoundButton.OnCheckedChangeListener {
 
     @Inject
-    lateinit var injector: DispatchingAndroidInjector<Any>
+    internal lateinit var injector: DispatchingAndroidInjector<Any>
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    internal lateinit var viewModelFactory: ViewModelFactory
     private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     @Inject
-    lateinit var fragmentFactory: InjectingFragmentFactory
+    internal lateinit var fragmentFactory: InjectingFragmentFactory
 
     @Inject
-    lateinit var homeFragment: HomeFragment
+    internal lateinit var homeFragment: HomeFragment
 
     @Inject
-    lateinit var dirsListFragment: DirsListFragment
+    internal lateinit var dirsListFragment: DirsListFragment
 
     @Inject
-    lateinit var appManagerFragment: AppManagerFragment
+    internal lateinit var appManagerFragment: AppManagerFragment
 
     @Inject
-    lateinit var settingsFragment: SettingsFragment
+    internal lateinit var settingsFragment: SettingsFragment
 
     @Inject
-    lateinit var dialogPermissionDescription: PermissionDescriptionDialog
+    internal lateinit var dialogPermissionDescription: PermissionDescriptionDialog
 
     @Inject
-    lateinit var permissionManager: PermissionManager
-
-    companion object {
-        private const val OPEN_APP_INFO_CODE = 0
-    }
+    internal lateinit var permissionManager: PermissionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -84,7 +82,10 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
 
         // initializing toolbar
         layout_toolbar.visibility = View.VISIBLE
+        setSupportActionBar(toolbar)
         layout_toolbar.img_toggle.setOnClickListener(this)
+        txt_toolbar_delete.setOnClickListener(this)
+        txt_toolbar_share.setOnClickListener(this)
     }
 
     private fun showSelectionActionMode(checkedItemCount: Int, isSelectedAll: Boolean) {
@@ -93,7 +94,8 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         chb_select_all.setOnCheckedChangeListener(null)
         chb_select_all.isChecked = isSelectedAll
         chb_select_all.setOnCheckedChangeListener(this)
-        txt_toolbar_title.text = checkedItemCount.toString()
+        toolbar.title = checkedItemCount.toString()
+        lockNavDrawer()
         container_more_options.fadeIn()
     }
 
@@ -101,7 +103,9 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
         img_toggle.fadeIn()
         chb_select_all.fadeOut()
         container_more_options.fadeOut()
-        txt_toolbar_title.text = viewModel.onItemClicke.value?.itemName
+        container_more_options.fadeOut()
+        unlockNavDrawer()
+        toolbar.title = viewModel.onItemClicke.value?.itemName
     }
 
     private fun observeViewModel() {
@@ -134,7 +138,7 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
     private fun onDrawerOtherItemClick() {
         val drawerItemName = viewModel.onItemClicke.value!!.itemName
         val destinationFragment = if (drawerItemName == getString(R.string.settings)) settingsFragment else appManagerFragment
-        layout_toolbar.txt_toolbar_title.text = drawerItemName
+        toolbar.title = drawerItemName
         navigateTo(fragment = destinationFragment, addToBackstack = true)
         closeNavDrawer()
     }
@@ -151,23 +155,19 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
 
     private fun closeNavDrawer() = layout_drawer.closeDrawer(GravityCompat.START)
 
-    private fun closeApp() {
-        finish()
-        exitProcess(0)
-    }
+    private fun lockNavDrawer() = layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-    private fun openAppInfoScreen() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        intent.addCategory(Intent.CATEGORY_DEFAULT)
-        intent.data = Uri.parse("package:$packageName")
-        startActivityForResult(intent, OPEN_APP_INFO_CODE)
-    }
+    private fun unlockNavDrawer() = layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+
+    private fun delete() { viewModel.onDeleteClicked.value = true }
 
     override fun androidInjector(): AndroidInjector<Any> = injector
 
     override fun onClick(view: View?) =
         when(view?.id) {
             R.id.img_toggle -> openNavDrawer()
+            R.id.txt_toolbar_delete -> delete()
+            R.id.txt_toolbar_share -> {}
             else -> {}
         }
 
@@ -201,6 +201,20 @@ class MainActivity @Inject constructor() : AppCompatActivity(), HasAndroidInject
 
     override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
         dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.selected_items_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.add_short_cut -> {}
+            R.id.hide -> {}
+            else -> {}
+        }
+        return true
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if(permissionManager.isPermissionsGrant(grantResults))

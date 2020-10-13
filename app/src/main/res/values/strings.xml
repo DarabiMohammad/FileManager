@@ -6,6 +6,10 @@
     <string name="exit">Exit</string>
     <string name="app_info">App Info</string>
     <string name="create">Create</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+    <string name="add_short_cut">Add Shortcut</string>
+    <string name="hide">Hide</string>
 
     <string name="storage">Storage</string>
     <string name="internal_storage">Phone Internal Storage</string>

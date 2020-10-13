@@ -14,6 +14,7 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
     }
 
     fun setSource(source: List<O>) {
+        clear()
         objects.addAll(source)
         notifyItemRangeChanged(objects.size -1, source.size)
     }

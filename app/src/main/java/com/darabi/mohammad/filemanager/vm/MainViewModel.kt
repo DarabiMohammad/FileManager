@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MainViewModel @Inject constructor(
+class MainViewModel @Inject constructor (
     private val app: Application,
     private val volumeManager: VolumeManager
 ) : BaseViewModel(app), OnRemovableStorageAttachmentistener {
@@ -18,6 +18,7 @@ class MainViewModel @Inject constructor(
     val removableStorages = MutableLiveData<ArrayList<BaseItem>>()
     val onPermissionDIalogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
     val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
+    val onDeleteClicked = MutableLiveData<Boolean>()
 
     init {
 //        volumeManager.otgConnectionCallback = this
