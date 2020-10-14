@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.EMPTY_STRING
@@ -22,6 +23,7 @@ import javax.inject.Inject
 
 class DirsListFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
+    private val deleteDialog: DeleteDialog,
     private val dirsListViewModel: DirsListViewModel,
     private val adapter: DirsRecyclerAdapter
 ) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener,
@@ -47,7 +49,7 @@ class DirsListFragment @Inject constructor (
 
         viewModel.onItemClicke.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
 
-        viewModel.onDeleteClicked.observe(viewLifecycleOwner, { showDeleteDialog() })
+        viewModel.onDeleteClicked.observe(viewLifecycleOwner, { /*showDeleteDialog()*/ })
 
         dirsListViewModel.fileOrFolderCreation.observe(viewLifecycleOwner, { adapter.updateSource(it) })
     }
@@ -68,12 +70,13 @@ class DirsListFragment @Inject constructor (
         if (fileCreationDialog) it.fileType() else it.folderType()
     }.show(childFragmentManager, newFileDialog.TAG)
 
-    private fun showDeleteDialog() {
-    }
+    private fun showDeleteDialog() = deleteDialog.show(childFragmentManager, newFileDialog.TAG)
 
     fun onBackPressed() {
-        if(adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE) adapter.clearSelections()
-        else getSubDirs(dirsListViewModel.removeLastPath())
+        if(adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE)
+            adapter.clearSelections()
+        else
+            getSubDirs(dirsListViewModel.removeLastPath())
     }
 
     fun selectAll() = adapter.selectAll()
@@ -81,7 +84,7 @@ class DirsListFragment @Inject constructor (
     fun deselectAll() = adapter.clearSelections()
 
     override fun onClick(view: View?) = when(view?.id) {
-        R.id.btn_fab -> onFabClick(false)
+        R.id.btn_fab -> onFabClick(true)
         else -> {}
     }
 
@@ -95,6 +98,7 @@ class DirsListFragment @Inject constructor (
     }
 
     override fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int, isSelectedAll: Boolean) {
+        dirsListViewModel.onCheckStateChange(models, checkedItemCount)
         viewModel.onActionModeChange.value = Pair(checkedItemCount, isSelectedAll)
     }
 }

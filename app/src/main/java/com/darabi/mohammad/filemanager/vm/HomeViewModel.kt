@@ -26,6 +26,4 @@ open class HomeViewModel @Inject constructor (
     fun getPrimaryExternalStorageVolume() = volumeManager.getPrimaryExternalStprageVolume().run {
         DirItem.Item(this.name, this.path, itemImageRes = PRIMARY_EXTERNAL_STORAGE_ICON)
     }
-
-    protected fun getString(@StringRes string: Int) = app.getString(string)
 }

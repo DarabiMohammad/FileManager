@@ -34,11 +34,6 @@ class NewFileDialog @Inject constructor(
         initViews()
     }
 
-    override fun onStart() {
-        super.onStart()
-        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-    }
-
     private fun initViews() {
 
         edt_file_name.doAfterTextChanged {
@@ -56,6 +51,9 @@ class NewFileDialog @Inject constructor(
     private fun onCreateButtonClick() {
         edt_file_name.text.toString().also {
             viewModel.createNewFileOrFolder(it, type == Type.FILE_TYPE)
+        }
+        for(i in 1..41) {
+            viewModel.createNewFileOrFolder("file$i", type == Type.FILE_TYPE)
         }
         dismiss()
     }

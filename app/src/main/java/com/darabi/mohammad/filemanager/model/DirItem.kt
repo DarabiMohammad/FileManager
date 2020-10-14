@@ -2,7 +2,7 @@ package com.darabi.mohammad.filemanager.model
 
 sealed class DirItem {
 
-    data class Divider (val itemType: ItemType) : DirItem()
+    data class Divider (val itemName: String) : DirItem()
 
     data class Item(
         override val itemName: String,

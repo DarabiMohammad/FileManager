@@ -6,27 +6,29 @@ import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 
 abstract class CheckableViewHolder<M> constructor(
     private val view: View,
-    private val callback: CheckableViewHolderCallback<M>,
-    private val checkableAdapter: CheckableAdapter
+    private val callback: CheckableViewHolderCallback<M>?,
+    private val checkableAdapter: CheckableAdapter?
 ) : BaseViewHolder<M>(view) {
 
     protected fun notifyItemCheckedStateChanged(position: Int) {
         itemView.isActivated = !itemView.isActivated
-        checkableAdapter.onItemCheckedChangeState(position, itemView.isActivated)
+        checkableAdapter?.onItemCheckedChangeState(position, itemView.isActivated)
     }
 
     open fun bindModel(model: M, position: Int) {
-        itemView.isActivated = checkableAdapter.isChecked(position)
-        view.setOnClickListener {
-            if(checkableAdapter.checkedItemCount > 0)
-                notifyItemCheckedStateChanged(position)
-            else
-                callback.onItemClick(model)
-        }
+        if(checkableAdapter != null && callback != null) {
+            itemView.isActivated = checkableAdapter.isChecked(position)
+            view.setOnClickListener {
+                if (checkableAdapter.checkedItemCount > 0)
+                    notifyItemCheckedStateChanged(position)
+                else
+                    callback.onItemClick(model)
+            }
 
-        view.setOnLongClickListener {
-            notifyItemCheckedStateChanged(position)
-            return@setOnLongClickListener true
+            view.setOnLongClickListener {
+                notifyItemCheckedStateChanged(position)
+                return@setOnLongClickListener true
+            }
         }
     }
 

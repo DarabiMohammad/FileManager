@@ -13,7 +13,7 @@ class DrawerViewHolder constructor(
     val callback: OnDrawerItemClickListener?
 ) : BaseViewHolder<DrawerItem>(view) {
 
-    private val title: TextView = view.findViewById<TextView>(R.id.txt_nav_item_name)
+    private val title: TextView = view.findViewById(R.id.txt_nav_item_name)
     private val icon: ImageView = view.findViewById(R.id.img_nav_item_icon)
 
     override fun bindModel(model: DrawerItem) {

@@ -24,7 +24,7 @@ class DrawerRecyclerAdapter @Inject constructor() : BaseAdapter<DrawerItem, Base
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<DrawerItem> =
         if(viewType == dividerViewType)
-            DrawerDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_divider))
+            DrawerDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_nav_divider))
         else
             DrawerViewHolder(inflateLayout(parent, R.layout.rcv_item_nav_drawer), callback)
 }

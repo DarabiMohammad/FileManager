@@ -81,26 +81,52 @@ class VolumeManager @Inject constructor (
         return volumes
     }
 
-    private fun getSubFilesAndDirs(path: String): ArrayList<Volume> {
-        val volumes = arrayListOf<Volume>()
-        val currentFile = File(path)
-        val files: Array<File>
-        try {
-            files = currentFile.listFiles()!!
-        } catch (exception: NullPointerException) {
-            //todo  this exception means that storage R/W permission check must happen
-            throw VolumeManagerException("Attemped Call To Null Refrence In : ${exception.stackTrace[0].methodName}")
-        }
-        if(currentFile.isAbsolute) {
-            for(file in files) {
-                volumes.add(Volume(getDirName(file.path), file.path, file.isFile, file.isHidden))
+    private fun getSubFilesAndDirs(path: String): Pair<ArrayList<Volume>, ArrayList<Volume>> {
+        val files = arrayListOf<Volume>()
+        val folders = arrayListOf<Volume>()
+        if(File(path).isAbsolute) {
+            getFiles(path).forEach {
+                files.add(Volume(getDirName(it.path), it.path, it.isFile, it.isHidden))
+            }
+            getFolders(path).forEach {
+                folders.add(Volume(getDirName(it.path), it.path, it.isFile, it.isHidden))
             }
         }
-        return volumes
+        return Pair(folders, files)
+    }
+
+    private fun getFilesList(path: String) = try {
+        File(path).listFiles()!!.sorted().toTypedArray()
+    } catch (exception: java.lang.NullPointerException) {
+        throw VolumeManagerException("Permission Denied For Access To : ${exception.stackTrace[0].methodName}")
+    }
+
+    private fun getFolders(path: String):ArrayList<File> {
+        val files = arrayListOf<File>()
+        getFilesList(path).forEach {
+            if(it.isDirectory) files.add(it)
+        }
+        return files
+    }
+
+    private fun getFiles(path: String): ArrayList<File> {
+        val files = arrayListOf<File>()
+        getFilesList(path).forEach {
+            if(it.isFile) files.add(it)
+        }
+        return files
     }
 
     private fun getCategoryFiles(path: String): ArrayList<Volume> {
         return arrayListOf(getVolume("",""))
+    }
+
+    private fun purgeDirectory(path: String) {
+        for (file in getFiles(path)) {
+            if(file.isDirectory)
+                purgeDirectory(file.path)
+            file.delete()
+        }
     }
 
     fun getPrimaryExternalStprageVolume() =
@@ -112,13 +138,14 @@ class VolumeManager @Inject constructor (
         else
             getLegacyVolumes()
 
-    fun getSubDirectoriesPath(path: String): ArrayList<Volume> =
+    fun getSubDirectoriesPath(path: String): Pair<ArrayList<Volume>, ArrayList<Volume>> =
         try {
             getSubFilesAndDirs(path)
         } catch (exception: VolumeManagerException) {
             throw exception
         } catch (exception: Exception) {
-            getCategoryFiles(path)
+            throw exception
+//            getCategoryFiles(path)
         }
 
     fun createFileOrFolder(name: String, isFile: Boolean): Volume? {
@@ -129,13 +156,13 @@ class VolumeManager @Inject constructor (
         return if (isCreated) Volume(getDirName(name), name, newFile.isFile, newFile.isHidden) else null
     }
 
+    fun delete(path: String) = File(path).delete()
+
     fun onDestroy() {
 //        application.unregisterReceiver(otgReceiver)
     }
 
-    data class Volume internal constructor(
-        val name: String, val path: String, val isFile: Boolean, val isHidden: Boolean
-    )
+    data class Volume internal constructor(val name: String, val path: String, val isFile: Boolean, val isHidden: Boolean)
 
     data class VolumeManagerException internal constructor(override val message: String) : Throwable()
 }
