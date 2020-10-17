@@ -24,6 +24,7 @@ class DirsListViewModel @Inject constructor (
     var checkedItemCount = 0
     var currentPath = EMPTY_STRING
     val fileOrFolderCreation = MutableLiveData<DirItem.Item>()
+
     val deletePercentage = MutableLiveData<Int>()
     private var percentage = 0
 

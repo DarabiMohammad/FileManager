@@ -1,5 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.fragment
 
+import android.os.Bundle
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.vm.AppManagerViewModel
@@ -11,4 +12,11 @@ class AppManagerFragment @Inject constructor(
 
     override val TAG: String get() = this.javaClass.simpleName
     override val viewModel: AppManagerViewModel get() = appManagerViewModel
+
+    override fun saveUiState(bundle: Bundle) {
+
+    }
+
+    override fun retrieveUiState(bundle: Bundle) {
+    }
 }

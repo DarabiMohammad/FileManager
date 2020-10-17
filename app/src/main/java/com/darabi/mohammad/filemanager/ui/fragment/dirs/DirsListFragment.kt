@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
@@ -20,7 +21,9 @@ import com.darabi.mohammad.filemanager.vm.DirsListViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DirsListFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val deleteDialog: DeleteDialog,
@@ -32,17 +35,29 @@ class DirsListFragment @Inject constructor (
     override val TAG: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private companion object {
+        const val FIRST_COMPLETELY_VISIBLE_ITEM_POSITION = "first_completely_visible_item_position"
+    }
 
+    override fun saveUiState(bundle: Bundle) {
+        bundle.putInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION, firstVisibleItemPosition())
+    }
+
+    override fun retrieveUiState(bundle: Bundle) {
+        rcv_dirs.layoutManager?.scrollToPosition(bundle.getInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION))
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeViewModel()
         initViews()
+
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initViews() {
         btn_fab.setOnClickListener(this)
         adapter.adapterCallback = this
-        rcv_dirs.adapter = adapter
+        if(rcv_dirs.adapter == null) rcv_dirs.adapter = adapter
     }
 
     private fun observeViewModel() {
@@ -53,6 +68,8 @@ class DirsListFragment @Inject constructor (
 
         dirsListViewModel.fileOrFolderCreation.observe(viewLifecycleOwner, { adapter.updateSource(it) })
     }
+
+    private fun firstVisibleItemPosition(): Int = (rcv_dirs.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
     private fun getSubDirs(path: String) = try {
         dirsListViewModel.getSubFiles(path).apply {

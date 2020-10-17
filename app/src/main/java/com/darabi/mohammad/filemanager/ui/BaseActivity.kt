@@ -11,10 +11,26 @@ import kotlin.system.exitProcess
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    private lateinit var bundle: Bundle
-
     protected companion object {
         const val OPEN_APP_INFO_CODE = 0
+    }
+
+    private val bundle by lazy { Bundle() }
+
+    abstract fun saveUiState(uiState: Bundle)
+
+    abstract fun retrieveUiState(uiState: Bundle)
+
+    override fun onResume() {
+        super.onResume()
+
+//        retrieveUiState(bundle)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+//        saveUiState(bundle)
     }
 
     protected fun closeApp() {

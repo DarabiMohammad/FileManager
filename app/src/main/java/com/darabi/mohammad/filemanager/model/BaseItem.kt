@@ -6,8 +6,7 @@ enum class ItemType {
     DRAWER_ITEM_STORAGE,
     DRAWER_ITEM_OTHER,
     LIST_FOLDER_ITEM,
-    LIST_FILE_ITEM,
-    LIST_DIVIDER
+    LIST_FILE_ITEM
 }
 
 interface BaseItem {

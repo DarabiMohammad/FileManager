@@ -84,14 +84,9 @@ class VolumeManager @Inject constructor (
     private fun getSubFilesAndDirs(path: String): Pair<ArrayList<Volume>, ArrayList<Volume>> {
         val files = arrayListOf<Volume>()
         val folders = arrayListOf<Volume>()
-        if(File(path).isAbsolute) {
-            getFiles(path).forEach {
-                files.add(Volume(getDirName(it.path), it.path, it.isFile, it.isHidden))
-            }
-            getFolders(path).forEach {
-                folders.add(Volume(getDirName(it.path), it.path, it.isFile, it.isHidden))
-            }
-        }
+        if(!File(path).isAbsolute) throw VolumeManagerException("path must be absolute!")
+        getFiles(path).forEach { files.add(Volume(getDirName(it.path), it.path, it.isFile, it.isHidden)) }
+        getFolders(path).forEach { folders.add(Volume(getDirName(it.path), it.path, it.isFile, it.isHidden)) }
         return Pair(folders, files)
     }
 

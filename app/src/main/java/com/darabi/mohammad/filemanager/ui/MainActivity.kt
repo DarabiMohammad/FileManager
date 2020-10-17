@@ -1,9 +1,7 @@
 package com.darabi.mohammad.filemanager.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,11 +31,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 import kotlinx.android.synthetic.main.layout_toolbar.view.*
 import javax.inject.Inject
-import kotlin.system.exitProcess
 
 class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     View.OnClickListener, PermissionManager.PermissionCallback,
     CompoundButton.OnCheckedChangeListener {
+
+    private companion object {
+        const val TOOLBAR_TITLE = "toolbar_title"
+    }
 
     @Inject
     internal lateinit var injector: DispatchingAndroidInjector<Any>
@@ -67,11 +68,19 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     @Inject
     internal lateinit var permissionManager: PermissionManager
 
+    override fun saveUiState(uiState: Bundle) {
+        uiState.putString(TOOLBAR_TITLE, toolbar.title.toString())
+    }
+
+    override fun retrieveUiState(uiState: Bundle) {
+        toolbar.title = uiState.getString(TOOLBAR_TITLE)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        super.onCreate(savedInstanceState)
 
         initView()
         observeViewModel()
@@ -81,7 +90,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     private fun initView() {
 
         // initializing toolbar
-        layout_toolbar.visibility = View.VISIBLE
+        layout_toolbar.fadeIn()
         setSupportActionBar(toolbar)
         layout_toolbar.img_toggle.setOnClickListener(this)
         txt_toolbar_delete.setOnClickListener(this)

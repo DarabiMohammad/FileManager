@@ -9,7 +9,9 @@ import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 import com.darabi.mohammad.filemanager.view.vh.dir.DirsDividerViewHolder
 import com.darabi.mohammad.filemanager.view.vh.dir.DirsViewHolder
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, CheckableViewHolder<DirItem>>(),
     DirsViewHolder.DirsViewHolderCallback<DirItem> {
 
