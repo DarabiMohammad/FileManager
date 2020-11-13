@@ -49,6 +49,6 @@
     <string name="permission_detailed_description">This App Can\'t Work Without Read And Write Permission.</string>
     <string name="permission_final_description">For Allowing The App To Access To Storage Grant Storage Permission In App Info Screen, Otherwise Exit.</string>
 
-    <string name="not_found_file_error">Nothing To Show.</string>
+    <string name="not_found_file_error">Nothing To Show</string>
     <string name="simple_txt_format">".txt"</string>
 </resources>

@@ -4,6 +4,8 @@ sealed class DirItem {
 
     data class Divider (val itemName: String) : DirItem()
 
+    object Empty : DirItem()
+
     data class Item(
         override val itemName: String,
         override val itemPath: String,

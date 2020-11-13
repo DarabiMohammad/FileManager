@@ -34,21 +34,28 @@ class DirsListViewModel @Inject constructor (
     private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
     private fun prepareFileItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
-        val files = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.files)))
-        files.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FILE_ITEM, R.drawable.ic_file_black) })
-        return if(files.size == 1 && files[0] is DirItem.Divider) arrayListOf() else files
+        if(volumes.size > 0) {
+            val files = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.files)))
+            files.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FILE_ITEM, R.drawable.ic_file_black) })
+            return files
+        }
+        return arrayListOf()
     }
 
     private fun prepareFolderItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
-        val folders = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.folders)))
-        folders.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_folder_black) })
-        return if(folders.size == 1 && folders[0] is DirItem.Divider) arrayListOf() else folders
+        if(volumes.size > 0) {
+            val folders = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.folders)))
+            folders.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_folder_black) })
+            return folders
+        }
+        return arrayListOf()
     }
 
     private fun getSubDirsOrFiles(): ArrayList<DirItem> {
         val pair = volumeManager.getSubDirectoriesPath(lastPath())
         val folders = prepareFolderItems(pair.first)
         folders.addAll(prepareFileItems(pair.second))
+        if(folders.size > 4) folders.add(DirItem.Empty)
         return folders
     }
 

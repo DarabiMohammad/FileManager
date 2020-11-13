@@ -8,6 +8,7 @@ import com.darabi.mohammad.filemanager.view.adapter.checkable.BaseCheckableAdapt
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 import com.darabi.mohammad.filemanager.view.vh.dir.DirsDividerViewHolder
 import com.darabi.mohammad.filemanager.view.vh.dir.DirsViewHolder
+import com.darabi.mohammad.filemanager.view.vh.dir.EmptyViewHolder
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,19 +17,21 @@ class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, 
     DirsViewHolder.DirsViewHolderCallback<DirItem> {
 
     private val dividerViewType = 1
+    private val emptyViewHolderType = 2
 
     override lateinit var adapterCallback: CheckableAdapterCallback<DirItem>
 
-    override fun getItemViewType(position: Int): Int =
-        if(objects[position] is DirItem.Divider)
-            dividerViewType
-        else 0
+    override fun getItemViewType(position: Int): Int = when {
+        objects[position] is DirItem.Divider -> dividerViewType
+        objects[position] is DirItem.Empty -> emptyViewHolderType
+        else -> 0
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<DirItem> =
-        if(viewType == dividerViewType)
-            DirsDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
-        else
-            DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this, this)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<DirItem> = when (viewType) {
+        dividerViewType -> DirsDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
+        emptyViewHolderType -> EmptyViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_empty))
+        else -> DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this, this)
+    }
 
     override fun onRenameClick(model: DirItem) = adapterCallback.onRenameClick(model)
 
