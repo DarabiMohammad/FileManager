@@ -79,8 +79,8 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
-        setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         initView()
         observeViewModel()
