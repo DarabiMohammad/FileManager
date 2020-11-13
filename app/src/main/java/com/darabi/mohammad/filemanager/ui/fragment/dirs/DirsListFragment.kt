@@ -2,7 +2,10 @@ package com.darabi.mohammad.filemanager.ui.fragment.dirs
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.darabi.mohammad.filemanager.R
@@ -62,7 +65,7 @@ class DirsListFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        viewModel.onItemClicke.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
+        viewModel.onItemClick.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
 
         viewModel.onDeleteClicked.observe(viewLifecycleOwner, { /*showDeleteDialog()*/ })
 
@@ -110,12 +113,17 @@ class DirsListFragment @Inject constructor (
             getSubDirs(model.itemPath)
     }
 
-    override fun onMoreOptionClick(model: DirItem) {
-        Log.d("test", "=========onMoreOptionClick")
-    }
-
     override fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int, isSelectedAll: Boolean) {
         dirsListViewModel.onCheckStateChange(models, checkedItemCount)
         viewModel.onActionModeChange.value = Pair(checkedItemCount, isSelectedAll)
+    }
+
+    override fun onRenameClick(model: DirItem) {
+    }
+
+    override fun onEncryptClick(model: DirItem) {
+    }
+
+    override fun onDetailsClick(model: DirItem) {
     }
 }

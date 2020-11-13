@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/rename"
+        android:title="@string/rename"/>
+
+    <item
+        android:id="@+id/encrypt"
+        android:title="@string/encrypt"/>
+
+    <item
+        android:id="@+id/details"
+        android:title="@string/details"/>
+</menu>

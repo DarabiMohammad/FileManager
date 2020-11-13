@@ -45,6 +45,6 @@ class DrawerFragment @Inject constructor(
     }
 
     override fun onDrawerItemClick(item: DrawerItem.Item) {
-        viewModel.onItemClicke.value = item
+        viewModel.onItemClick.value = item
     }
 }

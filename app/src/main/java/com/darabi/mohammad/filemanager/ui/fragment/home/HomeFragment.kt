@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.fragment.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -48,6 +47,6 @@ class HomeFragment @Inject constructor(
     }
 
     override fun onVolumeClick(volume: DirItem.Item) {
-        viewModel.onItemClicke.value = volume
+        viewModel.onItemClick.value = volume
     }
 }

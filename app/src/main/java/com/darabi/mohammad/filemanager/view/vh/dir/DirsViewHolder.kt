@@ -1,8 +1,11 @@
 package com.darabi.mohammad.filemanager.view.vh.dir
 
+import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
@@ -24,10 +27,21 @@ class DirsViewHolder constructor(
     override fun bindModel(model: DirItem, position: Int) {
         if(model is DirItem.Item) {
             super.bindModel(model, position)
-            //todo add separate view holder for dividing items
             title.text = model.itemName
             image.setOnClickListener { notifyItemCheckedStateChanged(position) }
-            imageMore.setOnClickListener { viewHolderCallback.onMoreOptionClick(model) }
+            imageMore.setOnClickListener {
+                val popupMenu = PopupMenu(it.context, imageMore, Gravity.END)
+                popupMenu.inflate(R.menu.menu_dir_item)
+                popupMenu.setOnMenuItemClickListener {menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.rename -> viewHolderCallback.onRenameClick(model)
+                        R.id.encrypt -> viewHolderCallback.onEncryptClick(model)
+                        R.id.details -> viewHolderCallback.onDetailsClick(model)
+                    }
+                    true
+                }
+                popupMenu.show()
+            }
             glide.asDrawable().load(model.itemImageRes).into(image)
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }
@@ -35,6 +49,8 @@ class DirsViewHolder constructor(
 
     interface DirsViewHolderCallback<M> : CheckableViewHolderCallback<M> {
 
-        fun onMoreOptionClick(model: M)
+        fun onRenameClick(model: M)
+        fun onEncryptClick(model: M)
+        fun onDetailsClick(model: M)
     }
 }

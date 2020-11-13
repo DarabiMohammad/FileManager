@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.viewModels
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.darabi.mohammad.filemanager.R
@@ -34,7 +35,7 @@ import javax.inject.Inject
 
 class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     View.OnClickListener, PermissionManager.PermissionCallback,
-    CompoundButton.OnCheckedChangeListener {
+    CompoundButton.OnCheckedChangeListener, PopupMenu.OnMenuItemClickListener {
 
     private companion object {
         const val TOOLBAR_TITLE = "toolbar_title"
@@ -69,11 +70,11 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     internal lateinit var permissionManager: PermissionManager
 
     override fun saveUiState(uiState: Bundle) {
-        uiState.putString(TOOLBAR_TITLE, toolbar.title.toString())
+        uiState.putString(TOOLBAR_TITLE, txt_toolbar_title.text.toString())
     }
 
     override fun retrieveUiState(uiState: Bundle) {
-        toolbar.title = uiState.getString(TOOLBAR_TITLE)
+        txt_toolbar_title.text = uiState.getString(TOOLBAR_TITLE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,8 +92,8 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
         // initializing toolbar
         layout_toolbar.fadeIn()
-        setSupportActionBar(toolbar)
-        layout_toolbar.img_toggle.setOnClickListener(this)
+        img_toggle.setOnClickListener(this)
+        img_options.setOnClickListener(this)
         txt_toolbar_delete.setOnClickListener(this)
         txt_toolbar_share.setOnClickListener(this)
     }
@@ -103,7 +104,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         chb_select_all.setOnCheckedChangeListener(null)
         chb_select_all.isChecked = isSelectedAll
         chb_select_all.setOnCheckedChangeListener(this)
-        toolbar.title = checkedItemCount.toString()
+        txt_toolbar_title.text = checkedItemCount.toString()
         lockNavDrawer()
         container_more_options.fadeIn()
     }
@@ -114,12 +115,11 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         container_more_options.fadeOut()
         container_more_options.fadeOut()
         unlockNavDrawer()
-        toolbar.title = viewModel.onItemClicke.value?.itemName
+        txt_toolbar_title.text = viewModel.onItemClick.value?.itemName
     }
 
     private fun observeViewModel() {
-
-        viewModel.onItemClicke.observe(this, { performOnItemClick() })
+        viewModel.onItemClick.observe(this, { performOnItemClick() })
 
         viewModel.onPermissionDIalogDescButtonClick.observe(this, {
             when(it) {
@@ -137,7 +137,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         })
     }
 
-    private fun performOnItemClick() = when(viewModel.onItemClicke.value!!.itemType) {
+    private fun performOnItemClick() = when(viewModel.onItemClick.value!!.itemType) {
         ItemType.DRAWER_ITEM_OTHER -> onDrawerOtherItemClick()
         ItemType.DRAWER_ITEM_STORAGE -> onDrawerCategoryItemClick()
         ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
@@ -145,9 +145,9 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     }
 
     private fun onDrawerOtherItemClick() {
-        val drawerItemName = viewModel.onItemClicke.value!!.itemName
+        val drawerItemName = viewModel.onItemClick.value!!.itemName
         val destinationFragment = if (drawerItemName == getString(R.string.settings)) settingsFragment else appManagerFragment
-        toolbar.title = drawerItemName
+        txt_toolbar_title.text = drawerItemName
         navigateTo(fragment = destinationFragment, addToBackstack = true)
         closeNavDrawer()
     }
@@ -159,6 +159,13 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
     private fun onDirectoryClick() =
         permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+
+    private fun onOptionsClick() {
+        val popupMenu = PopupMenu(this, img_options, GravityCompat.END)
+        popupMenu.setOnMenuItemClickListener(this)
+        popupMenu.inflate(R.menu.menu_selected_items)
+        popupMenu.show()
+    }
 
     private fun openNavDrawer() = layout_drawer.openDrawer(GravityCompat.START)
 
@@ -175,6 +182,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     override fun onClick(view: View?) =
         when(view?.id) {
             R.id.img_toggle -> openNavDrawer()
+            R.id.img_options -> onOptionsClick()
             R.id.txt_toolbar_delete -> delete()
             R.id.txt_toolbar_share -> {}
             else -> {}
@@ -196,9 +204,8 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         }
     }
 
-    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) {
+    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =
         dialogPermissionDescription.show(supportFragmentManager, dialogPermissionDescription.TAG)
-    }
 
     override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
         if(permissionGroup is PermissionManager.Permissions.Storage)
@@ -212,16 +219,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.selected_items_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.add_short_cut -> {}
-            R.id.hide -> {}
-            else -> {}
-        }
+        menuInflater.inflate(R.menu.menu_selected_items, menu)
         return true
     }
 
@@ -235,5 +233,14 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == OPEN_APP_INFO_CODE)
             permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.add_short_cut -> {}
+            R.id.hide -> {}
+            else -> {}
+        }
+        return true
     }
 }

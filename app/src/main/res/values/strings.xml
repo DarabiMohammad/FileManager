@@ -13,6 +13,10 @@
     <string name="cancel">Cancel</string>
     <string name="files">Files</string>
     <string name="folders">Folders</string>
+    <string name="encrypt">Encrypt</string>
+    <string name="decrypt">Decrypt</string>
+    <string name="rename">Rename</string>
+    <string name="details">Details</string>
 
     <string name="storage">Storage</string>
     <string name="internal_storage">Phone Internal Storage</string>

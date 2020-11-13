@@ -24,11 +24,17 @@ class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, 
             dividerViewType
         else 0
 
-    override fun onMoreOptionClick(model: DirItem) = adapterCallback.onMoreOptionClick(model)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<DirItem> =
         if(viewType == dividerViewType)
             DirsDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
         else
             DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this, this)
+
+    override fun onRenameClick(model: DirItem) = adapterCallback.onRenameClick(model)
+
+    override fun onEncryptClick(model: DirItem) = adapterCallback.onEncryptClick(model)
+
+    override fun onDetailsClick(model: DirItem) = adapterCallback.onDetailsClick(model)
+
+//    interface DirsAdapterCallback<M> : CheckableAdapterCallback<M>, DirsViewHolder.DirsViewHolderCallback<M>
 }

@@ -14,7 +14,7 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
     override var checkedItemCount: Int = 0
 
-    val selectedModelIds = arrayListOf<Int>()
+    private val selectedModelIds = arrayListOf<Int>()
 
     private val selectedModels = arrayListOf<O>()
 
@@ -66,7 +66,11 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
         fun onItemClick(model: M)
 
-        fun onMoreOptionClick(model: M)
+        fun onRenameClick(model: M)
+
+        fun onEncryptClick(model: M)
+
+        fun onDetailsClick(model: M)
 
         fun onCheckStateChange(models: List<M>, checkedItemCount: Int, isSelectedAll: Boolean)
     }
