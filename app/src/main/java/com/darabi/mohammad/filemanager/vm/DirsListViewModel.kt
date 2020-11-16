@@ -74,8 +74,10 @@ class DirsListViewModel @Inject constructor (
     }
 
     fun getSubFiles(path: String): ArrayList<DirItem> {
-        currentPath = if(path != currentPath) "$currentPath$pathSeparator$path" else path
-        currentPath = if(currentPath.startsWith(pathSeparator)) currentPath.removePrefix(pathSeparator) else currentPath
+        if(path != lastPath()) {
+            currentPath = if (path != currentPath) "$currentPath$pathSeparator$path" else path
+            currentPath = if (currentPath.startsWith(pathSeparator)) currentPath.removePrefix(pathSeparator) else currentPath
+        }
         return getSubDirsOrFiles()
     }
 

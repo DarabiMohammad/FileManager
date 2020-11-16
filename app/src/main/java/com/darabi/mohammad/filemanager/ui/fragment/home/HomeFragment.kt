@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.ui.fragment.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -14,19 +15,16 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
 
 class HomeFragment @Inject constructor(
-    internal val howeViewModel: HomeViewModel,
-    private val adapter: HomwRecyclerAdapter
+        private val howeViewModel: HomeViewModel,
+        private val adapter: HomwRecyclerAdapter
 ) : BaseFragment(R.layout.fragment_home), OnHoneVolumeItemsClickListener {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
 
-    override fun saveUiState(bundle: Bundle) {
+    override fun saveUiState(bundle: Bundle) {}
 
-    }
-
-    override fun retrieveUiState(bundle: Bundle) {
-    }
+    override fun retrieveUiState(bundle: Bundle) {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,4 +47,5 @@ class HomeFragment @Inject constructor(
     override fun onVolumeClick(volume: DirItem.Item) {
         viewModel.onItemClick.value = volume
     }
+
 }

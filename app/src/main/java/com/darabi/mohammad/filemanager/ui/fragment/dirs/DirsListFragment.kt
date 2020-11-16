@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
@@ -35,7 +36,7 @@ class DirsListFragment @Inject constructor (
 ) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener,
     BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
 
     private companion object {
@@ -44,16 +45,21 @@ class DirsListFragment @Inject constructor (
 
     override fun saveUiState(bundle: Bundle) {
         bundle.putInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION, firstVisibleItemPosition())
+
     }
 
     override fun retrieveUiState(bundle: Bundle) {
         rcv_dirs.layoutManager?.scrollToPosition(bundle.getInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION))
+        if(dirsListViewModel.currentPath.isNotEmpty()) {
+            viewModel.onItemClick.removeObservers(viewLifecycleOwner)
+            getSubDirs(dirsListViewModel.currentPath)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         observeViewModel()
         initViews()
-
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -65,7 +71,12 @@ class DirsListFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        viewModel.onItemClick.observe(viewLifecycleOwner, { getSubDirs(it.itemPath) })
+        viewModel.onItemClick.observe(viewLifecycleOwner, { baseItem ->
+            baseItem?.let {
+                if(it.itemType == ItemType.DRAWER_ITEM_OTHER) return@observe
+                getSubDirs(it.itemPath)
+            }
+        })
 
         viewModel.onDeleteClicked.observe(viewLifecycleOwner, { /*showDeleteDialog()*/ })
 
@@ -84,6 +95,7 @@ class DirsListFragment @Inject constructor (
     } catch (exception: VolumeManager.VolumeManagerException) {
         dirsListViewModel.currentPath = EMPTY_STRING
         activity?.supportFragmentManager?.popBackStack()
+        viewModel.onItemClick.value = null
     }
 
     private fun onFabClick(fileCreationDialog: Boolean) = newFileDialog.also {

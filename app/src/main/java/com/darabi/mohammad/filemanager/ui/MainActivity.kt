@@ -2,7 +2,6 @@ package com.darabi.mohammad.filemanager.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -30,7 +29,6 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
-import kotlinx.android.synthetic.main.layout_toolbar.view.*
 import javax.inject.Inject
 
 class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
@@ -137,18 +135,18 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         })
     }
 
-    private fun performOnItemClick() = when(viewModel.onItemClick.value!!.itemType) {
-        ItemType.DRAWER_ITEM_OTHER -> onDrawerOtherItemClick()
+    private fun performOnItemClick() = when(viewModel.onItemClick.value?.itemType) {
+        ItemType.DRAWER_ITEM_OTHER -> onOtherDrawerItemClick()
         ItemType.DRAWER_ITEM_STORAGE -> onDrawerCategoryItemClick()
         ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
         else -> {}
     }
 
-    private fun onDrawerOtherItemClick() {
+    private fun onOtherDrawerItemClick() {
         val drawerItemName = viewModel.onItemClick.value!!.itemName
         val destinationFragment = if (drawerItemName == getString(R.string.settings)) settingsFragment else appManagerFragment
         txt_toolbar_title.text = drawerItemName
-        navigateTo(fragment = destinationFragment, addToBackstack = true)
+        navigateTo(fragment = destinationFragment, addToBackStack = true)
         closeNavDrawer()
     }
 
@@ -209,7 +207,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
     override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
         if(permissionGroup is PermissionManager.Permissions.Storage)
-            navigateTo(fragment = dirsListFragment, addToBackstack = true)
+            navigateTo(fragment = dirsListFragment, addToBackStack = true)
     }
 
     override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
@@ -218,16 +216,10 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
         dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_selected_items, menu)
-        return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
         if(permissionManager.isPermissionsGrant(grantResults))
-            navigateTo(fragment = dirsListFragment, addToBackstack = true)
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+            navigateTo(fragment = dirsListFragment, addToBackStack = true)
+        else super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

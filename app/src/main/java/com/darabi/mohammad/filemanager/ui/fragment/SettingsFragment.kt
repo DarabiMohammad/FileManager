@@ -10,7 +10,7 @@ class SettingsFragment @Inject constructor(
     private val settingsViewModel: SettingsViewModel
 ) : BaseFragment(R.layout.fragment_settings) {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: SettingsViewModel get() = settingsViewModel
 
     override fun saveUiState(bundle: Bundle) {

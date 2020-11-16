@@ -7,7 +7,7 @@ import com.darabi.mohammad.filemanager.vm.BaseViewModel
 
 abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
-    abstract val TAG: String
+    abstract val fragmentTag: String
 
     abstract val  viewModel: BaseViewModel
 
@@ -18,14 +18,14 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
     private val uiState by lazy { Bundle() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         retrieveUiState(uiState)
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onPause() {
-        super.onPause()
 
         saveUiState(uiState)
+        super.onPause()
     }
 }

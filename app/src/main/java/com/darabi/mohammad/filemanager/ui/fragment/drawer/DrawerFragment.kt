@@ -18,7 +18,7 @@ class DrawerFragment @Inject constructor(
     private val adapter: DrawerRecyclerAdapter
 ) : BaseFragment(R.layout.fragment_drawer), OnDrawerItemClickListener {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
 
     override fun saveUiState(bundle: Bundle) {

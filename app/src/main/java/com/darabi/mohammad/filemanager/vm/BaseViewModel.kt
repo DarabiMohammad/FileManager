@@ -8,7 +8,7 @@ import com.darabi.mohammad.filemanager.model.BaseItem
 
 abstract class BaseViewModel constructor(private val app: Application) : AndroidViewModel(app) {
 
-    val onItemClick = MutableLiveData<BaseItem>()
+    val onItemClick = MutableLiveData<BaseItem?>()
 
     protected fun getString(@StringRes string: Int) = app.getString(string)
 }
