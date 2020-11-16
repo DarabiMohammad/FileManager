@@ -1,16 +1,12 @@
 package com.darabi.mohammad.filemanager.ui.fragment.dirs
 
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.DirItem
-import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
@@ -50,10 +46,6 @@ class DirsListFragment @Inject constructor (
 
     override fun retrieveUiState(bundle: Bundle) {
         rcv_dirs.layoutManager?.scrollToPosition(bundle.getInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION))
-        if(dirsListViewModel.currentPath.isNotEmpty()) {
-            viewModel.onItemClick.removeObservers(viewLifecycleOwner)
-            getSubDirs(dirsListViewModel.currentPath)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,10 +64,7 @@ class DirsListFragment @Inject constructor (
     private fun observeViewModel() {
 
         viewModel.onItemClick.observe(viewLifecycleOwner, { baseItem ->
-            baseItem?.let {
-                if(it.itemType == ItemType.DRAWER_ITEM_OTHER) return@observe
-                getSubDirs(it.itemPath)
-            }
+            baseItem?.let { getSubDirs(it) }
         })
 
         viewModel.onDeleteClicked.observe(viewLifecycleOwner, { /*showDeleteDialog()*/ })
@@ -85,8 +74,8 @@ class DirsListFragment @Inject constructor (
 
     private fun firstVisibleItemPosition(): Int = (rcv_dirs.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
-    private fun getSubDirs(path: String) = try {
-        dirsListViewModel.getSubFiles(path).apply {
+    private fun getSubDirs(item: BaseItem) = try {
+        dirsListViewModel.getSubFiles(item).apply {
             if(this.isEmpty()) rcv_dirs.fadeOut() else {
                 rcv_dirs.fadeIn()
                 adapter.setSource(this)
@@ -108,7 +97,7 @@ class DirsListFragment @Inject constructor (
         if(adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE)
             adapter.clearSelections()
         else
-            getSubDirs(dirsListViewModel.removeLastPath())
+            viewModel.onItemClick.value = dirsListViewModel.previousPath()
     }
 
     fun selectAll() = adapter.selectAll()
@@ -121,8 +110,7 @@ class DirsListFragment @Inject constructor (
     }
 
     override fun onItemClick(model: DirItem) {
-        if (model is DirItem.Item)
-            getSubDirs(model.itemPath)
+        if (model is DirItem.Item) viewModel.onItemClick.value = model
     }
 
     override fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int, isSelectedAll: Boolean) {

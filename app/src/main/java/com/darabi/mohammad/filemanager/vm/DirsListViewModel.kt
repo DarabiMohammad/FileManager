@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.util.EMPTY_STRING
@@ -32,6 +33,8 @@ class DirsListViewModel @Inject constructor (
         DirItem.Item(volume.name, volume.path, if(volume.isFile) ItemType.LIST_FILE_ITEM else ItemType.LIST_FOLDER_ITEM)
 
     private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
+
+    private fun lastDirName(): String = lastPath().substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
     private fun prepareFileItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
         if(volumes.size > 0) {
@@ -67,15 +70,16 @@ class DirsListViewModel @Inject constructor (
 
     private fun getSelectedItemPaths(): List<String> = selectedItems.map { (it as DirItem.Item).itemPath }
 
-    fun removeLastPath(): String {
-        if(!currentPath.contains(pathSeparator)) return EMPTY_STRING
-        currentPath = currentPath.substring(currentPath.indexOf(File.separator), currentPath.lastIndexOf(pathSeparator))
-        return currentPath
+    fun previousPath(): DirItem.Item {
+        currentPath = if(!currentPath.contains(pathSeparator))
+            EMPTY_STRING
+        else currentPath.substring(currentPath.indexOf(File.separator), currentPath.lastIndexOf(pathSeparator))
+        return DirItem.Item(lastDirName(), currentPath, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_settings_black)
     }
 
-    fun getSubFiles(path: String): ArrayList<DirItem> {
-        if(path != lastPath()) {
-            currentPath = if (path != currentPath) "$currentPath$pathSeparator$path" else path
+    fun getSubFiles(item: BaseItem): ArrayList<DirItem> {
+        if(item.itemPath != lastPath()) {
+            currentPath = if (item.itemPath != currentPath) "$currentPath$pathSeparator${item.itemPath}" else item.itemPath
             currentPath = if (currentPath.startsWith(pathSeparator)) currentPath.removePrefix(pathSeparator) else currentPath
         }
         return getSubDirsOrFiles()

@@ -137,7 +137,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
     private fun performOnItemClick() = when(viewModel.onItemClick.value?.itemType) {
         ItemType.DRAWER_ITEM_OTHER -> onOtherDrawerItemClick()
-        ItemType.DRAWER_ITEM_STORAGE -> onDrawerCategoryItemClick()
+        ItemType.DRAWER_ITEM_CATEGORY -> onDrawerCategoryItemClick()
         ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
         else -> {}
     }
