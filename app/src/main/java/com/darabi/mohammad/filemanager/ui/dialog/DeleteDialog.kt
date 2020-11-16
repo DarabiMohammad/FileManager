@@ -11,7 +11,7 @@ import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_delete.*
 import javax.inject.Inject
 
-class DeleteDialog  @Inject constructor(
+class DeleteDialog @Inject constructor(
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 
@@ -24,7 +24,6 @@ class DeleteDialog  @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-
         observeViewModel()
     }
 

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
@@ -63,8 +64,17 @@ class DirsListFragment @Inject constructor (
 
     private fun observeViewModel() {
 
+        viewModel.onBackPressed.observe(viewLifecycleOwner, {
+            if(it) {
+                if (adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE)
+                    adapter.clearSelections()
+                else
+                    viewModel.onItemClick.value = dirsListViewModel.previousPath()
+            }
+        })
+
         viewModel.onItemClick.observe(viewLifecycleOwner, { baseItem ->
-            baseItem?.let { getSubDirs(it) }
+            baseItem?.let { if(it.itemType != ItemType.DRAWER_ITEM_OTHER) getSubDirs(it) }
         })
 
         viewModel.onDeleteClicked.observe(viewLifecycleOwner, { /*showDeleteDialog()*/ })
@@ -92,13 +102,6 @@ class DirsListFragment @Inject constructor (
     }.show(childFragmentManager, newFileDialog.TAG)
 
     private fun showDeleteDialog() = deleteDialog.show(childFragmentManager, newFileDialog.TAG)
-
-    fun onBackPressed() {
-        if(adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE)
-            adapter.clearSelections()
-        else
-            viewModel.onItemClick.value = dirsListViewModel.previousPath()
-    }
 
     fun selectAll() = adapter.selectAll()
 

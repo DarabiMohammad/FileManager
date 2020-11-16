@@ -9,6 +9,9 @@ import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
+import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
+import com.darabi.mohammad.filemanager.ui.fragment.settings.AppearanceFragment
+import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -38,6 +41,11 @@ abstract class FragmentBuilderModule {
 
     @Binds
     @IntoMap
+    @FragmentKey(AppearanceFragment::class)
+    abstract fun bindAppearanceFragment(appearanceFragment: AppearanceFragment): Fragment
+
+    @Binds
+    @IntoMap
     @FragmentKey(AppManagerFragment::class)
     abstract fun bindAppManagerFragment(appManagerFragment: AppManagerFragment): Fragment
 
@@ -56,4 +64,9 @@ abstract class FragmentBuilderModule {
     @IntoMap
     @FragmentKey(DeleteDialog::class)
     abstract fun bindDeleteDialog(deleteDialog: DeleteDialog): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ThemeSelectionDialog::class)
+    abstract fun bindThemeSelectionDialog(themeSelectionDialog: ThemeSelectionDialog): Fragment
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -36,7 +37,7 @@ private fun beginTransaction(
     }.commit()
 }
 
-fun FragmentActivity.navigateTo(
+fun AppCompatActivity.navigateTo(
         @IdRes containerId: Int = R.id.container_main, fragment: Fragment,
         addToBackStack: Boolean = false, isReplace: Boolean = false
 ) {

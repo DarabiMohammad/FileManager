@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.dialog_new_file.*
 import javax.inject.Inject
 
 
-class NewFileDialog @Inject constructor(
+class NewFileDialog @Inject constructor (
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 

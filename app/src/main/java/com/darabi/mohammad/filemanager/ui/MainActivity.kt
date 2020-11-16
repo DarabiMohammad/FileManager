@@ -9,11 +9,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.bumptech.glide.manager.SupportRequestManagerFragment
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
-import com.darabi.mohammad.filemanager.ui.fragment.SettingsFragment
+import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
@@ -177,8 +178,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
     override fun androidInjector(): AndroidInjector<Any> = injector
 
-    override fun onClick(view: View?) =
-        when(view?.id) {
+    override fun onClick(view: View?) = when(view?.id) {
             R.id.img_toggle -> openNavDrawer()
             R.id.img_options -> onOptionsClick()
             R.id.txt_toolbar_delete -> delete()
@@ -195,8 +195,8 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         else {
             supportFragmentManager.fragments.last().also {
                 when(it) {
-                    is DirsListFragment -> dirsListFragment.onBackPressed()
-                    else -> super.onBackPressed()
+                    is SupportRequestManagerFragment -> super.onBackPressed()
+                    else -> viewModel.onBackPressed()
                 }
             }
         }

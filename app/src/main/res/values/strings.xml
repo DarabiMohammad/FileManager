@@ -1,7 +1,10 @@
 <resources>
+
+    <!--  system strings  -->
     <string name="app_name">File Manager</string>
     <string name="content_description">contentDescription</string>
 
+    <!--  main actions  -->
     <string name="ok">OK</string>
     <string name="exit">Exit</string>
     <string name="app_info">App Info</string>
@@ -11,18 +14,18 @@
     <string name="add_short_cut">Add Shortcut</string>
     <string name="hide">Hide</string>
     <string name="cancel">Cancel</string>
-    <string name="files">Files</string>
-    <string name="folders">Folders</string>
     <string name="encrypt">Encrypt</string>
     <string name="decrypt">Decrypt</string>
     <string name="rename">Rename</string>
     <string name="details">Details</string>
 
+    <!--  storage types  -->
     <string name="storage">Storage</string>
     <string name="internal_storage">Phone Internal Storage</string>
     <string name="sd_card">Sd Card</string>
     <string name="usb_storage">Usb</string>
 
+    <!--  file categories  -->
     <string name="category_recent_files">category_recent_files</string>
     <string name="category_images">category_images</string>
     <string name="category_videos">category_videos</string>
@@ -30,6 +33,7 @@
     <string name="category_documents">category_documents</string>
     <string name="category_apks">category_apks</string>
 
+    <!--  drawer items name  -->
     <string name="settings">Settings</string>
     <string name="app_manager">App Manager</string>
     <string name="apks">APKs</string>
@@ -45,10 +49,25 @@
     <string name="download">Download</string>
     <string name="dcim">DCIM</string>
 
+    <!--  permission warnings  -->
     <string name="permission_elementary_description">This App Needs Read And Write Permission To Work Properly.</string>
     <string name="permission_detailed_description">This App Can\'t Work Without Read And Write Permission.</string>
     <string name="permission_final_description">For Allowing The App To Access To Storage Grant Storage Permission In App Info Screen, Otherwise Exit.</string>
 
+    <!--  warnings and errors  -->
     <string name="not_found_file_error">Nothing To Show</string>
+
+    <!--  files and folders  -->
+    <string name="files">Files</string>
+    <string name="folders">Folders</string>
     <string name="simple_txt_format">".txt"</string>
+
+    <!--  settings items  -->
+    <string name="appearance">Appearance</string>
+
+    <!--  appearance stuffs  -->
+    <string name="theme">Theme</string>
+    <string name="light_theme">Light</string>
+    <string name="dark_theme">Dark</string>
+    <string name="choose_theme">Choose Theme</string>
 </resources>
