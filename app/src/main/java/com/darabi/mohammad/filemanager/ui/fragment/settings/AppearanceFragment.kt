@@ -7,10 +7,12 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.vm.MainViewModel
+import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.fragment_appearance.*
 import javax.inject.Inject
 
 class AppearanceFragment @Inject constructor(
+        private val appearanceViewModel: AppearanceViewModel,
         private val themeSelectionDialog: ThemeSelectionDialog
 ) : BaseFragment(R.layout.fragment_appearance), View.OnClickListener {
 
@@ -28,14 +30,26 @@ class AppearanceFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun observeViewModel() {}
+    override fun onClick(view: View?) = when(view?.id) {
+        R.id.container_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.TAG)
+        else -> {}
+    }
+
+    private fun observeViewModel() {
+
+        appearanceViewModel.onThemeChange.observe(viewLifecycleOwner, {
+            when(it) {
+                ThemeSelectionDialog.SelectedTheme.DARK -> onDarkThemeClick()
+                else -> onLightThemeClick()
+            }
+        })
+    }
 
     private fun initViews() {
         container_theme.setOnClickListener(this)
     }
 
-    override fun onClick(view: View?) = when(view?.id) {
-        R.id.container_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.TAG)
-        else -> {}
-    }
+    private fun onLightThemeClick() {}
+
+    private fun onDarkThemeClick() {}
 }

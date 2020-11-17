@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="8dp"
             android:button="@null"
+            android:saveEnabled="false"
             android:drawablePadding="8dp"
             android:drawableStart="?android:attr/listChoiceIndicatorSingle"
             android:text="@string/light_theme"
@@ -47,6 +48,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="8dp"
             android:button="@null"
+            android:saveEnabled="false"
             android:drawablePadding="8dp"
             android:drawableStart="?android:attr/listChoiceIndicatorSingle"
             android:text="@string/dark_theme"
@@ -54,7 +56,7 @@
 
     </RadioGroup>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

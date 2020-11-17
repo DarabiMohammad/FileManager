@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.darabi.mohammad.filemanager.di.ViewModelKey
 import com.darabi.mohammad.filemanager.vm.*
+import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
+import com.darabi.mohammad.filemanager.vm.settings.SettingsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -28,6 +30,11 @@ abstract class ViewModelBuilderModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel::class)
     abstract fun bindSettingsViewModel(settingsViewModel: SettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AppearanceViewModel::class)
+    abstract fun bindAppearanceViewModel(appearanceViewModel: AppearanceViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -3,18 +3,17 @@ package com.darabi.mohammad.filemanager.ui.fragment.settings
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.navigateTo
 import com.darabi.mohammad.filemanager.vm.MainViewModel
-import com.darabi.mohammad.filemanager.vm.SettingsViewModel
+import com.darabi.mohammad.filemanager.vm.settings.SettingsViewModel
 import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
 class SettingsFragment @Inject constructor(
-    private val settingsViewModel: SettingsViewModel,
-    private val appearanceFragment: AppearanceFragment
+        private val settingsViewModel: SettingsViewModel,
+        private val appearanceFragment: AppearanceFragment
 ) : BaseFragment(R.layout.fragment_settings), View.OnClickListener {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
