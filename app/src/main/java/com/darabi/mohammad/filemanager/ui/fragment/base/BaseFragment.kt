@@ -3,6 +3,7 @@ package com.darabi.mohammad.filemanager.ui.fragment.base
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.darabi.mohammad.filemanager.ui.MainActivity
 import com.darabi.mohammad.filemanager.vm.BaseViewModel
 
 abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
@@ -29,7 +30,5 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
         super.onPause()
     }
 
-    open fun onBackPressed() {
-        activity?.supportFragmentManager?.popBackStack()
-    }
+    open fun onBackPressed() = activity?.let { if(it is MainActivity) it.onFragmentBackPressed() }
 }

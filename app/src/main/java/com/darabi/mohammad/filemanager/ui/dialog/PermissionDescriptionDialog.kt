@@ -5,7 +5,6 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
-import com.darabi.mohammad.filemanager.vm.HomeViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_permission_description.*
@@ -54,12 +53,12 @@ class PermissionDescriptionDialog @Inject constructor(
     private fun onOkButtonClick() {
         this.dismiss()
         val buttonAction = if (type == DialogType.SETTINGS_TYPE) DialogAction.ACTION_OPEN_SETTINGS else DialogAction.ACTION_OK
-        viewModel.onPermissionDIalogDescButtonClick.value = buttonAction
+        viewModel.onPermissionDialogDescButtonClick.value = buttonAction
     }
 
     private fun onExitButtonClick() {
         this.dismiss()
-        viewModel.onPermissionDIalogDescButtonClick.value = DialogAction.ACTION_EXIT
+        viewModel.onPermissionDialogDescButtonClick.value = DialogAction.ACTION_EXIT
     }
 
     fun detailedDialog(): PermissionDescriptionDialog {

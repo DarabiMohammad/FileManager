@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.bumptech.glide.manager.SupportRequestManagerFragment
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
@@ -93,6 +92,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         // initializing toolbar
         layout_toolbar.fadeIn()
         img_toggle.setOnClickListener(this)
+        img_back.setOnClickListener(this)
         img_options.setOnClickListener(this)
         txt_toolbar_delete.setOnClickListener(this)
         txt_toolbar_share.setOnClickListener(this)
@@ -118,10 +118,20 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         txt_toolbar_title.text = viewModel.onItemClick.value?.itemName
     }
 
+    private fun showBackButton() {
+        img_toggle.fadeOut()
+        img_back.fadeIn()
+    }
+
+    private fun hideBackButton() {
+        img_toggle.fadeIn()
+        img_back.fadeOut()
+    }
+
     private fun observeViewModel() {
         viewModel.onItemClick.observe(this, { performOnItemClick() })
 
-        viewModel.onPermissionDIalogDescButtonClick.observe(this, {
+        viewModel.onPermissionDialogDescButtonClick.observe(this, {
             when(it) {
                 PermissionDescriptionDialog.DialogAction.ACTION_OK ->
                     permissionManager.requestPermissions(PermissionManager.Permissions.Storage, this)
@@ -145,6 +155,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     }
 
     private fun onOtherDrawerItemClick() {
+        showBackButton()
         val drawerItemName = viewModel.onItemClick.value!!.itemName
         val destinationFragment = if (drawerItemName == getString(R.string.settings)) settingsFragment else appManagerFragment
         txt_toolbar_title.text = drawerItemName
@@ -177,10 +188,18 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
     private fun delete() { viewModel.onDeleteClicked.value = true }
 
+    fun onFragmentBackPressed() {
+        supportFragmentManager.fragments.last().also {
+            if(it is SettingsFragment) hideBackButton()
+        }
+        supportFragmentManager.popBackStack()
+    }
+
     override fun androidInjector(): AndroidInjector<Any> = injector
 
     override fun onClick(view: View?) = when(view?.id) {
             R.id.img_toggle -> openNavDrawer()
+            R.id.img_back -> onBackPressed()
             R.id.img_options -> onOptionsClick()
             R.id.txt_toolbar_delete -> delete()
             R.id.txt_toolbar_share -> {}
@@ -193,14 +212,9 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     override fun onBackPressed() {
         if(layout_drawer.isDrawerOpen(GravityCompat.START))
             closeNavDrawer()
-        else {
-            supportFragmentManager.fragments.last().also {
-                when(it) {
-                    is BaseFragment -> it.onBackPressed()
-                    else -> super.onBackPressed()
-                }
-            }
-        }
+        else
+            (supportFragmentManager.fragments.last().takeIf { it is BaseFragment } as BaseFragment?)
+                    ?.onBackPressed() ?: super.onBackPressed()
     }
 
     override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =

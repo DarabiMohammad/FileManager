@@ -74,7 +74,6 @@ class DirsListViewModel @Inject constructor (
         currentPath = if(!currentPath.contains(pathSeparator))
             EMPTY_STRING
         else currentPath.substring(currentPath.indexOf(File.separator), currentPath.lastIndexOf(pathSeparator))
-        val s = lastDirName()
         return DirItem.Item(lastDirName(), currentPath, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_settings_black)
     }
 

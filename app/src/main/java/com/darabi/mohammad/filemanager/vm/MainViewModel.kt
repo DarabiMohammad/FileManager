@@ -15,8 +15,8 @@ class MainViewModel @Inject constructor (
     private val volumeManager: VolumeManager
 ) : BaseViewModel(app), OnRemovableStorageAttachmentistener {
 
-    val removableStorages = MutableLiveData<ArrayList<BaseItem>>()
-    val onPermissionDIalogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
+    val removableVolumes = MutableLiveData<ArrayList<BaseItem>>()
+    val onPermissionDialogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
     val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
     val onDeleteClicked = MutableLiveData<Boolean>()
 

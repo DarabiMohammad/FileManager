@@ -37,7 +37,7 @@ class DrawerFragment @Inject constructor(
     }
 
     private fun observeAndSetItems() {
-        viewModel.removableStorages.observe(viewLifecycleOwner, {
+        viewModel.removableVolumes.observe(viewLifecycleOwner, {
 //            adapter.addSource(it, FIRST_POSITION)
         })
     }
