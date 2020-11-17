@@ -34,7 +34,7 @@ class DirsListViewModel @Inject constructor (
 
     private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
-    private fun lastDirName(): String = lastPath().substring(currentPath.lastIndexOf(pathSeparator) + 1)
+    private fun lastDirName(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
     private fun prepareFileItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
         if(volumes.size > 0) {
@@ -70,10 +70,11 @@ class DirsListViewModel @Inject constructor (
 
     private fun getSelectedItemPaths(): List<String> = selectedItems.map { (it as DirItem.Item).itemPath }
 
-    fun previousPath(): DirItem.Item {
+    fun previousPath(): BaseItem {
         currentPath = if(!currentPath.contains(pathSeparator))
             EMPTY_STRING
         else currentPath.substring(currentPath.indexOf(File.separator), currentPath.lastIndexOf(pathSeparator))
+        val s = lastDirName()
         return DirItem.Item(lastDirName(), currentPath, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_settings_black)
     }
 

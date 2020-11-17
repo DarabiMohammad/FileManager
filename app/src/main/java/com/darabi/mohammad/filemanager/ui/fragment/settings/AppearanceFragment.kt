@@ -28,12 +28,7 @@ class AppearanceFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun observeViewModel() {
-
-        viewModel.onBackPressed.observe(viewLifecycleOwner, {
-            if(it) parentFragment?.childFragmentManager?.popBackStack()
-        })
-    }
+    private fun observeViewModel() {}
 
     private fun initViews() {
         container_theme.setOnClickListener(this)

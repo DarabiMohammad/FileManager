@@ -14,6 +14,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
+import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
@@ -195,8 +196,8 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         else {
             supportFragmentManager.fragments.last().also {
                 when(it) {
-                    is SupportRequestManagerFragment -> super.onBackPressed()
-                    else -> viewModel.onBackPressed()
+                    is BaseFragment -> it.onBackPressed()
+                    else -> super.onBackPressed()
                 }
             }
         }

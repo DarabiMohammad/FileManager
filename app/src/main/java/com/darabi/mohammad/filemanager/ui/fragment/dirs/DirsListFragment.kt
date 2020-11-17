@@ -56,6 +56,13 @@ class DirsListFragment @Inject constructor (
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onBackPressed() {
+        if (adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE)
+            adapter.clearSelections()
+        else
+            viewModel.onItemClick.value = dirsListViewModel.previousPath()
+    }
+
     private fun initViews() {
         btn_fab.setOnClickListener(this)
         adapter.adapterCallback = this
@@ -63,15 +70,6 @@ class DirsListFragment @Inject constructor (
     }
 
     private fun observeViewModel() {
-
-        viewModel.onBackPressed.observe(viewLifecycleOwner, {
-            if(it) {
-                if (adapter.checkedItemCount > DESTROY_SELECTION_ACTION_MODE)
-                    adapter.clearSelections()
-                else
-                    viewModel.onItemClick.value = dirsListViewModel.previousPath()
-            }
-        })
 
         viewModel.onItemClick.observe(viewLifecycleOwner, { baseItem ->
             baseItem?.let { if(it.itemType != ItemType.DRAWER_ITEM_OTHER) getSubDirs(it) }

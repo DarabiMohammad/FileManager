@@ -21,11 +21,9 @@ class DrawerFragment @Inject constructor(
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
 
-    override fun saveUiState(bundle: Bundle) {
-    }
+    override fun saveUiState(bundle: Bundle) {}
 
-    override fun retrieveUiState(bundle: Bundle) {
-    }
+    override fun retrieveUiState(bundle: Bundle) {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

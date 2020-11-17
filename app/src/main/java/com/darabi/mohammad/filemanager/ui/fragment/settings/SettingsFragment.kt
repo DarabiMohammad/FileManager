@@ -31,14 +31,13 @@ class SettingsFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun observeViewModel() {
-        viewModel.onBackPressed.observe(viewLifecycleOwner, {
-            if(it) {
-//                    childFragmentManager.popBackStack()
-                    activity?.supportFragmentManager?.popBackStack()
-            }
-        })
+    override fun onBackPressed() {
+        if(childFragmentManager.backStackEntryCount > 0)
+            childFragmentManager.popBackStack()
+        else super.onBackPressed()
     }
+
+    private fun observeViewModel() {}
 
     private fun initViews() {
         container_appearance.setOnClickListener(this)

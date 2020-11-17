@@ -11,11 +11,11 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
     abstract val  viewModel: BaseViewModel
 
+    private val uiState by lazy { Bundle() }
+
     abstract fun saveUiState(bundle: Bundle)
 
     abstract fun retrieveUiState(bundle: Bundle)
-
-    private val uiState by lazy { Bundle() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -27,5 +27,9 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
         saveUiState(uiState)
         super.onPause()
+    }
+
+    open fun onBackPressed() {
+        activity?.supportFragmentManager?.popBackStack()
     }
 }
