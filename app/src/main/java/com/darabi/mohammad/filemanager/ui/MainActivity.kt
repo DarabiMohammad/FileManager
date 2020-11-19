@@ -2,6 +2,7 @@ package com.darabi.mohammad.filemanager.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -33,12 +34,8 @@ import kotlinx.android.synthetic.main.layout_toolbar.*
 import javax.inject.Inject
 
 class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
-    View.OnClickListener, PermissionManager.PermissionCallback,
+    View.OnClickListener, PermissionManager.PermissionManagerCallback,
     CompoundButton.OnCheckedChangeListener, PopupMenu.OnMenuItemClickListener {
-
-    private companion object {
-        const val TOOLBAR_TITLE = "toolbar_title"
-    }
 
     @Inject
     internal lateinit var injector: DispatchingAndroidInjector<Any>
@@ -68,14 +65,6 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     @Inject
     internal lateinit var permissionManager: PermissionManager
 
-    override fun saveUiState(uiState: Bundle) {
-        uiState.putString(TOOLBAR_TITLE, txt_toolbar_title.text.toString())
-    }
-
-    override fun retrieveUiState(uiState: Bundle) {
-        txt_toolbar_title.text = uiState.getString(TOOLBAR_TITLE)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -85,6 +74,72 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         initView()
         observeViewModel()
         navigateTo(fragment = homeFragment, isReplace = true)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("test","=======================onSaveInstanceState")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d("test","=======================onRestoreInstanceState")
+    }
+
+    override fun androidInjector(): AndroidInjector<Any> = injector
+
+    override fun onClick(view: View?) = when(view?.id) {
+        R.id.img_toggle -> openNavDrawer()
+        R.id.img_back -> onBackPressed()
+        R.id.img_options -> onOptionsClick()
+        R.id.txt_toolbar_delete -> delete()
+        R.id.txt_toolbar_share -> {}
+        else -> {}
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) =
+            if(isChecked) dirsListFragment.selectAll() else dirsListFragment.deselectAll()
+
+    override fun onBackPressed() {
+        if(layout_drawer.isDrawerOpen(GravityCompat.START))
+            closeNavDrawer()
+        else
+            (supportFragmentManager.fragments.last().takeIf { it is BaseFragment } as BaseFragment?)
+                    ?.onBackPressed() ?: super.onBackPressed()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
+            if(permissionManager.isPermissionsGrant(grantResults))
+                navigateTo(fragment = dirsListFragment, addToBackStack = true)
+            else super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == OPEN_APP_INFO_CODE)
+            permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+    }
+
+    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =
+            dialogPermissionDescription.show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
+
+    override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
+        if(permissionGroup is PermissionManager.Permissions.Storage)
+            navigateTo(fragment = dirsListFragment, addToBackStack = true)
+    }
+
+    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
+            dialogPermissionDescription.detailedDialog().show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
+
+    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
+            dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.add_short_cut -> {}
+            R.id.hide -> {}
+            else -> {}
+        }
+        return true
     }
 
     private fun initView() {
@@ -121,11 +176,13 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     private fun showBackButton() {
         img_toggle.fadeOut()
         img_back.fadeIn()
+        lockNavDrawer()
     }
 
     private fun hideBackButton() {
         img_toggle.fadeIn()
         img_back.fadeOut()
+        unlockNavDrawer()
     }
 
     private fun observeViewModel() {
@@ -193,61 +250,5 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
             if(it is SettingsFragment) hideBackButton()
         }
         supportFragmentManager.popBackStack()
-    }
-
-    override fun androidInjector(): AndroidInjector<Any> = injector
-
-    override fun onClick(view: View?) = when(view?.id) {
-            R.id.img_toggle -> openNavDrawer()
-            R.id.img_back -> onBackPressed()
-            R.id.img_options -> onOptionsClick()
-            R.id.txt_toolbar_delete -> delete()
-            R.id.txt_toolbar_share -> {}
-            else -> {}
-        }
-
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) =
-        if(isChecked) dirsListFragment.selectAll() else dirsListFragment.deselectAll()
-
-    override fun onBackPressed() {
-        if(layout_drawer.isDrawerOpen(GravityCompat.START))
-            closeNavDrawer()
-        else
-            (supportFragmentManager.fragments.last().takeIf { it is BaseFragment } as BaseFragment?)
-                    ?.onBackPressed() ?: super.onBackPressed()
-    }
-
-    override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =
-        dialogPermissionDescription.show(supportFragmentManager, dialogPermissionDescription.TAG)
-
-    override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
-        if(permissionGroup is PermissionManager.Permissions.Storage)
-            navigateTo(fragment = dirsListFragment, addToBackStack = true)
-    }
-
-    override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
-        dialogPermissionDescription.detailedDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
-
-    override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
-        dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.TAG)
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
-        if(permissionManager.isPermissionsGrant(grantResults))
-            navigateTo(fragment = dirsListFragment, addToBackStack = true)
-        else super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == OPEN_APP_INFO_CODE)
-            permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
-    }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        when(item?.itemId) {
-            R.id.add_short_cut -> {}
-            R.id.hide -> {}
-            else -> {}
-        }
-        return true
     }
 }

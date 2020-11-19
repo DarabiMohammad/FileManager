@@ -15,7 +15,7 @@ class ThemeSelectionDialog @Inject constructor(
         private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val dialogTAG: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_theme_selection
 
     enum class SelectedTheme { LIGHT, DARK }

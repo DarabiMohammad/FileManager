@@ -30,24 +30,10 @@ class DirsListFragment @Inject constructor (
     private val deleteDialog: DeleteDialog,
     private val dirsListViewModel: DirsListViewModel,
     private val adapter: DirsRecyclerAdapter
-) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener,
-    BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
+) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, BaseCheckableAdapter.CheckableAdapterCallback<DirItem> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
-
-    private companion object {
-        const val FIRST_COMPLETELY_VISIBLE_ITEM_POSITION = "first_completely_visible_item_position"
-    }
-
-    override fun saveUiState(bundle: Bundle) {
-        bundle.putInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION, firstVisibleItemPosition())
-
-    }
-
-    override fun retrieveUiState(bundle: Bundle) {
-        rcv_dirs.layoutManager?.scrollToPosition(bundle.getInt(FIRST_COMPLETELY_VISIBLE_ITEM_POSITION))
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -97,9 +83,9 @@ class DirsListFragment @Inject constructor (
 
     private fun onFabClick(fileCreationDialog: Boolean) = newFileDialog.also {
         if (fileCreationDialog) it.fileType() else it.folderType()
-    }.show(childFragmentManager, newFileDialog.TAG)
+    }.show(childFragmentManager, newFileDialog.dialogTAG)
 
-    private fun showDeleteDialog() = deleteDialog.show(childFragmentManager, newFileDialog.TAG)
+    private fun showDeleteDialog() = deleteDialog.show(childFragmentManager, newFileDialog.dialogTAG)
 
     fun selectAll() = adapter.selectAll()
 

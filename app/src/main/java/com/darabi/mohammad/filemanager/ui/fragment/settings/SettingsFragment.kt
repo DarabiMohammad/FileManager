@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.ui.fragment.settings
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -19,15 +20,16 @@ class SettingsFragment @Inject constructor(
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
 
-    override fun saveUiState(bundle: Bundle) {}
-
-    override fun retrieveUiState(bundle: Bundle) {}
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         observeViewModel()
         initViews()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("test","==================onSaveInstanceState Settings Fragment")
     }
 
     override fun onBackPressed() {

@@ -2,19 +2,12 @@ package com.darabi.mohammad.filemanager.util
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.darabi.mohammad.filemanager.util.PrefsManager.Companion.PERFS_NAME
 import javax.inject.Inject
 
-class PermissionManager @Inject constructor() {
-
-    enum class Group { CAMERA, EXT_STORAGE }
-
-    private lateinit var perfs: SharedPreferences
+class PermissionManager @Inject constructor(private val prefsManager: PrefsManager) {
 
     sealed class Permissions {
 
@@ -29,8 +22,7 @@ class PermissionManager @Inject constructor() {
         }
     }
 
-    fun checkPermissionsAndRun(activity: Activity, callback: PermissionCallback, group: Permissions) {
-        perfs = activity.getSharedPreferences(PERFS_NAME, Context.MODE_PRIVATE)
+    fun checkPermissionsAndRun(activity: Activity, callback: PermissionManagerCallback, group: Permissions) {
         for(permission in group.permissions) {
             when {
                 isGranted(permission, activity) -> callback.onPermissionGranted(group)
@@ -38,10 +30,9 @@ class PermissionManager @Inject constructor() {
                     when {
                         shouldShowRational(activity, permission) -> callback.onPermissionDenied(group)
                         else -> {
-                            if(isFirstTime(permission)) {
-                                perfs.edit().putBoolean(permission, false).apply()
+                            if(isFirstTime(permission))
                                 callback.onFirstAskPermission(group)
-                            } else
+                            else
                                 callback.onPermissionWasDeniedForever(group)
                         }
                     }
@@ -63,7 +54,7 @@ class PermissionManager @Inject constructor() {
      * This method returns true if the permission asked before but the user denied without checking ‘Never ask again’.
      * But it will return false in two cases.
      *      1. If the permission is requested first time.
-     *      2. If the permission is requested first time.
+     *      2. If the permission asked before but the user denied with checking ‘Never ask again’.
      */
     private fun shouldShowRational(activity: Activity, permission: String) =
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
@@ -73,9 +64,11 @@ class PermissionManager @Inject constructor() {
     private fun isGranted(permission: String, activity: Activity) =
         ActivityCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
 
-    private fun isFirstTime(permission: String) = perfs.getBoolean(permission, true)
+    private fun isFirstTime(permission: String) = prefsManager.isAskedPermissionBefore(permission).also {
+        if(it) prefsManager.setFirstAskFlagForPermission(permission)
+    }
 
-    interface PermissionCallback {
+    interface PermissionManagerCallback {
 
         fun onFirstAskPermission(permissionGroup: Permissions)
 

@@ -12,11 +12,4 @@ class AppManagerFragment @Inject constructor(
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: AppManagerViewModel get() = appManagerViewModel
-
-    override fun saveUiState(bundle: Bundle) {
-
-    }
-
-    override fun retrieveUiState(bundle: Bundle) {
-    }
 }

@@ -40,6 +40,7 @@
             android:drawablePadding="8dp"
             android:drawableStart="?android:attr/listChoiceIndicatorSingle"
             android:text="@string/light_theme"
+            android:textSize="16sp"
             tools:ignore="RtlSymmetry" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
@@ -52,6 +53,7 @@
             android:drawablePadding="8dp"
             android:drawableStart="?android:attr/listChoiceIndicatorSingle"
             android:text="@string/dark_theme"
+            android:textSize="16sp"
             tools:ignore="RtlSymmetry" />
 
     </RadioGroup>
@@ -64,6 +66,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/cancel"
+        android:textAllCaps="false"
         android:background="@null"
         android:minWidth="0dp"
         android:minHeight="0dp"

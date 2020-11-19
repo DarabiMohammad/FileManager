@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.dialog
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -20,7 +19,7 @@ class NewFileDialog @Inject constructor (
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val dialogTAG: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_new_file
 
     enum class Type { FILE_TYPE, FOLDER_TYPE }
@@ -69,7 +68,7 @@ class NewFileDialog @Inject constructor (
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
-        if(type == null) throw IllegalAccessException("$TAG : type must not be null.")
+        if(type == null) throw IllegalAccessException("$dialogTAG : type must not be null.")
         super.show(manager, tag)
     }
 

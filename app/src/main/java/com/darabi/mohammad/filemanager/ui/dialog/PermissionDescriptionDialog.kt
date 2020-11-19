@@ -1,6 +1,8 @@
 package com.darabi.mohammad.filemanager.ui.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -14,7 +16,7 @@ class PermissionDescriptionDialog @Inject constructor(
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 
-    override val TAG: String get() = this.javaClass.simpleName
+    override val dialogTAG: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_permission_description
 
     enum class DialogAction { ACTION_OK, ACTION_OPEN_SETTINGS, ACTION_EXIT }
@@ -29,25 +31,30 @@ class PermissionDescriptionDialog @Inject constructor(
         initViews()
     }
 
-    private fun initViews() {
-        if (type == DialogType.DETAILED_TYPE) {
-            txt_dialog_permission_desc.text = getString(R.string.permission_detailed_description)
-            btn_dialog_permission_desc_exit.visibility = View.VISIBLE
-        }
-        else if (type == DialogType.SETTINGS_TYPE) {
-            txt_dialog_permission_desc.text = getString(R.string.permission_final_description)
-            btn_dialog_permission_desc_ok.text = getString(R.string.app_info)
-            btn_dialog_permission_desc_exit.visibility = View.VISIBLE
-        }
-        btn_dialog_permission_desc_ok.setOnClickListener(this)
-        btn_dialog_permission_desc_exit.setOnClickListener(this)
-    }
-
     override fun onClick(view: View?) {
         when(view?.id) {
             R.id.btn_dialog_permission_desc_ok -> onOkButtonClick()
             else -> onExitButtonClick()
         }
+    }
+
+    private fun initViews() {
+        when (type) {
+            DialogType.COMMON_TYPE -> this.isCancelable = false
+            DialogType.DETAILED_TYPE -> {
+                this.isCancelable = true
+                txt_dialog_permission_desc.text = getString(R.string.permission_detailed_description)
+                btn_dialog_permission_desc_exit.visibility = View.VISIBLE
+            }
+            DialogType.SETTINGS_TYPE -> {
+                this.isCancelable = true
+                txt_dialog_permission_desc.text = getString(R.string.permission_final_description)
+                btn_dialog_permission_desc_ok.text = getString(R.string.app_info)
+                btn_dialog_permission_desc_exit.visibility = View.VISIBLE
+            }
+        }
+        btn_dialog_permission_desc_ok.setOnClickListener(this)
+        btn_dialog_permission_desc_exit.setOnClickListener(this)
     }
 
     private fun onOkButtonClick() {

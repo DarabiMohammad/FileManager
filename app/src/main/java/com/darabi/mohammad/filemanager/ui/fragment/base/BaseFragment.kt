@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.ui.fragment.base
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.darabi.mohammad.filemanager.ui.MainActivity
@@ -10,24 +11,15 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
     abstract val fragmentTag: String
 
-    abstract val  viewModel: BaseViewModel
+    abstract val viewModel: BaseViewModel
 
-    private val uiState by lazy { Bundle() }
-
-    abstract fun saveUiState(bundle: Bundle)
-
-    abstract fun retrieveUiState(bundle: Bundle)
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        retrieveUiState(uiState)
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-    override fun onPause() {
-
-        saveUiState(uiState)
-        super.onPause()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("test","================onSaveInstanceState BaseFragment")
     }
 
     open fun onBackPressed() = activity?.let { if(it is MainActivity) it.onFragmentBackPressed() }
