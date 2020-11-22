@@ -5,17 +5,17 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DrawerItem
 import com.darabi.mohammad.filemanager.util.inflateLayout
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
-import com.darabi.mohammad.filemanager.view.vh.drawer.DrawerViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 import com.darabi.mohammad.filemanager.view.vh.drawer.DrawerDividerViewHolder
-import com.darabi.mohammad.filemanager.view.vh.drawer.OnDrawerItemClickListener
+import com.darabi.mohammad.filemanager.view.vh.drawer.DrawerViewHolder
 import javax.inject.Inject
 
 class DrawerRecyclerAdapter @Inject constructor() : BaseAdapter<DrawerItem, BaseViewHolder<DrawerItem>>() {
 
     private val dividerViewType = 1
 
-    var callback: OnDrawerItemClickListener? = null
+    var callback: BaseAdapterCallback<DrawerItem.Item>? = null
 
     override fun getItemViewType(position: Int): Int =
         if(objects[position] is DrawerItem.Divider)

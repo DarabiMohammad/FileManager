@@ -1,15 +1,14 @@
 package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,16 +20,22 @@ class DirsListViewModel @Inject constructor (
 ) : BaseViewModel(app) {
 
     private val pathSeparator = File.pathSeparator
-    private var selectedItems = listOf<DirItem>()
-    var checkedItemCount = 0
+//    private var selectedItems = listOf<DirItem>()
+
+    private val checkedItemsPosition = mutableSetOf<Int>()
+    private var dividersPosition = mutableListOf<Int>()
+    private var itemsCount = 0
+
     var currentPath = EMPTY_STRING
     val fileOrFolderCreation = MutableLiveData<DirItem.Item>()
 
-    val deletePercentage = MutableLiveData<Int>()
-    private var percentage = 0
+//    val deletePercentage = MutableLiveData<Int>()
+//    private var percentage = 0
 
-    private fun volumeToDirItem(volume: VolumeManager.Volume): DirItem.Item =
-        DirItem.Item(volume.name, volume.path, if(volume.isFile) ItemType.LIST_FILE_ITEM else ItemType.LIST_FOLDER_ITEM)
+//    private fun volumeToDirItem(volume: VolumeManager.Volume): DirItem.Item =
+//        DirItem.Item(volume.name, volume.path, if(volume.isFile) ItemType.LIST_FILE_ITEM else ItemType.LIST_FOLDER_ITEM)
+
+    fun getMaxCheckableItemCount() = itemsCount
 
     private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
@@ -55,20 +60,26 @@ class DirsListViewModel @Inject constructor (
     }
 
     private fun getSubDirsOrFiles(): ArrayList<DirItem> {
+        checkedItemsPosition.clear()
         val pair = volumeManager.getSubDirectoriesPath(lastPath())
-        val folders = prepareFolderItems(pair.first)
-        folders.addAll(prepareFileItems(pair.second))
-        if(folders.size > 4) folders.add(DirItem.Empty)
+        val folders = prepareFolderItems(pair.first).also { if(it.isNotEmpty()) dividersPosition.add(0) }
+        val files = prepareFileItems(pair.second).also { if(it.isNotEmpty()) dividersPosition.add(folders.size) }
+        folders.addAll(files)
+        if(folders.size > 4) {
+            folders.add(DirItem.Empty)
+            dividersPosition.add(folders.size - 1)
+        }
+        itemsCount = folders.size - dividersPosition.size
         return folders
     }
 
-    private fun deleteAndNotify(path: String) = viewModelScope.launch {
-        if(volumeManager.delete(path)) {
-            deletePercentage.value = ++percentage
-        }
-    }
+//    private fun deleteAndNotify(path: String) = viewModelScope.launch {
+//        if(volumeManager.delete(path)) {
+//            deletePercentage.value = ++percentage
+//        }
+//    }
 
-    private fun getSelectedItemPaths(): List<String> = selectedItems.map { (it as DirItem.Item).itemPath }
+//    private fun getSelectedItemPaths(): List<String> = selectedItems.map { (it as DirItem.Item).itemPath }
 
     fun previousPath(): BaseItem {
         currentPath = if(!currentPath.contains(pathSeparator))
@@ -78,6 +89,7 @@ class DirsListViewModel @Inject constructor (
     }
 
     fun getSubFiles(item: BaseItem): ArrayList<DirItem> {
+        dividersPosition.clear()
         if(item.itemPath != lastPath()) {
             currentPath = if (item.itemPath != currentPath) "$currentPath$pathSeparator${item.itemPath}" else item.itemPath
             currentPath = if (currentPath.startsWith(pathSeparator)) currentPath.removePrefix(pathSeparator) else currentPath
@@ -85,18 +97,31 @@ class DirsListViewModel @Inject constructor (
         return getSubDirsOrFiles()
     }
 
-    fun createNewFileOrFolder(name: String, isFile: Boolean) {
-        volumeManager.createFileOrFolder("${lastPath()}/$name", isFile).also {
-            if (it != null) fileOrFolderCreation.value = volumeToDirItem(it)
+    fun onItemCheckedChange(position: Int, isChecked:Boolean): Pair<Int, Boolean> {
+        if(isChecked) checkedItemsPosition.add(position) else checkedItemsPosition.remove(position)
+        return Pair(checkedItemsPosition.size, checkedItemsPosition.size == itemsCount)
+    }
+
+    fun onAllItemsSelected(): Pair<Int, Boolean> {
+        repeat(itemsCount + dividersPosition.size) {
+            if(!dividersPosition.contains(it))
+                checkedItemsPosition.add(it)
         }
+        return Pair(checkedItemsPosition.size, true)
     }
 
-    fun onCheckStateChange(models: List<DirItem>, checkedItemCount: Int) {
-        selectedItems = models
-        this.checkedItemCount = checkedItemCount
+    fun onAllItemsClear(): Pair<Int, Boolean> {
+        checkedItemsPosition.clear()
+        return Pair(checkedItemsPosition.size, false)
     }
 
-    fun getSelectedItemNames(): List<String> = selectedItems.map { (it as DirItem.Item).itemName }
+//    fun createNewFileOrFolder(name: String, isFile: Boolean) {
+//        volumeManager.createFileOrFolder("${lastPath()}/$name", isFile).also {
+//            if (it != null) fileOrFolderCreation.value = volumeToDirItem(it)
+//        }
+//    }
 
-    fun delete() = getSelectedItemPaths().forEach { deleteAndNotify(it) }
+//    fun getSelectedItemNames(): List<String> = selectedItems.map { (it as DirItem.Item).itemName }
+
+//    fun delete() = getSelectedItemPaths().forEach { deleteAndNotify(it) }
 }

@@ -1,10 +1,16 @@
 package com.darabi.mohammad.filemanager.view.adapter.checkable
 
-interface CheckableAdapter {
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 
-    var checkedItemCount: Int
+interface CheckableAdapter<I> : BaseAdapterCallback<I> {
+
+    fun hasCheckedItem(): Boolean
 
     fun onItemCheckedChangeState(position: Int, isChecked: Boolean)
 
     fun isChecked(position: Int): Boolean
+
+    fun selectAll()
+
+    fun clearAll()
 }

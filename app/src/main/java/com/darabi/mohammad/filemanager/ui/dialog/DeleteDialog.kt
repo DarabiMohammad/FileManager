@@ -36,25 +36,25 @@ class DeleteDialog @Inject constructor(
 
     private fun observeViewModel() {
 
-        viewModel.deletePercentage.observe(viewLifecycleOwner, {
-            if(it == viewModel.checkedItemCount) dismiss()
-            delete_dialog_prg_status.progress = it
-        })
+//        viewModel.deletePercentage.observe(viewLifecycleOwner, {
+//            if(it == viewModel.checkedItemCount) dismiss()
+//            delete_dialog_prg_status.progress = it
+//        })
     }
 
     private fun getSelectedItemNames(): String {
         var result = ""
-        viewModel.getSelectedItemNames().forEach {
-            result = "$result\n$it"
-        }
+//        viewModel.getSelectedItemNames().forEach {
+//            result = "$result\n$it"
+//        }
         return result
     }
 
     private fun onDeleteClicked() {
-        delete_dialog_txt_items.text = "0/${viewModel.checkedItemCount}"
+//        delete_dialog_txt_items.text = "0/${viewModel.checkedItemCount}"
         delete_dialog_prg_status.fadeIn()
-        delete_dialog_prg_status.max = viewModel.checkedItemCount
-        viewModel.delete()
+//        delete_dialog_prg_status.max = viewModel.checkedItemCount
+//        viewModel.delete()
     }
 
     override fun onClick(view: View?) =

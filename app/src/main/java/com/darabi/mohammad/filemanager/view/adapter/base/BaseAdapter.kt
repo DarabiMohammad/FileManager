@@ -9,11 +9,7 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
 
     protected val objects = ArrayList<O>()
 
-    companion object {
-        const val FIRST_POSITION = 0
-    }
-
-    fun setSource(source: List<O>) {
+    open fun setSource(source: List<O>) {
         clear()
         objects.addAll(source)
         notifyItemRangeChanged(objects.size -1, source.size)
@@ -29,7 +25,7 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
         notifyItemInserted(objects.indexOf(model))
     }
 
-    fun clear() {
+    private fun clear() {
         objects.clear()
         notifyDataSetChanged()
     }

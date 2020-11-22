@@ -6,7 +6,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 
-class DirsDividerViewHolder constructor(view: View) : CheckableViewHolder<DirItem>(view, null, null) {
+class DirsDividerViewHolder constructor(view: View) : CheckableViewHolder<DirItem>(view, null) {
 
     private val name: TextView = view.findViewById(R.id.txt_rcv_item_dir_divider_name)
 

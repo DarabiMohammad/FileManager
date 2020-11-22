@@ -18,6 +18,7 @@ class MainViewModel @Inject constructor (
     val removableVolumes = MutableLiveData<ArrayList<BaseItem>>()
     val onPermissionDialogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
     val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
+    val onSelectAllClick = MutableLiveData<Boolean>()
     val onDeleteClicked = MutableLiveData<Boolean>()
 
     init {

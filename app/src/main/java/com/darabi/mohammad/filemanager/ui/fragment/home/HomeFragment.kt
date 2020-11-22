@@ -6,8 +6,8 @@ import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
-import com.darabi.mohammad.filemanager.view.adapter.HomwRecyclerAdapter
-import com.darabi.mohammad.filemanager.view.vh.home.OnHoneVolumeItemsClickListener
+import com.darabi.mohammad.filemanager.view.adapter.HomeRecyclerAdapter
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 import com.darabi.mohammad.filemanager.vm.HomeViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 class HomeFragment @Inject constructor(
         private val howeViewModel: HomeViewModel,
-        private val adapter: HomwRecyclerAdapter
-) : BaseFragment(R.layout.fragment_home), OnHoneVolumeItemsClickListener {
+        private val adapter: HomeRecyclerAdapter
+) : BaseFragment(R.layout.fragment_home), BaseAdapterCallback<DirItem.Item> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
@@ -39,8 +39,8 @@ class HomeFragment @Inject constructor(
         })
     }
 
-    override fun onVolumeClick(volume: DirItem.Item) {
-        viewModel.onItemClick.value = volume
+    override fun onItemClick(item: DirItem.Item) {
+        viewModel.onItemClick.value = item
     }
 
 }

@@ -1,77 +1,55 @@
 package com.darabi.mohammad.filemanager.view.adapter.checkable
 
+import android.util.Log
+import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 
 abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal constructor() : BaseAdapter<O, VH>(),
-    CheckableAdapter, CheckableViewHolder.CheckableViewHolderCallback<O> {
+    CheckableAdapter<O> {
 
     companion object {
         const val DESTROY_SELECTION_ACTION_MODE = 0
     }
 
-    abstract var adapterCallback: CheckableAdapterCallback<O>
+    private var checkedItemCount = 0
 
-    override var checkedItemCount: Int = 0
+    private lateinit var checkedItems: MutableList<Boolean>
 
-    private val selectedModelIds = arrayListOf<Int>()
-
-    private val selectedModels = arrayListOf<O>()
-
-    private fun notifyItemCheckedStateChanged() =
-        adapterCallback.onCheckStateChange(selectedModels, checkedItemCount, checkedItemCount == objects.size)
-
-    override fun isChecked(position: Int): Boolean = selectedModels.contains(objects[position])
-
-    override fun onItemCheckedChangeState(position: Int, isChecked: Boolean) {
-        if (!isChecked && checkedItemCount == 0) {
-            clearSelections()
-        }
-        if(isChecked) {
-            selectedModelIds.add(position)
-            selectedModels.add(objects[position])
-            checkedItemCount++
-        } else {
-            selectedModelIds.remove(position)
-            selectedModels.remove(objects[position])
-            checkedItemCount--
-        }
-        notifyItemCheckedStateChanged()
-    }
-
-    override fun onItemClick(model: O) = adapterCallback.onItemClick(model)
+    protected var maxCheckableItemCount = -1
 
     override fun onBindViewHolder(holder: VH, position: Int) = holder.bindModel(objects[position], position)
 
-    fun clearSelections() {
-        checkedItemCount = 0
-        selectedModels.clear()
-        selectedModelIds.forEach {
-            notifyItemChanged(it)
+    override fun setSource(source: List<O>) {
+        checkedItems = mutableListOf()
+        repeat(source.size) {
+            checkedItems.add(false)
         }
-        selectedModelIds.clear()
-        notifyItemCheckedStateChanged()
+        super.setSource(source)
     }
 
-    fun selectAll() {
-        clearSelections()
-        checkedItemCount = objects.size
-        selectedModels.addAll(objects)
-        objects.indices.forEach { selectedModelIds.add(it) }
-        notifyItemCheckedStateChanged()
+    override fun hasCheckedItem(): Boolean = checkedItemCount > DESTROY_SELECTION_ACTION_MODE
+
+    override fun isChecked(position: Int): Boolean = checkedItems[position]
+
+    override fun onItemCheckedChangeState(position: Int, isChecked: Boolean) = isChecked.run {
+        if(this) checkedItemCount++ else checkedItemCount--
+        checkedItems[position] = this
+    }
+
+    override fun clearAll() {
+        checkedItemCount = 0
+        checkedItems.indices.forEach {
+            if(checkedItems[it]) {
+                checkedItems[it] = false
+                notifyItemChanged(it)
+            }
+        }
+    }
+
+    override fun selectAll() {
+        checkedItemCount = maxCheckableItemCount
+        objects.indices.forEach { checkedItems[it] = true }
         notifyDataSetChanged()
-    }
-
-    interface CheckableAdapterCallback<M> {
-
-        fun onItemClick(model: M)
-
-        fun onRenameClick(model: M)
-
-        fun onEncryptClick(model: M)
-
-        fun onDetailsClick(model: M)
-
-        fun onCheckStateChange(models: List<M>, checkedItemCount: Int, isSelectedAll: Boolean)
     }
 }

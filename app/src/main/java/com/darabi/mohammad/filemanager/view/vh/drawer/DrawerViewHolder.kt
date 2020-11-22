@@ -6,11 +6,12 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DrawerItem
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 
 class DrawerViewHolder constructor(
     val view: View,
-    val callback: OnDrawerItemClickListener?
+    val callback: BaseAdapterCallback<DrawerItem.Item>?
 ) : BaseViewHolder<DrawerItem>(view) {
 
     private val title: TextView = view.findViewById(R.id.txt_nav_item_name)
@@ -22,7 +23,7 @@ class DrawerViewHolder constructor(
             title.text = model.itemName
             Glide.with(view).load(model.itemImageRes).into(icon)
             if(callback != null)
-                view.setOnClickListener { callback.onDrawerItemClick(model) }
+                view.setOnClickListener { callback.onItemClick(model) }
         }
     }
 }

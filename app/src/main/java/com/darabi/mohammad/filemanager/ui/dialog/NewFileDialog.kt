@@ -49,10 +49,10 @@ class NewFileDialog @Inject constructor (
 
     private fun onCreateButtonClick() {
         edt_file_name.text.toString().also {
-            viewModel.createNewFileOrFolder(it, type == Type.FILE_TYPE)
+//            viewModel.createNewFileOrFolder(it, type == Type.FILE_TYPE)
         }
         for(i in 1..41) {
-            viewModel.createNewFileOrFolder("file$i", type == Type.FILE_TYPE)
+//            viewModel.createNewFileOrFolder("file$i", type == Type.FILE_TYPE)
         }
         dismiss()
     }

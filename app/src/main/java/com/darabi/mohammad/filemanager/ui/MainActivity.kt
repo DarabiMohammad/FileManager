@@ -97,8 +97,9 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         else -> {}
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) =
-            if(isChecked) dirsListFragment.selectAll() else dirsListFragment.deselectAll()
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+        viewModel.onSelectAllClick.value = isChecked
+    }
 
     override fun onBackPressed() {
         if(layout_drawer.isDrawerOpen(GravityCompat.START))

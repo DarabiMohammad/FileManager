@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.view.adapter
+package com.darabi.mohammad.filemanager.view.adapter.dirs
 
 import android.view.ViewGroup
 import com.darabi.mohammad.filemanager.R
@@ -13,13 +13,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, CheckableViewHolder<DirItem>>(),
-    DirsViewHolder.DirsViewHolderCallback<DirItem> {
+class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, CheckableViewHolder<DirItem>>() {
 
     private val dividerViewType = 1
     private val emptyViewHolderType = 2
 
-    override lateinit var adapterCallback: CheckableAdapterCallback<DirItem>
+    lateinit var adapterCallback: DirsAdapterCallback<DirItem>
 
     override fun getItemViewType(position: Int): Int = when {
         objects[position] is DirItem.Divider -> dividerViewType
@@ -30,14 +29,28 @@ class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<DirItem, 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<DirItem> = when (viewType) {
         dividerViewType -> DirsDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
         emptyViewHolderType -> EmptyViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_empty))
-        else -> DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this, this)
+        else -> DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), adapterCallback, this)
     }
 
-    override fun onRenameClick(model: DirItem) = adapterCallback.onRenameClick(model)
+    override fun onItemClick(item: DirItem) = adapterCallback.onItemClick(item)
 
-    override fun onEncryptClick(model: DirItem) = adapterCallback.onEncryptClick(model)
+    override fun onItemCheckedChangeState(position: Int, isChecked: Boolean) {
+        super.onItemCheckedChangeState(position, isChecked)
+        adapterCallback.onCheckStateChange(position,isChecked)
+    }
 
-    override fun onDetailsClick(model: DirItem) = adapterCallback.onDetailsClick(model)
+    fun setSource(source: List<DirItem>, maxCheckableItemCount: Int) {
+        this.maxCheckableItemCount = maxCheckableItemCount
+        super.setSource(source)
+    }
 
-//    interface DirsAdapterCallback<M> : CheckableAdapterCallback<M>, DirsViewHolder.DirsViewHolderCallback<M>
+    override fun selectAll() {
+        super.selectAll()
+        adapterCallback.onAllSelected()
+    }
+
+    override fun clearAll() {
+        super.clearAll()
+        adapterCallback.onClear()
+    }
 }

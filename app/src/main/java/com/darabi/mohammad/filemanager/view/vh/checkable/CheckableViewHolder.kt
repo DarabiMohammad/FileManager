@@ -6,8 +6,7 @@ import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 
 abstract class CheckableViewHolder<M> constructor(
     private val view: View,
-    private val callback: CheckableViewHolderCallback<M>?,
-    private val checkableAdapter: CheckableAdapter?
+    private val checkableAdapter: CheckableAdapter<M>?
 ) : BaseViewHolder<M>(view) {
 
     protected fun notifyItemCheckedStateChanged(position: Int) {
@@ -16,13 +15,15 @@ abstract class CheckableViewHolder<M> constructor(
     }
 
     open fun bindModel(model: M, position: Int) {
-        if(checkableAdapter != null && callback != null) {
+        if(checkableAdapter != null) {
+
             itemView.isActivated = checkableAdapter.isChecked(position)
+
             view.setOnClickListener {
-                if (checkableAdapter.checkedItemCount > 0)
+                if (checkableAdapter.hasCheckedItem())
                     notifyItemCheckedStateChanged(position)
                 else
-                    callback.onItemClick(model)
+                    checkableAdapter.onItemClick(model)
             }
 
             view.setOnLongClickListener {
@@ -30,10 +31,5 @@ abstract class CheckableViewHolder<M> constructor(
                 return@setOnLongClickListener true
             }
         }
-    }
-
-    interface CheckableViewHolderCallback<M> {
-
-        fun onItemClick(model: M)
     }
 }

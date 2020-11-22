@@ -7,7 +7,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.DrawerItem
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.view.adapter.DrawerRecyclerAdapter
-import com.darabi.mohammad.filemanager.view.vh.drawer.OnDrawerItemClickListener
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 import com.darabi.mohammad.filemanager.vm.DrawerViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_drawer.*
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class DrawerFragment @Inject constructor(
     private val drawerViewModel: DrawerViewModel,
     private val adapter: DrawerRecyclerAdapter
-) : BaseFragment(R.layout.fragment_drawer), OnDrawerItemClickListener {
+) : BaseFragment(R.layout.fragment_drawer), BaseAdapterCallback<DrawerItem.Item> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
@@ -38,7 +38,7 @@ class DrawerFragment @Inject constructor(
         })
     }
 
-    override fun onDrawerItemClick(item: DrawerItem.Item) {
+    override fun onItemClick(item: DrawerItem.Item) {
         viewModel.onItemClick.value = item
     }
 }
