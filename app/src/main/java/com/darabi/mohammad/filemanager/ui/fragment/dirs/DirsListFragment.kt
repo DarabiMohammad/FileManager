@@ -95,15 +95,14 @@ class DirsListFragment @Inject constructor (
     private fun firstVisibleItemPosition(): Int = (rcv_dirs.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
     private fun getSubDirs(item: BaseItem) = try {
-        dirsListViewModel.getSubFiles(item).apply {
-            if(this.isEmpty()) rcv_dirs.fadeOut() else {
+        dirsListViewModel.getSubFiles(item).takeIf { it.isNotEmpty() }.also {
+            if(it != null) {
+                adapter.setSource(it, dirsListViewModel.getMaxCheckableItemCount())
                 rcv_dirs.fadeIn()
-                adapter.setSource(this, dirsListViewModel.getMaxCheckableItemCount())
-            }
+            } else rcv_dirs.fadeOut()
         }
     } catch (exception: VolumeManager.VolumeManagerException) {
         dirsListViewModel.currentPath = EMPTY_STRING
-        activity?.supportFragmentManager?.popBackStack()
         viewModel.onItemClick.value = null
     }
 
