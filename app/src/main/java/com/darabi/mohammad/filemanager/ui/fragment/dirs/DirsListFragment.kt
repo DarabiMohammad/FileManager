@@ -43,7 +43,7 @@ class DirsListFragment @Inject constructor (
 
     override fun onBackPressed() {
         if (adapter.hasCheckedItem())
-            adapter.clearAll()
+            viewModel.onSelectAllClick.value = false
         else
             viewModel.onItemClick.value = dirsListViewModel.previousPath()
     }
