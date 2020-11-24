@@ -27,7 +27,7 @@ class AppearanceFragment @Inject constructor(
     }
 
     override fun onClick(view: View?) = when(view?.id) {
-        R.id.container_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.dialogTAG)
+        R.id.txt_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.dialogTAG)
         else -> {}
     }
 
@@ -42,7 +42,7 @@ class AppearanceFragment @Inject constructor(
     }
 
     private fun initViews() {
-        container_theme.setOnClickListener(this)
+        txt_theme.setOnClickListener(this)
     }
 
     private fun onLightThemeClick() {}

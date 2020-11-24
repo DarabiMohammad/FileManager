@@ -64,6 +64,8 @@
 
     <!--  settings items  -->
     <string name="appearance">Appearance</string>
+    <string name="split_contents">Enable Split Folders And Files</string>
+    <string name="show_hidden_files">Show Hidden Files And Folders</string>
 
     <!--  appearance stuffs  -->
     <string name="theme">Theme</string>

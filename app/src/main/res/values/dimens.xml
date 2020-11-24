@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="material_very_small_dimen">4dp</dimen>
+    <dimen name="material_small_dimen">8dp</dimen>
+    <dimen name="material_normal_dimen">16dp</dimen>
+    <dimen name="material_medium_dimen">24dp</dimen>
+    <dimen name="material_large_dimen">32dp</dimen>
+    <dimen name="material_very_large_dimen">64dp</dimen>
+
+    <dimen name="material_text_size_very_small">4sp</dimen>
+    <dimen name="material_text_size_small">8sp</dimen>
+    <dimen name="material_text_size_normal">16sp</dimen>
+    <dimen name="material_text_size_medium">24sp</dimen>
+    <dimen name="material_text_size_large">32sp</dimen>
+    <dimen name="material_text_size_very_large">64sp</dimen>
+</resources>

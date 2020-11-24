@@ -3,6 +3,7 @@ package com.darabi.mohammad.filemanager.ui.fragment.settings
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class SettingsFragment @Inject constructor(
         private val settingsViewModel: SettingsViewModel,
         private val appearanceFragment: AppearanceFragment
-) : BaseFragment(R.layout.fragment_settings), View.OnClickListener {
+) : BaseFragment(R.layout.fragment_settings), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
@@ -41,11 +42,19 @@ class SettingsFragment @Inject constructor(
     private fun observeViewModel() {}
 
     private fun initViews() {
-        container_appearance.setOnClickListener(this)
+        txt_appearance.setOnClickListener(this)
+        switch_show_hidden_files.setOnCheckedChangeListener(this)
+        switch_split_contents.setOnCheckedChangeListener(this)
     }
 
     override fun onClick(view: View?) = when(view?.id) {
-        R.id.container_appearance -> navigateTo(R.id.container_settings, appearanceFragment, addToBackStack = true)
+        R.id.txt_appearance -> navigateTo(R.id.container_settings, appearanceFragment, addToBackStack = true)
+        else -> {}
+    }
+
+    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) = when(buttonView?.id) {
+        R.id.switch_show_hidden_files -> {}
+        R.id.switch_split_contents -> {}
         else -> {}
     }
 }
