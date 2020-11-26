@@ -22,10 +22,10 @@ class PermissionManager @Inject constructor(private val prefsManager: PrefsManag
         }
     }
 
-    fun checkPermissionsAndRun(activity: Activity, callback: PermissionManagerCallback, group: Permissions) {
+    fun checkPermissionsAndRun(activity: Activity, callback: PermissionManagerCallback, group: Permissions, runnable:() -> Unit) {
         for(permission in group.permissions) {
             when {
-                isGranted(permission, activity) -> callback.onPermissionGranted(group)
+                isGranted(permission, activity) -> runnable()
                 else -> {
                     when {
                         shouldShowRational(activity, permission) -> callback.onPermissionDenied(group)
@@ -71,8 +71,6 @@ class PermissionManager @Inject constructor(private val prefsManager: PrefsManag
     interface PermissionManagerCallback {
 
         fun onFirstAskPermission(permissionGroup: Permissions)
-
-        fun onPermissionGranted(permissionGroup: Permissions)
 
         fun onPermissionDenied(permissionGroup: Permissions)
 

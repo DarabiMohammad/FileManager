@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.darabi.mohammad.filemanager.App
+import com.darabi.mohammad.filemanager.util.path.BasePathManager
+import com.darabi.mohammad.filemanager.util.path.PathManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -14,6 +16,9 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindContext(application: App): Application
+
+    @Binds
+    abstract fun bindPathManager(pathManager: PathManager): BasePathManager
 
     companion object {
 

@@ -11,6 +11,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
@@ -117,16 +118,13 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == OPEN_APP_INFO_CODE)
-            permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+            permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+                navigateTo(fragment = dirsListFragment, addToBackStack = true)
+            }
     }
 
     override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =
             dialogPermissionDescription.show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
-
-    override fun onPermissionGranted(permissionGroup: PermissionManager.Permissions) {
-        if(permissionGroup is PermissionManager.Permissions.Storage)
-            navigateTo(fragment = dirsListFragment, addToBackStack = true)
-    }
 
     override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
             dialogPermissionDescription.detailedDialog().show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
@@ -152,6 +150,25 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         img_options.setOnClickListener(this)
         txt_toolbar_delete.setOnClickListener(this)
         txt_toolbar_share.setOnClickListener(this)
+    }
+
+    private fun observeViewModel() {
+        viewModel.onItemClick.observe(this, { performOnItemClick(it) })
+
+        viewModel.onPermissionDialogDescButtonClick.observe(this, {
+            when(it) {
+                PermissionDescriptionDialog.DialogAction.ACTION_OK ->
+                    permissionManager.requestPermissions(PermissionManager.Permissions.Storage, this)
+                PermissionDescriptionDialog.DialogAction.ACTION_OPEN_SETTINGS -> openAppInfoScreen()
+                else -> closeApp()
+            }
+        })
+
+        viewModel.onActionModeChange.observe(this, {
+            if(it.first > DESTROY_SELECTION_ACTION_MODE)
+                showSelectionActionMode(it.first, it.second)
+            else hideSelectionActionMode()
+        })
     }
 
     private fun showSelectionActionMode(checkedItemCount: Int, isSelectedAll: Boolean) {
@@ -186,49 +203,39 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         unlockNavDrawer()
     }
 
-    private fun observeViewModel() {
-        viewModel.onItemClick.observe(this, { performOnItemClick() })
-
-        viewModel.onPermissionDialogDescButtonClick.observe(this, {
-            when(it) {
-                PermissionDescriptionDialog.DialogAction.ACTION_OK ->
-                    permissionManager.requestPermissions(PermissionManager.Permissions.Storage, this)
-                PermissionDescriptionDialog.DialogAction.ACTION_OPEN_SETTINGS -> openAppInfoScreen()
-                else -> closeApp()
-            }
-        })
-
-        viewModel.onActionModeChange.observe(this, {
-            if(it.first > DESTROY_SELECTION_ACTION_MODE)
-                showSelectionActionMode(it.first, it.second)
-            else hideSelectionActionMode()
-        })
-    }
-
-    private fun performOnItemClick() = when(viewModel.onItemClick.value?.itemType) {
-        ItemType.DRAWER_ITEM_OTHER -> onOtherDrawerItemClick()
-        ItemType.DRAWER_ITEM_CATEGORY -> onDrawerCategoryItemClick()
-        ItemType.LIST_FOLDER_ITEM -> onDirectoryClick()
+    private fun performOnItemClick(item: BaseItem?) = when(item?.itemType) {
+        ItemType.DRAWER_ITEM_OTHER -> onOtherDrawerItemClick(item)
+        ItemType.DRAWER_ITEM_CATEGORY -> onDrawerCategoryItemClick(item)
+        ItemType.LIST_FOLDER_ITEM -> onDirectoryClick(item)
         null -> supportFragmentManager.popBackStack()
         else -> {}
     }
 
-    private fun onOtherDrawerItemClick() {
+    private fun onOtherDrawerItemClick(item: BaseItem?) {
         showBackButton()
-        val drawerItemName = viewModel.onItemClick.value!!.itemName
-        val destinationFragment = if (drawerItemName == getString(R.string.settings)) settingsFragment else appManagerFragment
-        txt_toolbar_title.text = drawerItemName
+        val destinationFragment = if (item!!.itemName == getString(R.string.settings)) settingsFragment else appManagerFragment
+        txt_toolbar_title.text = item.itemName
         navigateTo(fragment = destinationFragment, addToBackStack = true)
         closeNavDrawer()
     }
 
-    private fun onDrawerCategoryItemClick() {
+    private fun onDrawerCategoryItemClick(item: BaseItem?) {
         closeNavDrawer()
-        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+            navigateToDirsFragment(item!!.itemName)
+        }
     }
 
-    private fun onDirectoryClick() =
-        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage)
+    private fun onDirectoryClick(item: BaseItem?) =
+        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+            val toolbarTitle = if(item!!.itemName == "0") getString(R.string.internal_storage) else item.itemName
+            navigateToDirsFragment(toolbarTitle)
+        }
+
+    private fun navigateToDirsFragment(dirName: String) {
+        txt_toolbar_title.text = dirName
+        navigateTo(fragment = dirsListFragment, addToBackStack = true)
+    }
 
     private fun onOptionsClick() {
         val popupMenu = PopupMenu(this, img_options, GravityCompat.END)

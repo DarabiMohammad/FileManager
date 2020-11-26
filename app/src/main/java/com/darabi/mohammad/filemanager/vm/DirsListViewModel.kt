@@ -1,13 +1,13 @@
 package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.util.EMPTY_STRING
+import com.darabi.mohammad.filemanager.util.path.PathManager
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import java.io.File
 import javax.inject.Inject
@@ -16,7 +16,8 @@ import javax.inject.Singleton
 @Singleton
 class DirsListViewModel @Inject constructor (
     private val app: Application,
-    private val volumeManager: VolumeManager
+    private val volumeManager: VolumeManager,
+    private val pathManager: PathManager
 ) : BaseViewModel(app) {
 
     private val pathSeparator = File.pathSeparator
@@ -29,17 +30,11 @@ class DirsListViewModel @Inject constructor (
     var currentPath = EMPTY_STRING
     val fileOrFolderCreation = MutableLiveData<DirItem.Item>()
 
-//    val deletePercentage = MutableLiveData<Int>()
-//    private var percentage = 0
-
-//    private fun volumeToDirItem(volume: VolumeManager.Volume): DirItem.Item =
-//        DirItem.Item(volume.name, volume.path, if(volume.isFile) ItemType.LIST_FILE_ITEM else ItemType.LIST_FOLDER_ITEM)
-
     fun getMaxCheckableItemCount() = itemsCount
 
     private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
 
-    private fun lastDirName(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
+    private fun lastDirName(): String = currentPath.substring(currentPath.lastIndexOf(File.separatorChar) + 1)
 
     private fun prepareFileItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
         if(volumes.size > 0) {
@@ -72,14 +67,6 @@ class DirsListViewModel @Inject constructor (
         itemsCount = folders.size - dividersPosition.size
         return folders
     }
-
-//    private fun deleteAndNotify(path: String) = viewModelScope.launch {
-//        if(volumeManager.delete(path)) {
-//            deletePercentage.value = ++percentage
-//        }
-//    }
-
-//    private fun getSelectedItemPaths(): List<String> = selectedItems.map { (it as DirItem.Item).itemPath }
 
     fun previousPath(): BaseItem {
         currentPath = if(!currentPath.contains(pathSeparator))
@@ -124,4 +111,16 @@ class DirsListViewModel @Inject constructor (
 //    fun getSelectedItemNames(): List<String> = selectedItems.map { (it as DirItem.Item).itemName }
 
 //    fun delete() = getSelectedItemPaths().forEach { deleteAndNotify(it) }
+    //    private fun deleteAndNotify(path: String) = viewModelScope.launch {
+//        if(volumeManager.delete(path)) {
+//            deletePercentage.value = ++percentage
+//        }
+//    }
+
+//    private fun getSelectedItemPaths(): List<String> = selectedItems.map { (it as DirItem.Item).itemPath }
+    //    val deletePercentage = MutableLiveData<Int>()
+//    private var percentage = 0
+
+//    private fun volumeToDirItem(volume: VolumeManager.Volume): DirItem.Item =
+//        DirItem.Item(volume.name, volume.path, if(volume.isFile) ItemType.LIST_FILE_ITEM else ItemType.LIST_FOLDER_ITEM)
 }

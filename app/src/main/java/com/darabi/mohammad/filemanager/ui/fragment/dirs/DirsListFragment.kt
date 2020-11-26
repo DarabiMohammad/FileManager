@@ -92,8 +92,6 @@ class DirsListFragment @Inject constructor (
         dirsListViewModel.fileOrFolderCreation.observe(viewLifecycleOwner, { adapter.updateSource(it) })
     }
 
-    private fun firstVisibleItemPosition(): Int = (rcv_dirs.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-
     private fun getSubDirs(item: BaseItem) = try {
         dirsListViewModel.getSubFiles(item).takeIf { it.isNotEmpty() }.also {
             if(it != null) {
@@ -109,6 +107,8 @@ class DirsListFragment @Inject constructor (
     private fun onFabClick(fileCreationDialog: Boolean) = newFileDialog.also {
         if (fileCreationDialog) it.fileType() else it.folderType()
     }.show(childFragmentManager, newFileDialog.dialogTAG)
+
+    private fun firstVisibleItemPosition(): Int = (rcv_dirs.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
 
     private fun showDeleteDialog() = deleteDialog.show(childFragmentManager, newFileDialog.dialogTAG)
 }
