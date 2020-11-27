@@ -20,43 +20,32 @@ class DirsListViewModel @Inject constructor (
     private val pathManager: PathManager
 ) : BaseViewModel(app) {
 
-    private val pathSeparator = File.pathSeparator
-//    private var selectedItems = listOf<DirItem>()
-
     private val checkedItemsPosition = mutableSetOf<Int>()
     private var dividersPosition = mutableListOf<Int>()
     private var itemsCount = 0
+    private var adapterPosition = -1
 
-    var currentPath = EMPTY_STRING
+    private  var currentPath = EMPTY_STRING
+
     val fileOrFolderCreation = MutableLiveData<DirItem.Item>()
 
     fun getMaxCheckableItemCount() = itemsCount
 
-    private fun lastPath(): String = currentPath.substring(currentPath.lastIndexOf(pathSeparator) + 1)
+    fun getAdapterPosition() = adapterPosition
 
-    private fun lastDirName(): String = currentPath.substring(currentPath.lastIndexOf(File.separatorChar) + 1)
+    fun savePath(currentPath: String, adapterPosition: Int) = pathManager.savePath(currentPath, adapterPosition)
 
-    private fun prepareFileItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
-        if(volumes.size > 0) {
-            val files = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.files)))
-            files.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FILE_ITEM, R.drawable.ic_file_black) })
-            return files
-        }
-        return arrayListOf()
+    fun saveCurrentPath(adapterPosition: Int) = currentPath.takeIf { it.isNotEmpty() }?.let { pathManager.savePath(it, adapterPosition) }
+
+    fun previousPath(): BaseItem = pathManager.getPath().run {
+        return DirItem.Item(this.second, this.first, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_settings_black).also { adapterPosition = this.third }
     }
 
-    private fun prepareFolderItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
-        if(volumes.size > 0) {
-            val folders = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.folders)))
-            folders.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_folder_black) })
-            return folders
-        }
-        return arrayListOf()
-    }
-
-    private fun getSubDirsOrFiles(): ArrayList<DirItem> {
+    fun getSubFiles(item: BaseItem): ArrayList<DirItem> {
+        dividersPosition.clear()
         checkedItemsPosition.clear()
-        val pair = volumeManager.getSubDirectoriesPath(lastPath())
+        currentPath = item.itemPath
+        val pair = volumeManager.getSubDirectoriesPath(item.itemPath)
         val folders = prepareFolderItems(pair.first).also { if(it.isNotEmpty()) dividersPosition.add(0) }
         val files = prepareFileItems(pair.second).also { if(it.isNotEmpty()) dividersPosition.add(folders.size) }
         folders.addAll(files)
@@ -66,22 +55,6 @@ class DirsListViewModel @Inject constructor (
         }
         itemsCount = folders.size - dividersPosition.size
         return folders
-    }
-
-    fun previousPath(): BaseItem {
-        currentPath = if(!currentPath.contains(pathSeparator))
-            EMPTY_STRING
-        else currentPath.substring(currentPath.indexOf(File.separator), currentPath.lastIndexOf(pathSeparator))
-        return DirItem.Item(lastDirName(), currentPath, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_settings_black)
-    }
-
-    fun getSubFiles(item: BaseItem): ArrayList<DirItem> {
-        dividersPosition.clear()
-        if(item.itemPath != lastPath()) {
-            currentPath = if (item.itemPath != currentPath) "$currentPath$pathSeparator${item.itemPath}" else item.itemPath
-            currentPath = if (currentPath.startsWith(pathSeparator)) currentPath.removePrefix(pathSeparator) else currentPath
-        }
-        return getSubDirsOrFiles()
     }
 
     fun onItemCheckedChange(position: Int, isChecked:Boolean): Pair<Int, Boolean> {
@@ -100,6 +73,24 @@ class DirsListViewModel @Inject constructor (
     fun onAllItemsClear(): Pair<Int, Boolean> {
         checkedItemsPosition.clear()
         return Pair(checkedItemsPosition.size, false)
+    }
+
+    private fun prepareFileItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
+        if(volumes.size > 0) {
+            val files = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.files)))
+            files.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FILE_ITEM, R.drawable.ic_file_black) })
+            return files
+        }
+        return arrayListOf()
+    }
+
+    private fun prepareFolderItems(volumes: ArrayList<VolumeManager.Volume>): ArrayList<DirItem> {
+        if(volumes.size > 0) {
+            val folders = arrayListOf<DirItem>(DirItem.Divider(getString(R.string.folders)))
+            folders.addAll(volumes.map { DirItem.Item(it.name, it.path, ItemType.LIST_FOLDER_ITEM, R.drawable.ic_folder_black) })
+            return folders
+        }
+        return arrayListOf()
     }
 
 //    fun createNewFileOrFolder(name: String, isFile: Boolean) {

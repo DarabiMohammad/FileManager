@@ -41,20 +41,20 @@ class DirsListFragment @Inject constructor (
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed() =
         if (adapter.hasCheckedItem())
             viewModel.onSelectAllClick.value = false
         else
             viewModel.onItemClick.value = dirsListViewModel.previousPath()
-    }
 
     override fun onClick(view: View?) = when(view?.id) {
         R.id.btn_fab -> onFabClick(true)
         else -> {}
     }
 
-    override fun onItemClick(item: DirItem) {
-        if (item is DirItem.Item) viewModel.onItemClick.value = item
+    override fun onItemClick(item: DirItem) = viewModel.onItemClick.run {
+        dirsListViewModel.savePath(this.value!!.itemPath, getAdapterPosition())
+        this.value = item as BaseItem
     }
 
     override fun onCheckStateChange(position: Int, isChecked: Boolean) {
@@ -82,7 +82,11 @@ class DirsListFragment @Inject constructor (
     private fun observeViewModel() {
 
         viewModel.onItemClick.observe(viewLifecycleOwner, { baseItem ->
-            baseItem?.let { if(it.itemType != ItemType.DRAWER_ITEM_OTHER) getSubDirs(it) }
+            baseItem.takeIf { it?.itemType != ItemType.DRAWER_ITEM_OTHER }?.let {
+                if(it.itemType == ItemType.DRAWER_ITEM_CATEGORY)
+                    dirsListViewModel.saveCurrentPath(getAdapterPosition())
+                getSubDirs(it)
+            }
         })
 
         viewModel.onSelectAllClick.observe(viewLifecycleOwner, { if(it) adapter.selectAll() else adapter.clearAll() })
@@ -93,15 +97,20 @@ class DirsListFragment @Inject constructor (
     }
 
     private fun getSubDirs(item: BaseItem) = try {
-        dirsListViewModel.getSubFiles(item).takeIf { it.isNotEmpty() }.also {
-            if(it != null) {
-                adapter.setSource(it, dirsListViewModel.getMaxCheckableItemCount())
-                rcv_dirs.fadeIn()
-            } else rcv_dirs.fadeOut()
+        dirsListViewModel.getSubFiles(item).also {
+            if(it.isNotEmpty())
+                adapter.setSource(it, dirsListViewModel.getMaxCheckableItemCount()).also {
+                    prepareRecyclerView(dirsListViewModel.getAdapterPosition())
+                }
+            else rcv_dirs.fadeOut()
         }
-    } catch (exception: VolumeManager.VolumeManagerException) {
-        dirsListViewModel.currentPath = EMPTY_STRING
-        viewModel.onItemClick.value = null
+    } catch (exception: VolumeManager.VolumeManagerException) { viewModel.onItemClick.value = null }
+
+    private fun getAdapterPosition(): Int = (rcv_dirs.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+
+    private fun prepareRecyclerView(visiblePosition: Int) = rcv_dirs.apply {
+        this.fadeIn()
+        (this.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(visiblePosition, 0)
     }
 
     private fun onFabClick(fileCreationDialog: Boolean) = newFileDialog.also {

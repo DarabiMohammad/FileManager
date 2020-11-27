@@ -22,9 +22,7 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
 
     override fun setSource(source: List<O>) {
         checkedItems = mutableListOf()
-        repeat(source.size) {
-            checkedItems.add(false)
-        }
+        repeat(source.size) { checkedItems.add(false) }
         super.setSource(source)
     }
 

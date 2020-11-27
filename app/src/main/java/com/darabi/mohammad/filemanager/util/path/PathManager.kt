@@ -5,18 +5,19 @@ import javax.inject.Inject
 
 class PathManager @Inject constructor() : BasePathManager {
 
+    private val emptyString = ""
+
     private var path = mutableMapOf<String, Int>()
-    private val pathSeparatorChar = File.pathSeparatorChar
 
-    override fun lastPath(): String = path.keys.last()
+    private fun lastPath(): String = path.takeIf { it.isNotEmpty() }?.keys?.last() ?: emptyString
 
-    override fun lastDirName(): String = lastPath().run {
-        this.substring(this.lastIndexOf(File.separator) + 1)
-    }
+    private fun lastDirName(): String = lastPath().run { this.substring(this.lastIndexOf(File.separator) + 1) }
 
-    override fun lastPosition(): Int = path[lastPath()] ?: 0
+    private fun lastPosition(): Int = path[lastPath()] ?: 0
 
-    override fun saveCurrentLocation(currentPath: String, currentPosition: Int) {
+    override fun getPath(): Triple<String, String, Int> = Triple(lastPath(), lastDirName(), lastPosition()).also { path.remove(lastPath()) }
+
+    override fun savePath(currentPath: String, currentPosition: Int) {
         path[currentPath] = currentPosition
     }
 }

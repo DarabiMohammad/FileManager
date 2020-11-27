@@ -20,19 +20,11 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
         notifyItemRangeChanged(position, source.size)
     }
 
-    fun updateSource(model: O) {
-        objects.add(model)
-        notifyItemInserted(objects.indexOf(model))
-    }
+    fun updateSource(model: O) = objects.add(model).also { notifyItemInserted(objects.indexOf(model)) }
 
-    private fun clear() {
-        objects.clear()
-        notifyDataSetChanged()
-    }
+    private fun clear() = objects.clear().also { notifyDataSetChanged() }
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.bindModel(objects[position])
-    }
+    override fun onBindViewHolder(holder: VH, position: Int) = holder.bindModel(objects[position])
 
     override fun getItemCount(): Int = objects.size
 }
