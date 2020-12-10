@@ -2,7 +2,6 @@ package com.darabi.mohammad.filemanager.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -11,14 +10,12 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.BaseItem
-import com.darabi.mohammad.filemanager.model.ItemType
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
-import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
+import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.fadeOut
@@ -61,7 +58,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     internal lateinit var settingsFragment: SettingsFragment
 
     @Inject
-    internal lateinit var dialogPermissionDescription: PermissionDescriptionDialog
+    internal lateinit var permissionDescDialog: PermissionDescriptionDialog
 
     @Inject
     internal lateinit var permissionManager: PermissionManager
@@ -75,16 +72,6 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         initView()
         observeViewModel()
         navigateTo(fragment = homeFragment, isReplace = true)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.d("test","=======================onSaveInstanceState")
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        Log.d("test","=======================onRestoreInstanceState")
     }
 
     override fun androidInjector(): AndroidInjector<Any> = injector
@@ -124,13 +111,13 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     }
 
     override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =
-            dialogPermissionDescription.show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
+            permissionDescDialog.show(supportFragmentManager, permissionDescDialog.dialogTAG)
 
     override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
-            dialogPermissionDescription.detailedDialog().show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
+            permissionDescDialog.detailedDialog().show(supportFragmentManager, permissionDescDialog.dialogTAG)
 
     override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
-            dialogPermissionDescription.finalDialog().show(supportFragmentManager, dialogPermissionDescription.dialogTAG)
+            permissionDescDialog.finalDialog().show(supportFragmentManager, permissionDescDialog.dialogTAG)
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when(item?.itemId) {
@@ -153,9 +140,40 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     }
 
     private fun observeViewModel() {
-        viewModel.onItemClick.observe(this, { performOnItemClick(it) })
 
-        viewModel.onPermissionDialogDescButtonClick.observe(this, {
+        viewModel.primaryStorageLiveData.observe(this, {
+            checkPermissionAndRun {
+                navigateTo(fragment = dirsListFragment, addToBackStack = true).also { dirsListFragment.getPerimaryStorageFiles() }
+            }
+        })
+
+        viewModel.secondaryStorageLiveData.observe(this, {
+            checkPermissionAndRun {
+                navigateTo(fragment = dirsListFragment, addToBackStack = true).also { dirsListFragment.getSecondaryStorageFiles() }
+            }
+        })
+
+        viewModel.drawerPrimaryStorageLiveData.observe(this, {
+
+        })
+
+        viewModel.drawerSecondaryStorageLiveData.observe(this, {
+
+        })
+
+        viewModel.drawerCategoryLiveData.observe(this, {
+
+        })
+
+        viewModel.drawerInstalledAppsLiveData.observe(this, {
+
+        })
+
+        viewModel.drawerSettingsLiveData.observe(this, {
+
+        })
+
+        viewModel.permissionDialoLiveData.observe(this, {
             when(it) {
                 PermissionDescriptionDialog.DialogAction.ACTION_OK ->
                     permissionManager.requestPermissions(PermissionManager.Permissions.Storage, this)
@@ -170,6 +188,11 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
             else hideSelectionActionMode()
         })
     }
+
+    private inline fun checkPermissionAndRun(crossinline function: () -> Unit) =
+        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+            function.invoke()
+        }
 
     private fun showSelectionActionMode(checkedItemCount: Int, isSelectedAll: Boolean) {
         img_toggle.fadeOut()
@@ -188,7 +211,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         container_more_options.fadeOut()
         container_more_options.fadeOut()
         unlockNavDrawer()
-        txt_toolbar_title.text = viewModel.onItemClick.value?.itemName
+//        txt_toolbar_title.text = viewModel.onItemClick.value?.itemName
     }
 
     private fun showBackButton() {
@@ -203,34 +226,34 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         unlockNavDrawer()
     }
 
-    private fun performOnItemClick(item: BaseItem?) = when(item?.itemType) {
-        ItemType.DRAWER_ITEM_OTHER -> onOtherDrawerItemClick(item)
-        ItemType.DRAWER_ITEM_CATEGORY -> onDrawerCategoryItemClick(item)
-        ItemType.LIST_FOLDER_ITEM -> onDirectoryClick(item)
-        null -> supportFragmentManager.popBackStack()
-        else -> {}
-    }
-
-    private fun onOtherDrawerItemClick(item: BaseItem?) {
-        showBackButton()
-        val destinationFragment = if (item!!.itemName == getString(R.string.settings)) settingsFragment else appManagerFragment
-        txt_toolbar_title.text = item.itemName
-        navigateTo(fragment = destinationFragment, addToBackStack = true)
-        closeNavDrawer()
-    }
-
-    private fun onDrawerCategoryItemClick(item: BaseItem?) {
-        closeNavDrawer()
-        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
-            navigateToDirsFragment(item!!.itemName)
-        }
-    }
-
-    private fun onDirectoryClick(item: BaseItem?) =
-        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
-            val toolbarTitle = if(item!!.itemName == "0") getString(R.string.internal_storage) else item.itemName
-            navigateToDirsFragment(toolbarTitle)
-        }
+//    private fun performOnItemClick(item: BaseItem?) = when(item?.itemType) {
+//        ItemType.DRAWER_ITEM_OTHER -> onOtherDrawerItemClick(item)
+//        ItemType.DRAWER_ITEM_CATEGORY -> onDrawerCategoryItemClick(item)
+//        ItemType.LIST_FOLDER_ITEM -> onDirectoryClick(item)
+//        null -> supportFragmentManager.popBackStack()
+//        else -> {}
+//    }
+//
+//    private fun onOtherDrawerItemClick(item: BaseItem?) {
+//        showBackButton()
+//        val destinationFragment = if (item!!.itemName == getString(R.string.settings)) settingsFragment else appManagerFragment
+//        txt_toolbar_title.text = item.itemName
+//        navigateTo(fragment = destinationFragment, addToBackStack = true)
+//        closeNavDrawer()
+//    }
+//
+//    private fun onDrawerCategoryItemClick(item: BaseItem?) {
+//        closeNavDrawer()
+//        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+//            navigateToDirsFragment(item!!.itemName)
+//        }
+//    }
+//
+//    private fun onDirectoryClick(item: BaseItem?) =
+//        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+//            val toolbarTitle = if(item!!.itemName == "0") getString(R.string.internal_storage) else item.itemName
+//            navigateToDirsFragment(toolbarTitle)
+//        }
 
     private fun navigateToDirsFragment(dirName: String) {
         txt_toolbar_title.text = dirName

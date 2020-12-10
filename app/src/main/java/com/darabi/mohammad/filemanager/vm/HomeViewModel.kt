@@ -1,15 +1,16 @@
 package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
-import androidx.annotation.StringRes
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.model.Directory
+import com.darabi.mohammad.filemanager.model.StorageItem
+import com.darabi.mohammad.filemanager.util.storage.StorageManager
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
 
 open class HomeViewModel @Inject constructor (
     private val app: Application,
-    private val volumeManager: VolumeManager
+    private val storageManager: StorageManager
 ) : BaseViewModel(app) {
 
     protected companion object {
@@ -23,7 +24,5 @@ open class HomeViewModel @Inject constructor (
         val PICTURES = R.string.pictures to R.drawable.ic_settings_black
     }
 
-    fun getPrimaryExternalStorageVolume() = volumeManager.getPrimaryExternalStprageVolume().run {
-        DirItem.Item(this.name, this.path, itemImageRes = PRIMARY_EXTERNAL_STORAGE_ICON)
-    }
+    fun getStorages(): List<StorageItem> = storageManager.storages()
 }

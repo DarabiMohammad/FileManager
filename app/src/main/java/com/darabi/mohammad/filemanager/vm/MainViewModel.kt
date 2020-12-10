@@ -2,9 +2,8 @@ package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.darabi.mohammad.filemanager.model.BaseItem
+import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
-import com.darabi.mohammad.filemanager.util.storage.OnRemovableStorageAttachmentistener
 import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,24 +12,36 @@ import javax.inject.Singleton
 class MainViewModel @Inject constructor (
     private val app: Application,
     private val volumeManager: VolumeManager
-) : BaseViewModel(app), OnRemovableStorageAttachmentistener {
+) : BaseViewModel(app) {
 
-    val removableVolumes = MutableLiveData<ArrayList<BaseItem>>()
-    val onPermissionDialogDescButtonClick = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
+    val primaryStorageLiveData by lazy { MutableLiveData<PrimaryExternalStorage>() }
+    val secondaryStorageLiveData by lazy { MutableLiveData<SecondaryExternalStorage>() }
+    val drawerPrimaryStorageLiveData by lazy { MutableLiveData<PrimaryStorage>() }
+    val drawerSecondaryStorageLiveData by lazy { MutableLiveData<SecondaryStorage>() }
+    val drawerCategoryLiveData by lazy { MutableLiveData<Category>() }
+    val drawerInstalledAppsLiveData by lazy { MutableLiveData<InstalledApps>() }
+    val drawerSettingsLiveData by lazy { MutableLiveData<Settings>() }
+
+    val permissionDialoLiveData = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
     val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
     val onSelectAllClick = MutableLiveData<Boolean>()
     val onDeleteClicked = MutableLiveData<Boolean>()
 
-    init {
-//        volumeManager.otgConnectionCallback = this
-    }
-
-    override fun onAttachmentChange(msg: String) {
-//        removableStorages.value = volumeManager.getRemovableVolumes()
-    }
-
     override fun onCleared() {
-        volumeManager.onDestroy()
+//        volumeManager.onDestroy()
         super.onCleared()
+    }
+
+    fun onStorageClick(storage: StorageItem) = when(storage) {
+        is PrimaryExternalStorage -> primaryStorageLiveData.value = storage
+        else -> secondaryStorageLiveData.value = storage as SecondaryExternalStorage
+    }
+
+    fun onDrawerItemClick(drawerItem: DrawerItem) = when(drawerItem) {
+        is PrimaryStorage -> drawerPrimaryStorageLiveData.value = drawerItem
+        is SecondaryStorage -> drawerSecondaryStorageLiveData.value = drawerItem
+        is Category -> drawerCategoryLiveData.value = drawerItem
+        is InstalledApps -> drawerInstalledAppsLiveData.value = drawerItem
+        else -> drawerSettingsLiveData.value = drawerItem as Settings
     }
 }

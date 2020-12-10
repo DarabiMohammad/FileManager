@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.model.StorageItem
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.view.adapter.HomeRecyclerAdapter
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class HomeFragment @Inject constructor(
         private val howeViewModel: HomeViewModel,
         private val adapter: HomeRecyclerAdapter
-) : BaseFragment(R.layout.fragment_home), BaseAdapterCallback<DirItem.Item> {
+) : BaseFragment(R.layout.fragment_home), BaseAdapterCallback<StorageItem> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
@@ -26,21 +26,10 @@ class HomeFragment @Inject constructor(
 
         adapter.apply {
             callback = this@HomeFragment
-            setSource(listOf(howeViewModel.getPrimaryExternalStorageVolume()))
+            setSource(howeViewModel.getStorages())
         }
         rcv_storage.adapter = adapter
-        observeViewModel()
     }
 
-    private fun observeViewModel() {
-
-        viewModel.removableVolumes.observe(viewLifecycleOwner, {
-//            adapter.addSource(it, adapter.itemCount)
-        })
-    }
-
-    override fun onItemClick(item: DirItem.Item) {
-        viewModel.onItemClick.value = item
-    }
-
+    override fun onItemClick(item: StorageItem) = viewModel.onStorageClick(item)
 }

@@ -1,7 +1,5 @@
 package com.darabi.mohammad.filemanager.view.adapter.checkable
 
-import android.util.Log
-import com.darabi.mohammad.filemanager.model.DirItem
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 

@@ -1,8 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.dialog
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -60,12 +58,12 @@ class PermissionDescriptionDialog @Inject constructor(
     private fun onOkButtonClick() {
         this.dismiss()
         val buttonAction = if (type == DialogType.SETTINGS_TYPE) DialogAction.ACTION_OPEN_SETTINGS else DialogAction.ACTION_OK
-        viewModel.onPermissionDialogDescButtonClick.value = buttonAction
+        viewModel.permissionDialoLiveData.value = buttonAction
     }
 
     private fun onExitButtonClick() {
         this.dismiss()
-        viewModel.onPermissionDialogDescButtonClick.value = DialogAction.ACTION_EXIT
+        viewModel.permissionDialoLiveData.value = DialogAction.ACTION_EXIT
     }
 
     fun detailedDialog(): PermissionDescriptionDialog {

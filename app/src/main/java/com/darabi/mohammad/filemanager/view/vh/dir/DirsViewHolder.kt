@@ -7,16 +7,17 @@ import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.DirItem
+import com.darabi.mohammad.filemanager.model.BaseItem
+import com.darabi.mohammad.filemanager.model.FileItem
 import com.darabi.mohammad.filemanager.view.adapter.checkable.CheckableAdapter
 import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsAdapterCallback
 import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
 
 class DirsViewHolder constructor(
         private val view: View,
-        private val dirsAdapterCallback: DirsAdapterCallback<DirItem>,
-        checkableAdapter: CheckableAdapter<DirItem>
-) : CheckableViewHolder<DirItem>(view, checkableAdapter) {
+        private val dirsAdapterCallback: DirsAdapterCallback<FileItem>,
+        checkableAdapter: CheckableAdapter<BaseItem>
+) : CheckableViewHolder<BaseItem>(view, checkableAdapter) {
 
     private val title: TextView = view.findViewById(R.id.txt_rcv_item_dir_name)
     private val image: ImageView = view.findViewById(R.id.img_rcv_item_dir_icon)
@@ -30,10 +31,10 @@ class DirsViewHolder constructor(
         popupMenu.inflate(R.menu.menu_dir_item)
     }
 
-    override fun bindModel(model: DirItem, position: Int) {
-        if(model is DirItem.Item) {
+    override fun bindModel(model: BaseItem, position: Int) {
+        if(model is FileItem) {
             super.bindModel(model, position)
-            title.text = model.itemName
+            title.text = model.name
             image.setOnClickListener { notifyItemCheckedStateChanged(position) }
             imageMore.setOnClickListener {
                 popupMenu.setOnMenuItemClickListener {menuItem ->
@@ -46,7 +47,7 @@ class DirsViewHolder constructor(
                 }
                 popupMenu.show()
             }
-            glide.asDrawable().load(model.itemImageRes).into(image)
+            glide.asDrawable().load(model.icon).into(image)
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }
     }

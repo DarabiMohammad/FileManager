@@ -30,21 +30,25 @@ class SettingsFragment @Inject constructor(
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        Log.d("test","==================onSaveInstanceState Settings Fragment")
     }
 
-    override fun onBackPressed() {
-        if(childFragmentManager.backStackEntryCount > 0)
-            childFragmentManager.popBackStack()
-        else super.onBackPressed()
-    }
+    override fun onBackPressed() =
+            if(childFragmentManager.backStackEntryCount > 0)
+                childFragmentManager.popBackStack()
+            else super.onBackPressed()
 
     private fun observeViewModel() {}
 
     private fun initViews() {
         txt_appearance.setOnClickListener(this)
-        switch_show_hidden_files.setOnCheckedChangeListener(this)
-        switch_split_contents.setOnCheckedChangeListener(this)
+        switch_show_hidden_files.run {
+            this.isChecked = settingsViewModel.shouldShowHiddenFiles()
+            this.setOnCheckedChangeListener(this@SettingsFragment)
+        }
+        switch_split_contents.run {
+            this.isChecked = settingsViewModel.shouldShowSplitViews()
+            this.setOnCheckedChangeListener(this@SettingsFragment)
+        }
     }
 
     override fun onClick(view: View?) = when(view?.id) {
@@ -53,8 +57,8 @@ class SettingsFragment @Inject constructor(
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) = when(buttonView?.id) {
-        R.id.switch_show_hidden_files -> {}
-        R.id.switch_split_contents -> {}
+        R.id.switch_show_hidden_files -> settingsViewModel.setShowHiddenFiles(isChecked)
+        R.id.switch_split_contents -> settingsViewModel.setShowSplitViews(isChecked)
         else -> {}
     }
 }

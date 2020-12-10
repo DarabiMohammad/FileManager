@@ -65,7 +65,7 @@ class PermissionManager @Inject constructor(private val prefsManager: PrefsManag
         ActivityCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
 
     private fun isFirstTime(permission: String) = prefsManager.isAskedPermissionBefore(permission).also {
-        if(it) prefsManager.setFirstAskFlagForPermission(permission)
+        if(it) prefsManager.setFirstAskPermissionFlag(permission)
     }
 
     interface PermissionManagerCallback {

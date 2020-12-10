@@ -1,13 +1,25 @@
 package com.darabi.mohammad.filemanager.model
 
-sealed class DrawerItem {
+import androidx.annotation.DrawableRes
 
-    object Divider: DrawerItem()
+interface BaseDrawerItem : Item
 
-    data class Item(
-            override val itemName: String,
-            override val itemPath: String,
-            override val itemType: ItemType = ItemType.DRAWER_ITEM_CATEGORY,
-            override val itemImageRes: Int?
-    ) : DrawerItem(), BaseItem
+interface DrawerItem : BaseDrawerItem {
+
+    val name: String
+
+    @get:DrawableRes
+    val icon: Int
 }
+
+object Divider : BaseDrawerItem
+
+data class PrimaryStorage(override val name: String, override val icon: Int) : DrawerItem
+
+data class SecondaryStorage(override val name: String, override val icon: Int) : DrawerItem
+
+data class Category(override val name: String, override val icon: Int) : DrawerItem
+
+data class InstalledApps(override val name: String, override val icon: Int) : DrawerItem
+
+data class Settings(override val name: String, override val icon: Int) : DrawerItem
