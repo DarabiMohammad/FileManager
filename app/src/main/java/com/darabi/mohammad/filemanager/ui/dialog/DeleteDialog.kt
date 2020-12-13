@@ -7,7 +7,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
-import com.darabi.mohammad.filemanager.vm.ViewModelFactory
+import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_delete.*
 import javax.inject.Inject
 

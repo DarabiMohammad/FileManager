@@ -35,6 +35,10 @@ class DirsListViewModel @Inject constructor (
         storageManager.getFiles(position)
     }
 
+    fun upToPervious() = launchInViewModelScope(filesLiveData) {
+        storageManager.backToPerviousFolder()
+    }
+
     private inline fun <T> launchInViewModelScope(liveData: MutableLiveData<Result<T>>, crossinline function: suspend () -> Result<T>) = viewModelScope.launch {
         liveData.value = loading()
         liveData.value = function()

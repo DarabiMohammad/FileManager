@@ -10,7 +10,7 @@ import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.invisible
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
-import com.darabi.mohammad.filemanager.vm.ViewModelFactory
+import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_new_file.*
 import javax.inject.Inject
 

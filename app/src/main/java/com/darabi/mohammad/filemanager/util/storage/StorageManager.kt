@@ -18,15 +18,11 @@ class StorageManager @Inject constructor(
     // todo : change this method body for returning only available storages
     fun storages(): List<StorageItem> = listOf(primaryStorageManager.storage, secondaryStorageManager.storage)
 
-    suspend fun getPrimaryStorageRootFiles(): Result<ArrayList<BaseItem>> = safeSuspendCall { primaryStorageManager.getFiles() }
+    suspend fun getPrimaryStorageRootFiles(): Result<ArrayList<BaseItem>> = primaryStorageManager.getFiles()
 
-    suspend fun getSecondaryStorageRootFiles(): Result<ArrayList<BaseItem>> = safeSuspendCall { secondaryStorageManager.getFiles() }
+    suspend fun getSecondaryStorageRootFiles(): Result<ArrayList<BaseItem>> = secondaryStorageManager.getFiles()
 
-    suspend fun getFiles(position: Int): Result<List<BaseItem>> = safeSuspendCall { primaryStorageManager.getFiles(position) }
+    suspend fun getFiles(position: Int): Result<List<BaseItem>> = primaryStorageManager.getFiles(position)
 
-    private suspend inline fun <T> safeSuspendCall(crossinline function: suspend () -> BaseResult<T>): Result<T> = try {
-        withContext(Dispatchers.IO) { Result.success(function().result!!) }
-    } catch (exception: Exception) {
-        withContext(Dispatchers.Main) { Result.error(throwable = exception) }
-    }
+    suspend fun backToPerviousFolder(): Result<List<BaseItem>> = primaryStorageManager.getFiles(primaryStorageManager.perviousFiles)
 }

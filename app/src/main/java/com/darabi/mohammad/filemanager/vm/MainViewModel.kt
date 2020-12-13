@@ -4,14 +4,12 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
-import com.darabi.mohammad.filemanager.util.storage.VolumeManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MainViewModel @Inject constructor (
     private val app: Application,
-    private val volumeManager: VolumeManager
 ) : BaseViewModel(app) {
 
     val primaryStorageLiveData by lazy { MutableLiveData<PrimaryExternalStorage>() }
@@ -26,11 +24,6 @@ class MainViewModel @Inject constructor (
     val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
     val onSelectAllClick = MutableLiveData<Boolean>()
     val onDeleteClicked = MutableLiveData<Boolean>()
-
-    override fun onCleared() {
-//        volumeManager.onDestroy()
-        super.onCleared()
-    }
 
     fun onStorageClick(storage: StorageItem) = when(storage) {
         is PrimaryExternalStorage -> primaryStorageLiveData.value = storage

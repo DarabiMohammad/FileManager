@@ -12,11 +12,9 @@ import javax.inject.Inject
 class SecondaryExternalStorageManager @Inject constructor(private val application: Application) : AbstractStorageManager() {
 
     override val storageName: String get() = application.getString(R.string.sd_card)
-
     override val storage: StorageItem get() = SecondaryExternalStorage(storageName)
-    override val filesTree: DirectoryHolder by lazy { initStorageTree(Environment.getExternalStorageDirectory().path) }
 
-    override suspend fun getFiles(position: Int): Result<ArrayList<BaseItem>> {
-        return Result.success(arrayListOf())
-    }
+    init { initStorageTree() }
+
+    override fun initStoragePath(): String? = null
 }

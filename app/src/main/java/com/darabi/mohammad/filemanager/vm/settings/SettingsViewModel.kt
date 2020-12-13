@@ -10,11 +10,11 @@ open class SettingsViewModel @Inject constructor(
     private val prefsManager: PrefsManager
 ) : BaseViewModel(app) {
 
-    fun setShowHiddenFiles(shouldShow: Boolean) = prefsManager.setHiddenModeEnable(shouldShow)
+    fun setShowHiddenFiles(isEnabled: Boolean) = prefsManager.setHiddenModeEnable(isEnabled)
 
     fun shouldShowHiddenFiles(): Boolean = prefsManager.isHiddenModeEnabled()
 
-    fun setShowSplitViews(shouldShowSplitViews: Boolean) = prefsManager.setSplitModeEnable(shouldShowSplitViews)
+    fun setShowSplitViews(isEnabled: Boolean) = prefsManager.setSplitModeEnable(isEnabled)
 
     fun shouldShowSplitViews(): Boolean = prefsManager.isSplitModeEnabled()
 }

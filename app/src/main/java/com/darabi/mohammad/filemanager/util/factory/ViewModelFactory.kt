@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.vm
+package com.darabi.mohammad.filemanager.util.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

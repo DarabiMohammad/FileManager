@@ -6,7 +6,7 @@ import android.widget.RadioGroup
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
-import com.darabi.mohammad.filemanager.vm.ViewModelFactory
+import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.dialog_theme_selection.*
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.ui
+package com.darabi.mohammad.filemanager.util.factory
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory

@@ -1,13 +1,11 @@
 package com.darabi.mohammad.filemanager.ui.fragment.dirs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.BaseItem
-import com.darabi.mohammad.filemanager.model.Directory
-import com.darabi.mohammad.filemanager.model.FileItem
-import com.darabi.mohammad.filemanager.model.Status
+import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
@@ -18,6 +16,7 @@ import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
+import java.lang.IndexOutOfBoundsException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,9 +56,15 @@ class DirsListFragment @Inject constructor (
         if (item is Directory) dirsListViewModel.getFiles(item.treePosition)
     }
 
+    override fun onBackPressed() {
+        dirsListViewModel.upToPervious()
+    }
+
     fun getPerimaryStorageFiles() = dirsListViewModel.getPrimaryStorageRootFiles()
 
     fun getSecondaryStorageFiles() = dirsListViewModel.getSecondaryStorageRootFiles()
+
+    fun getFilesForCategory(category: Category) {}
 
     private fun initViews() {
         btn_fab.setOnClickListener(this)
@@ -74,7 +79,10 @@ class DirsListFragment @Inject constructor (
                 Status.SUCCESS -> {
                     if(it.result!!.isNotEmpty()) adapter.setSource(it.result).also { rcv_dirs.fadeIn() } else rcv_dirs.fadeOut()
                 }
-                Status.ERROR -> {}
+                Status.ERROR -> {
+                    if (it.throwable is IndexOutOfBoundsException) throw it.throwable
+                    super.onBackPressed()
+                }
             }
         })
     }

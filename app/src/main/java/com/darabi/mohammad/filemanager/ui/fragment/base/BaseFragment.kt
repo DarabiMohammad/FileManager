@@ -22,5 +22,5 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
         Log.d("test","================onSaveInstanceState BaseFragment")
     }
 
-    open fun onBackPressed() = activity?.let { if(it is MainActivity) it.onFragmentBackPressed() }
+    open fun onBackPressed() { activity?.let { if(it is MainActivity) it.onFragmentBackPressed() } }
 }

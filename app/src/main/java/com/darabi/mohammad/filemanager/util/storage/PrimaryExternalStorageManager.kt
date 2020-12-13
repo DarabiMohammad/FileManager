@@ -16,40 +16,10 @@ import javax.inject.Inject
 class PrimaryExternalStorageManager @Inject constructor(private val application: Application) : AbstractStorageManager() {
 
     override val storageName: String get() = application.getString(R.string.internal_storage)
-
     override val storage: StorageItem get() = PrimaryExternalStorage(storageName)
-    override val filesTree: DirectoryHolder by lazy { initStorageTree(getExternalStorageDirectory().path) }
 
-    override suspend fun getFiles(position: Int): Result<ArrayList<BaseItem>> = filesAt(position)
+    init { initStorageTree() }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Handles Instantiation Of Primary External Storage In Different Android Api Levels By Calling
-     * Appropreate Method For Each Api Level.
-     *
-     * @return Primary External Storage Path And Name Through Directory Data Holder Class.
-     */
-//    private fun initExternalStorage(): Directory = getExternalStorageInOldDevice().also { initStorageTree(it.path) }
-//
-//    @Suppress("DEPRECATION")
-//    private fun getExternalStorageInOldDevice(): Directory = Directory(storageName, getExternalStorageDirectory().path, PRIMARY_EXTERNAL_STORAGE_POSITION)
-
-    private fun files(files: List<File>): List<File> = files.filter { it.isFile }
-
-    private fun folders(files: List<File>): List<File> = files.filter { it.isDirectory }
-
-    private fun getFileName(path: String): String = path.substring(path.lastIndexOf(File.separator) + 1)
+    @Suppress("DEPRECATION")
+    override fun initStoragePath(): String? = getExternalStorageDirectory().path
 }
