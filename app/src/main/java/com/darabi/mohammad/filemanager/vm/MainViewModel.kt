@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor (
     val drawerInstalledAppsLiveData by lazy { MutableLiveData<InstalledApps>() }
     val drawerSettingsLiveData by lazy { MutableLiveData<Settings>() }
 
-    val permissionDialoLiveData = MutableLiveData<PermissionDescriptionDialog.DialogAction>()
+    val permissionDialoLiveData = MutableLiveData<PermissionDescriptionDialog.Action>()
     val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
     val onSelectAllClick = MutableLiveData<Boolean>()
     val onDeleteClicked = MutableLiveData<Boolean>()

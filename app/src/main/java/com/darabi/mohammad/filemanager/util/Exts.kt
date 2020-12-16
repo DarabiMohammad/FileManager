@@ -10,7 +10,6 @@ import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseResult
@@ -24,7 +23,7 @@ fun Application.makeToast(message: String) = Toast.makeText(this, message, Toast
 
 private fun beginTransaction(
         fragmentManager: FragmentManager, containerId: Int, fragment: Fragment, addToBackStack: Boolean, isReplace: Boolean
-){
+) {
     if(fragment.isAdded) return
     else fragmentManager.beginTransaction().also {
         if(isReplace) {
@@ -38,7 +37,7 @@ private fun beginTransaction(
             else
                 it.add(containerId, fragment, fragment.tag)
         }
-    }.commit()
+    }.commitAllowingStateLoss()
 }
 
 fun AppCompatActivity.navigateTo(

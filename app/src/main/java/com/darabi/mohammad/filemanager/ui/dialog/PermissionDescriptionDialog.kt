@@ -17,7 +17,7 @@ class PermissionDescriptionDialog @Inject constructor(
     override val dialogTAG: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_permission_description
 
-    enum class DialogAction { ACTION_OK, ACTION_OPEN_SETTINGS, ACTION_EXIT }
+    enum class Action { ACTION_OK, ACTION_OPEN_SETTINGS, ACTION_EXIT }
     private enum class DialogType { COMMON_TYPE, DETAILED_TYPE, SETTINGS_TYPE }
 
     private val viewModel: MainViewModel by viewModels { viewModelFactory }
@@ -54,13 +54,13 @@ class PermissionDescriptionDialog @Inject constructor(
 
     private fun onOkButtonClick() {
         this.dismiss()
-        val buttonAction = if (type == DialogType.SETTINGS_TYPE) DialogAction.ACTION_OPEN_SETTINGS else DialogAction.ACTION_OK
+        val buttonAction = if (type == DialogType.SETTINGS_TYPE) Action.ACTION_OPEN_SETTINGS else Action.ACTION_OK
         viewModel.permissionDialoLiveData.value = buttonAction
     }
 
     private fun onExitButtonClick() {
         this.dismiss()
-        viewModel.permissionDialoLiveData.value = DialogAction.ACTION_EXIT
+        viewModel.permissionDialoLiveData.value = Action.ACTION_EXIT
     }
 
     fun detailedDialog(): PermissionDescriptionDialog {

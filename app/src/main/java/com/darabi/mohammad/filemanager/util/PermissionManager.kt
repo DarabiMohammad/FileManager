@@ -1,10 +1,12 @@
 package com.darabi.mohammad.filemanager.util
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.darabi.mohammad.filemanager.ui.BaseActivity
 import javax.inject.Inject
 
 class PermissionManager @Inject constructor(private val prefsManager: PrefsManager) {
@@ -46,10 +48,15 @@ class PermissionManager @Inject constructor(private val prefsManager: PrefsManag
     fun requestPermissions(group: Permissions, fragment: Fragment) =
         fragment.requestPermissions(group.permissions.toTypedArray(), group.code)
 
-    fun isPermissionsGrant(grantResults: IntArray): Boolean =
+    fun invokeIfPermissionIsGranted(grantResults: IntArray): Boolean =
         (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED).also {
             if (it) callback.onPermissionGranted(function)
         }.also { setAskedFlagForPermission(currentGroup) }
+
+    /**
+     * This Function Must Called Only In Activity's onActivityResult [Activity.onActivityResult].
+     */
+    fun invokeIfPermissionIsGranted(activity: FragmentActivity) = checkPermissionsAndRun(activity, callback, currentGroup, function)
 
     /**
      * This method returns true if the permission asked before but the user denied without checking ‘Never ask again’.
@@ -65,10 +72,10 @@ class PermissionManager @Inject constructor(private val prefsManager: PrefsManag
     private fun isGranted(permission: String, activity: FragmentActivity) =
         ActivityCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
 
-    private fun isFirstTime(permission: String) = prefsManager.isAskedPermissionBefore(permission)
+    private fun isFirstTime(permission: String) = prefsManager.isFirstAskForThisPermission(permission)
 
     private fun setAskedFlagForPermission(group: Permissions) = group.permissions.forEach {
-        if (isFirstTime(it)) prefsManager.setFirstAskPermissionFlag(it)
+        if (isFirstTime(it)) prefsManager.setPermissionAskedFlag(it)
     }
 
     interface PermissionManagerCallback {

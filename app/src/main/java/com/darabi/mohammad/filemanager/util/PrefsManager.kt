@@ -3,8 +3,11 @@ package com.darabi.mohammad.filemanager.util
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PrefsManager @Inject constructor(private val application: Application) {
 
     companion object {
@@ -14,15 +17,15 @@ class PrefsManager @Inject constructor(private val application: Application) {
     private val showHiddenFilesKey = "show_hidden_files_key"
     private val showSplitViewsKey = "show_split_views_key"
 
-    private val prefs: SharedPreferences by lazy { application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) }
+    private val prefs: SharedPreferences
 
-    private val editablePrefs: SharedPreferences.Editor by lazy { prefs.edit() }
+    init { prefs = application.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) }
 
-    private fun putBoolean(key: String, value: Boolean) = editablePrefs.putBoolean(key, value).apply()
+    private fun putBoolean(key: String, value: Boolean) = prefs.edit().putBoolean(key, value).commit()
 
-    fun setFirstAskPermissionFlag(permissionName: String) = putBoolean(permissionName, false)
+    fun setPermissionAskedFlag(permissionName: String) = putBoolean(permissionName, false)
 
-    fun isAskedPermissionBefore(permissionName: String): Boolean = prefs.getBoolean(permissionName, true)
+    fun isFirstAskForThisPermission(permissionName: String): Boolean = prefs.getBoolean(permissionName, true)
 
     fun setHiddenModeEnable(shouldShowHiddenFiles: Boolean) = putBoolean(showHiddenFilesKey, shouldShowHiddenFiles)
 

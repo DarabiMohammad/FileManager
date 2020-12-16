@@ -32,29 +32,3 @@ class DrawerFragment @Inject constructor(
 
     override fun onItemClick(item: DrawerItem) = viewModel.onDrawerItemClick(item)
 }
-//) : BaseFragment(R.layout.fragment_drawer), BaseAdapterCallback<DrawerItem.Item> {
-//
-//    override val fragmentTag: String get() = this.javaClass.simpleName
-//    override val viewModel: MainViewModel by viewModels ({ requireActivity() })
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        adapter.apply {
-//            callback = this@DrawerFragment
-//            setSource(drawerViewModel.getStaticDrawerItems())
-//        }
-//        rcv_nav_items.adapter = adapter
-//        observeAndSetItems()
-//    }
-//
-//    private fun observeAndSetItems() {
-//        viewModel.removableVolumes.observe(viewLifecycleOwner, {
-////            adapter.addSource(it, FIRST_POSITION)
-//        })
-//    }
-//
-//    override fun onItemClick(item: DrawerItem.Item) {
-//        viewModel.onItemClick.value = item
-//    }
-//}

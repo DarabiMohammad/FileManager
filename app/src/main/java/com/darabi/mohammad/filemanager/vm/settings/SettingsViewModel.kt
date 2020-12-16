@@ -7,14 +7,12 @@ import javax.inject.Inject
 
 open class SettingsViewModel @Inject constructor(
     private val app: Application,
-    private val prefsManager: PrefsManager
 ) : BaseViewModel(app) {
+
+    val isHiddenFilesEnabled by lazy { prefsManager.isHiddenModeEnabled() }
+    val isSplitModeEnabled by lazy { prefsManager.isSplitModeEnabled() }
 
     fun setShowHiddenFiles(isEnabled: Boolean) = prefsManager.setHiddenModeEnable(isEnabled)
 
-    fun shouldShowHiddenFiles(): Boolean = prefsManager.isHiddenModeEnabled()
-
     fun setShowSplitViews(isEnabled: Boolean) = prefsManager.setSplitModeEnable(isEnabled)
-
-    fun shouldShowSplitViews(): Boolean = prefsManager.isSplitModeEnabled()
 }

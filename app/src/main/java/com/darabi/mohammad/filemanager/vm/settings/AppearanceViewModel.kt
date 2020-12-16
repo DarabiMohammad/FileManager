@@ -8,8 +8,7 @@ import javax.inject.Inject
 
 class AppearanceViewModel @Inject constructor(
         private val app: Application,
-        private val prefsManager: PrefsManager
-) : SettingsViewModel(app, prefsManager) {
+) : SettingsViewModel(app,) {
 
     val onThemeChange = MutableLiveData<ThemeSelectionDialog.SelectedTheme>()
 }

@@ -92,19 +92,18 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
 
     override fun onBackPressed() = if(layout_drawer.isDrawerOpen(GravityCompat.START))
         closeNavDrawer()
-    else (supportFragmentManager.fragments.last().takeIf { it is BaseFragment } as BaseFragment?)?.onBackPressed() ?: super.onBackPressed()
+    else (supportFragmentManager.fragments.last().takeIf { it is BaseFragment } as BaseFragment?)?.onBackPressed()
+        ?: super.onBackPressed()
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
-        permissionManager.isPermissionsGrant(grantResults).run {
+        permissionManager.invokeIfPermissionIsGranted(grantResults).run {
             if (!this) super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == OPEN_APP_INFO_CODE)
-            permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
-                navigateTo(fragment = dirsListFragment, addToBackStack = true)
-            }
+            permissionManager.invokeIfPermissionIsGranted(this)
+        else super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onFirstAskPermission(permissionGroup: PermissionManager.Permissions) =
@@ -157,7 +156,7 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         })
 
         viewModel.drawerCategoryLiveData.observe(this, {
-            checkPermissionAndDoWithDirsFragment { getFilesForCategory(it) }
+            checkPermissionAndDoWithDirsFragment { getFilesForCategory(it.type) }
         })
 
         viewModel.drawerInstalledAppsLiveData.observe(this, {
@@ -169,10 +168,9 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
         })
 
         viewModel.permissionDialoLiveData.observe(this, {
-            when(it) {
-                PermissionDescriptionDialog.DialogAction.ACTION_OK ->
-                    permissionManager.requestPermissions( this)
-                PermissionDescriptionDialog.DialogAction.ACTION_OPEN_SETTINGS -> openAppInfoScreen()
+            when (it) {
+                PermissionDescriptionDialog.Action.ACTION_OK -> permissionManager.requestPermissions( this)
+                PermissionDescriptionDialog.Action.ACTION_OPEN_SETTINGS -> openAppInfoScreen()
                 else -> closeApp()
             }
         })
@@ -182,16 +180,20 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
                 showSelectionActionMode(it.first, it.second)
             else hideSelectionActionMode()
         })
+
+        viewModel.onFragmentBackPressed.observe(this, {
+            supportFragmentManager.popBackStack()
+        })
     }
 
-    private inline fun checkPermissionAndDoWithDirsFragment(crossinline function: DirsListFragment.() -> Unit) = checkPermissionAndRun {
+    private inline fun checkPermissionAndDoWithDirsFragment(crossinline function: DirsListFragment.() -> Unit) = permissionManager checkAndDo {
         navigateTo(fragment = dirsListFragment, addToBackStack = true).also { dirsListFragment.function() }
-    }.also { closeNavDrawer() }
+    }
 
-    private inline fun checkPermissionAndRun(crossinline function: () -> Unit) =
-        permissionManager.checkPermissionsAndRun(this, this, PermissionManager.Permissions.Storage) {
+    private inline infix fun PermissionManager.checkAndDo(crossinline function: () -> Unit) =
+        this.checkPermissionsAndRun(this@MainActivity, this@MainActivity, PermissionManager.Permissions.Storage) {
             function.invoke()
-        }
+        }.also { closeNavDrawer() }
 
     private fun showSelectionActionMode(checkedItemCount: Int, isSelectedAll: Boolean) {
         img_toggle.fadeOut()
@@ -246,11 +248,4 @@ class MainActivity @Inject constructor() : BaseActivity(), HasAndroidInjector,
     private fun unlockNavDrawer() = layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
     private fun delete() { viewModel.onDeleteClicked.value = true }
-
-    fun onFragmentBackPressed() {
-        supportFragmentManager.fragments.last().also {
-            if(it is SettingsFragment) hideBackButton()
-        }
-        supportFragmentManager.popBackStack()
-    }
 }

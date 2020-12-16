@@ -7,6 +7,7 @@ import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.PrimaryExternalStorage
 import com.darabi.mohammad.filemanager.model.Result
 import com.darabi.mohammad.filemanager.model.StorageItem
+import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
 
@@ -16,10 +17,11 @@ import javax.inject.Inject
 class PrimaryExternalStorageManager @Inject constructor(private val application: Application) : AbstractStorageManager() {
 
     override val storageName: String get() = application.getString(R.string.internal_storage)
-    override val storage: StorageItem get() = PrimaryExternalStorage(storageName)
-
-    init { initStorageTree() }
 
     @Suppress("DEPRECATION")
-    override fun initStoragePath(): String? = getExternalStorageDirectory().path
+    override val storagePath: String by lazy { getExternalStorageDirectory().path }
+
+    override val storage: StorageItem get() = PrimaryExternalStorage(storageName)
+
+    init { CoroutineScope(SupervisorJob() + Dispatchers.Default).launch { initStorageTree() } }
 }

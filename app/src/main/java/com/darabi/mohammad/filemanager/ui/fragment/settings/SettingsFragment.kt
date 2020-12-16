@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SettingsFragment @Inject constructor(
         private val settingsViewModel: SettingsViewModel,
         private val appearanceFragment: AppearanceFragment
-) : BaseFragment(R.layout.fragment_settings), View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+) : BaseFragment(R.layout.fragment_settings), View.OnClickListener {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels ({ requireActivity() })
@@ -28,10 +28,6 @@ class SettingsFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onBackPressed() =
             if(childFragmentManager.backStackEntryCount > 0)
                 childFragmentManager.popBackStack()
@@ -41,14 +37,8 @@ class SettingsFragment @Inject constructor(
 
     private fun initViews() {
         txt_appearance.setOnClickListener(this)
-        switch_show_hidden_files.run {
-            this.isChecked = settingsViewModel.shouldShowHiddenFiles()
-            this.setOnCheckedChangeListener(this@SettingsFragment)
-        }
-        switch_split_contents.run {
-            this.isChecked = settingsViewModel.shouldShowSplitViews()
-            this.setOnCheckedChangeListener(this@SettingsFragment)
-        }
+        switch_show_hidden_files.isChecked = settingsViewModel.isHiddenFilesEnabled
+        switch_split_contents.isChecked = settingsViewModel.isSplitModeEnabled
     }
 
     override fun onClick(view: View?) = when(view?.id) {
@@ -56,9 +46,13 @@ class SettingsFragment @Inject constructor(
         else -> {}
     }
 
-    override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) = when(buttonView?.id) {
-        R.id.switch_show_hidden_files -> settingsViewModel.setShowHiddenFiles(isChecked)
-        R.id.switch_split_contents -> settingsViewModel.setShowSplitViews(isChecked)
-        else -> {}
+    override fun onPause() {
+        settingsViewModel.apply {
+            if (switch_show_hidden_files.isChecked != isHiddenFilesEnabled)
+                setShowHiddenFiles(switch_show_hidden_files.isChecked)
+            if(switch_split_contents.isChecked != isSplitModeEnabled)
+                setShowSplitViews(switch_split_contents.isChecked)
+        }
+        super.onPause()
     }
 }

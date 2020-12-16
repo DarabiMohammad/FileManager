@@ -12,9 +12,8 @@ import javax.inject.Inject
 class SecondaryExternalStorageManager @Inject constructor(private val application: Application) : AbstractStorageManager() {
 
     override val storageName: String get() = application.getString(R.string.sd_card)
+    override val storagePath: String get() = ""
     override val storage: StorageItem get() = SecondaryExternalStorage(storageName)
 
-    init { initStorageTree() }
-
-    override fun initStoragePath(): String? = null
+//    init { initStorageTree() }
 }

@@ -13,14 +13,5 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
     abstract val viewModel: BaseViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        Log.d("test","================onSaveInstanceState BaseFragment")
-    }
-
-    open fun onBackPressed() { activity?.let { if(it is MainActivity) it.onFragmentBackPressed() } }
+    open fun onBackPressed() { viewModel.onFragmentBackPressed.value = fragmentTag }
 }
