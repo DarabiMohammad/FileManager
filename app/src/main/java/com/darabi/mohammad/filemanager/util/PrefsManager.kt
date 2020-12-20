@@ -3,7 +3,6 @@ package com.darabi.mohammad.filemanager.util
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import javax.inject.Inject
 import javax.inject.Singleton
 

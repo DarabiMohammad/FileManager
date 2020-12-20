@@ -1,6 +1,8 @@
 package com.darabi.mohammad.filemanager.di.module
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -27,9 +29,9 @@ abstract class AppModule {
     companion object {
 
         @Provides
-        fun provideBundle() = Bundle()
+        fun provideBundle(): Bundle = Bundle()
 
         @Provides
-        fun provideHandler() = Handler(Looper.getMainLooper())
+        fun provideHandler(): Handler = Handler(Looper.getMainLooper())
     }
 }

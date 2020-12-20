@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.fragment.dirs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -16,7 +15,7 @@ import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
 import com.darabi.mohammad.filemanager.vm.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
-import java.lang.IndexOutOfBoundsException
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -81,8 +80,14 @@ class DirsListFragment @Inject constructor (
             when (it.status) {
                 Status.LOADING -> {}
                 Status.SUCCESS -> if(it.result!!.isNotEmpty()) adapter.setSource(it.result).also { rcv_dirs.fadeIn() } else rcv_dirs.fadeOut()
-                Status.ERROR -> super.onBackPressed()
+                Status.ERROR -> onError(it.throwable!!)
             }
         })
+    }
+
+    private fun onError(throwable: Throwable) = when (throwable) {
+        is CancellationException -> {}
+        is NullPointerException -> super.onBackPressed()
+        else -> {}
     }
 }

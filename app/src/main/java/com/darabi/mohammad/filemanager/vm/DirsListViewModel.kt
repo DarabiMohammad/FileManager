@@ -9,6 +9,7 @@ import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.model.Result.Companion.loading
 import com.darabi.mohammad.filemanager.util.PrefsManager
 import com.darabi.mohammad.filemanager.util.storage.StorageManager
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -37,7 +38,19 @@ class DirsListViewModel @Inject constructor (
         addDividersIfNeeded(storageManager.backToPerviousFolder())
     }
 
-    fun getFilesForCategory(categoryType: CategoryType) {
+    fun getFilesForCategory(categoryType: CategoryType) = when (categoryType) {
+        CategoryType.DCIM -> launchInViewModelScope(filesLiveData) { addDividersIfNeeded(storageManager.dcimDirectory()) }
+        CategoryType.DOWNLOAD -> launchInViewModelScope(filesLiveData) { addDividersIfNeeded(storageManager.downloadDirectory()) }
+        CategoryType.MOVIES -> launchInViewModelScope(filesLiveData) { addDividersIfNeeded(storageManager.moviesDirectory()) }
+        CategoryType.MUSICS -> launchInViewModelScope(filesLiveData) { addDividersIfNeeded(storageManager.musicsDirectory()) }
+        CategoryType.PICTURES -> launchInViewModelScope(filesLiveData) { addDividersIfNeeded(storageManager.picturesDirectory()) }
+//        CategoryType.QUICK_ACCESS -> {}
+//        CategoryType.RECENT_FILES -> {}
+//        CategoryType.IMAGES -> {}
+//        CategoryType.VIDEOS -> {}
+//        CategoryType.AUDIO -> {}
+//        CategoryType.DOCUMENTS -> {}
+        else -> {}
     }
 
     private inline fun <T> launchInViewModelScope(liveData: MutableLiveData<Result<T>>, crossinline function: suspend () -> Result<T>) = viewModelScope.launch {
@@ -47,6 +60,7 @@ class DirsListViewModel @Inject constructor (
 
     private fun addDividersIfNeeded(filesList: Result<ArrayList<BaseItem>>): Result<ArrayList<BaseItem>> {
         filesList.result?.let { list ->
+
             if (prefsManager.isSplitModeEnabled() && list.isNotEmpty()) {
 
                 list.indexOfFirst { item -> item is Directory }.takeIf { index -> index > -1 }

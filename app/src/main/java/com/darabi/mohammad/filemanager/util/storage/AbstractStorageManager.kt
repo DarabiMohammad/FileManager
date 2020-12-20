@@ -2,30 +2,71 @@ package com.darabi.mohammad.filemanager.util.storage
 
 import com.darabi.mohammad.filemanager.model.*
 import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.CancellationException
 
 abstract class AbstractStorageManager {
 
-    val perviousFiles = -2
+    val perviousFiles = -1
 
-    private val rootFiles = -1
-    private var filesTree: DirectoryHolder? = null
-    private var visitedPositions = mutableListOf<Int>()
-
-    protected abstract val storageName: String
-    protected abstract val storagePath: String
     abstract val storage: StorageItem
 
-    suspend fun getFiles(position: Int = rootFiles): Result<ArrayList<BaseItem>> = coroutineScope {
-        if (filesTree == null)
-            withContext(Default) { initStorageTree() }
-        Result(result = filesAt(position), Status.SUCCESS)
+    protected abstract val rootFiles: Int
+    protected abstract val storageName: String
+    protected abstract val storagePath: String
+
+    protected abstract val dcmiPath: String
+    protected abstract val downloadsPath: String
+    protected abstract val moviesPath: String
+    protected abstract val musicsPath: String
+    protected abstract val picturesPath: String
+
+    protected var filesTree: DirectoryHolder? = null
+
+    protected var dcimDirectoryPosition: Int? = null
+    protected var downloadDctoryPosition: Int? = null
+    protected var moviesDirectoryPosition: Int? = null
+    protected var musicsDirectoryPosition: Int? = null
+    protected var picturesDirectoryPosition: Int? = null
+
+    private var visitedPositions = mutableListOf<Int>()
+    private var lastMediaPosition: Int? = null
+
+    abstract suspend fun dcimDirectory(): Result<ArrayList<BaseItem>>
+
+    abstract suspend fun downloadDirectory(): Result<ArrayList<BaseItem>>
+
+    abstract suspend fun moviesDirectory(): Result<ArrayList<BaseItem>>
+
+    abstract suspend fun musicsDirectory(): Result<ArrayList<BaseItem>>
+
+    abstract suspend fun picturesDirectory(): Result<ArrayList<BaseItem>>
+
+//    abstract suspend fun allImages(): Result<ArrayList<Media>>
+
+    suspend fun getFiles(position: Int = rootFiles): Result<ArrayList<BaseItem>> = runIfFilesTreeInitilized {
+        Result.success(filesAt(position))
     }
 
     protected suspend fun initStorageTree() = coroutineScope {
         File(storagePath).listFiles()?.let { filesTree = DirectoryHolder(storageName, storagePath, rootFiles, initTree(it.sorted())) }
+    }
+
+    protected suspend fun getMediaFiles(position: Int): Result<ArrayList<BaseItem>> = coroutineScope {
+        lastMediaPosition?.let { if (position == it) this.cancel(CancellationException("This Media Directory Already Selected!.")) }
+        visitedPositions.add(rootFiles).also {
+            visitedPositions.add(position)
+            lastMediaPosition = position
+        }.run { Result.success(mapToFileItems(fetchFilesFromFileTree())) }
+    }
+
+    protected suspend inline fun <R> runIfFilesTreeInitilized(crossinline function: suspend () -> R): R = coroutineScope {
+        if (filesTree == null)
+            withContext(Default) { initStorageTree() }
+        function.invoke()
     }
 
     private suspend fun filesAt(position: Int): ArrayList<BaseItem> = coroutineScope {
@@ -34,7 +75,10 @@ abstract class AbstractStorageManager {
 
     private fun addOrRemovePosition(position: Int) = visitedPositions.apply {
         when (position) {
-            perviousFiles -> visitedPositions.removeLast()
+            perviousFiles -> visitedPositions.removeLast().also {
+                if (visitedPositions.size > 1 && visitedPositions.last() == rootFiles)
+                    visitedPositions.removeLast().also { lastMediaPosition = null }
+            }
             rootFiles -> visitedPositions.clear().also { visitedPositions.add(rootFiles) }
             else -> visitedPositions.add(position)
         }
@@ -74,10 +118,22 @@ abstract class AbstractStorageManager {
                 }
                 // todo : implementing all neccessary stufs for sorting items by their name
                 this.addAll(filesList)
-                for(i in this.indices) { this[i].position = i }
+                for(i in this.indices) {
+                    this[i].position = i
+                    initMediaPositions(this[i].path, i)
+                }
             }
             this
         }
+    }
+
+    private fun initMediaPositions(path: String, position: Int) = when (path) {
+        dcmiPath -> dcimDirectoryPosition = position
+        downloadsPath -> downloadDctoryPosition = position
+        moviesPath -> moviesDirectoryPosition = position
+        musicsPath -> musicsDirectoryPosition = position
+        picturesPath -> picturesDirectoryPosition = position
+        else -> null
     }
 
     protected interface FilesTree {

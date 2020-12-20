@@ -21,6 +21,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        manifestPlaceholders[Application.DOCUMENTS_AUTHORITY] = Application.DOCUMENTS_AUTHORITY_VALUE
+
+        buildConfigField("String", Application.DOCUMENTS_AUTHORITY, "\"${Application.DOCUMENTS_AUTHORITY_VALUE}\"")
     }
 
     buildTypes {

@@ -33,3 +33,9 @@ data class File(
     override val icon: Int = R.drawable.ic_file_black,
     override val treePosition: Int
 ): FileItem
+
+//data class Media (
+//    override val name: String,
+//    override val icon: String,
+//    override val treePosition: Int
+//) : FileItem<String>

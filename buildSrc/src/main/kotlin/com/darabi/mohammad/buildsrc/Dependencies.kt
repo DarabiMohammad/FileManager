@@ -9,6 +9,8 @@ object Application {
     const val MIN_SDK_VERSION = 19
     const val TARGET_SDK_VERSION = 30
     const val COMPILE_SDK_VERSION = TARGET_SDK_VERSION
+    const val DOCUMENTS_AUTHORITY = "documents_authority"
+    const val DOCUMENTS_AUTHORITY_VALUE = "${ID}.documents"
 }
 
 object Dependencies {
