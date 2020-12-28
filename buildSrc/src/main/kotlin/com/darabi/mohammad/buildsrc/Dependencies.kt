@@ -3,14 +3,59 @@ package com.darabi.mohammad.buildsrc
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
 object Application {
-    const val ID = "com.darabi.mohammad.filemanager"
+
+    //Core Infos
+    private const val MIN_SDK_VERSION = 19
+    private const val TARGET_SDK_VERSION = 30
+    private const val ID = "com.darabi.mohammad.filemanager"
     const val VERSION_CODE = 1
     const val VERSION_NAME = "1.0.0"
-    const val MIN_SDK_VERSION = 19
-    const val TARGET_SDK_VERSION = 30
     const val COMPILE_SDK_VERSION = TARGET_SDK_VERSION
-    const val DOCUMENTS_AUTHORITY = "documents_authority"
-    const val DOCUMENTS_AUTHORITY_VALUE = "${ID}.documents"
+
+    //Providers
+    private const val PROVIDER_SUFFIX = ".documents"
+    const val PRIMARY_EXT_STPRAGE_PROVIDER = "PRIMARY_EXTERNAL_STPRAGE_PROVIDER"
+    const val PRIMARY_EXTERNAL_STPRAGE_PROVIDER_AUTHORITY = "${ID}.primary_external_storage$PROVIDER_SUFFIX"
+
+    object BuildTypes {
+        const val DEBUG = "debug"
+        const val RELEASE = "release"
+    }
+
+    sealed class Flavor {
+
+        companion object { const val DIMENSION = "api" }
+
+        abstract val minSdkVersion: Int
+        abstract val targetSdkVersion: Int
+
+        val flavorName: String by lazy { "$DIMENSION$targetSdkVersion" }
+        val srcDirPath: String by lazy { "src\\$flavorName\\java" }
+        //todo md remove this field if needed
+        val resDirPath: String by lazy { "src\\$flavorName\\res" }
+        val applicationId: String by lazy { "$ID.$flavorName" }
+
+        object Api22 : Flavor() {
+            override val minSdkVersion = MIN_SDK_VERSION
+            override val targetSdkVersion = 22
+        }
+
+        object Api29 : Flavor() {
+            override val minSdkVersion = 23
+            override val targetSdkVersion = 29
+        }
+    }
+}
+
+object Plugin {
+
+    //Android Gradle Plugin Version
+    private const val AGP_VERSION = "4.1.1"
+    //Kotlin Plugin Version
+    private const val KOTLIN_PLUGIN_VERSION = "1.4.10"
+
+    const val ANDROID_GRADLE_PLUGIN = "com.android.tools.build:gradle:${AGP_VERSION}"
+    const val KOTLIN_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_PLUGIN_VERSION}"
 }
 
 object Dependencies {
@@ -18,8 +63,6 @@ object Dependencies {
     private const val IMPLEMENTATION = "implementation"
     private const val KAPT = "kapt"
 
-    private const val KOTLIN_VERSION = "4.0.1"
-    private const val ANDROID_PLUGIN_VERSION = "1.4.10"
     private const val CORE_VERSION = "1.3.1"
     private const val APPCOMPAT_VERSION = "1.1.0"
     private const val COROUTINES_VERSION = "1.3.3"
@@ -28,9 +71,6 @@ object Dependencies {
     private const val LIFECYCLE_VERSION = "2.2.0"
     private const val DAGGER_VERSION = "2.27"
     private const val GLIDE_VERSION = "4.11.0"
-
-    const val TOOLS_PLUGIN = "com.android.tools.build:gradle:${KOTLIN_VERSION}"
-    const val KOTLIN_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:${ANDROID_PLUGIN_VERSION}"
 
     private val libs = listOf (
         // core libs

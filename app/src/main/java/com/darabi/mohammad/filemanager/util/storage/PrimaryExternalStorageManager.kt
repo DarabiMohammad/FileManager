@@ -5,10 +5,7 @@ import android.os.Environment
 import android.os.Environment.getExternalStorageDirectory
 import android.os.Environment.getExternalStoragePublicDirectory
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.BaseItem
-import com.darabi.mohammad.filemanager.model.PrimaryExternalStorage
-import com.darabi.mohammad.filemanager.model.Result
-import com.darabi.mohammad.filemanager.model.StorageItem
+import com.darabi.mohammad.filemanager.model.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Job
@@ -40,23 +37,23 @@ class PrimaryExternalStorageManager @Inject constructor(private val application:
     }
 
     override suspend fun dcimDirectory(): Result<ArrayList<BaseItem>> = runIfFilesTreeInitilized {
-        getMediaFiles(dcimDirectoryPosition!!)
+        getMediaDirectory(dcimDirectoryPosition!!)
     }
 
     override suspend fun downloadDirectory(): Result<ArrayList<BaseItem>> = runIfFilesTreeInitilized {
-        getMediaFiles(downloadDctoryPosition!!)
+        getMediaDirectory(downloadDctoryPosition!!)
     }
 
     override suspend fun moviesDirectory(): Result<ArrayList<BaseItem>> = runIfFilesTreeInitilized {
-        getMediaFiles(moviesDirectoryPosition!!)
+        getMediaDirectory(moviesDirectoryPosition!!)
     }
 
     override suspend fun musicsDirectory(): Result<ArrayList<BaseItem>> = runIfFilesTreeInitilized {
-        getMediaFiles(musicsDirectoryPosition!!)
+        getMediaDirectory(musicsDirectoryPosition!!)
     }
 
     override suspend fun picturesDirectory(): Result<ArrayList<BaseItem>> = runIfFilesTreeInitilized {
-        getMediaFiles(picturesDirectoryPosition!!)
+        getMediaDirectory(picturesDirectoryPosition!!)
     }
 
     @Suppress("DEPRECATION")

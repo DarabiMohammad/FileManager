@@ -2,6 +2,7 @@ package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.darabi.mohammad.filemanager.R
@@ -22,6 +23,8 @@ class DirsListViewModel @Inject constructor (
 
     val filesLiveData by lazy { MutableLiveData<Result<List<BaseItem>>>() }
 
+    val singleFileLiveData by lazy { MutableLiveData<Result<FileItem>>() }
+
     fun getPrimaryStorageRootFiles() = launchInViewModelScope(filesLiveData) {
         addDividersIfNeeded(storageManager.getPrimaryStorageRootFiles())
     }
@@ -36,6 +39,10 @@ class DirsListViewModel @Inject constructor (
 
     fun upToPervious() = launchInViewModelScope(filesLiveData) {
         addDividersIfNeeded(storageManager.backToPerviousFolder())
+    }
+
+    fun createFile(fileName: String) = launchInViewModelScope(singleFileLiveData) {
+        storageManager.createFile(fileName)
     }
 
     fun getFilesForCategory(categoryType: CategoryType) = when (categoryType) {

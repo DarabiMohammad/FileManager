@@ -47,25 +47,11 @@ class NewFileDialog @Inject constructor (
             edt_file_name.setText(R.string.simple_txt_format)
     }
 
-    private fun onCreateButtonClick() {
-        edt_file_name.text.toString().also {
-//            viewModel.createNewFileOrFolder(it, type == Type.FILE_TYPE)
-        }
-        for(i in 1..41) {
-//            viewModel.createNewFileOrFolder("file$i", type == Type.FILE_TYPE)
-        }
-        dismiss()
-    }
+    private fun onCreateButtonClick() = viewModel.createFile(edt_file_name.text.toString()).also { dismiss() }
 
-    fun fileType(): NewFileDialog {
-        type = Type.FILE_TYPE
-        return this
-    }
+    fun forFile(): NewFileDialog = this.apply { type = Type.FILE_TYPE }
 
-    fun folderType(): NewFileDialog {
-        type = Type.FOLDER_TYPE
-        return this
-    }
+    fun forFolder(): NewFileDialog = this.apply { type = Type.FOLDER_TYPE }
 
     override fun show(manager: FragmentManager, tag: String?) {
         if(type == null) throw IllegalAccessException("$dialogTAG : type must not be null.")

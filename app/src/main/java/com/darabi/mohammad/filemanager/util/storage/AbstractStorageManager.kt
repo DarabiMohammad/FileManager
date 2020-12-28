@@ -51,12 +51,26 @@ abstract class AbstractStorageManager {
         Result.success(filesAt(position))
     }
 
+    suspend fun createFile(fileName: String): Result<FileItem> = coroutineScope {
+        val currentDirectory = fetchFilesFromFileTree()
+        val newFile = DirectoryHolder(fileName, "${currentDirectory.path}/$fileName", rootFiles, arrayListOf())
+        currentDirectory.subFiles.add(newFile)
+        currentDirectory.subFiles.sortedWith { o1, o2 -> o1.name.compareTo(o2.name) }
+        for(i in currentDirectory.subFiles.indices) { currentDirectory.subFiles[i].position = i }
+        Result.loading()
+    }
+
     protected suspend fun initStorageTree() = coroutineScope {
         File(storagePath).listFiles()?.let { filesTree = DirectoryHolder(storageName, storagePath, rootFiles, initTree(it.sorted())) }
     }
 
-    protected suspend fun getMediaFiles(position: Int): Result<ArrayList<BaseItem>> = coroutineScope {
-        lastMediaPosition?.let { if (position == it) this.cancel(CancellationException("This Media Directory Already Selected!.")) }
+    protected suspend fun getMediaDirectory(position: Int): Result<ArrayList<BaseItem>> = coroutineScope {
+        coroutineScope {
+            lastMediaPosition?.let {
+                if (position == it)
+                    this.cancel(CancellationException("This Media Directory Already Selected!."))
+            }
+        }
         visitedPositions.add(rootFiles).also {
             visitedPositions.add(position)
             lastMediaPosition = position
@@ -143,7 +157,15 @@ abstract class AbstractStorageManager {
         var position: Int
     }
 
-    protected data class FileHolder(override val name: String, override val path: String, override var position: Int) : FilesTree
+    protected data class FileHolder(override val name: String, override val path: String, override var position: Int) : FilesTree {
+        override fun toString(): String = name
+    }
 
-    protected data class DirectoryHolder(override val name: String, override val path: String, override var position: Int, val subFiles: ArrayList<FilesTree>) : FilesTree
+    protected data class DirectoryHolder(override val name: String,
+                                         override val path: String,
+                                         override var position: Int,
+                                         val subFiles: ArrayList<FilesTree>
+                                         ) : FilesTree {
+        override fun toString(): String = name
+                                         }
 }

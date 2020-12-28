@@ -13,33 +13,59 @@ android {
     compileSdkVersion(Application.COMPILE_SDK_VERSION)
 
     defaultConfig {
-        applicationId = Application.ID
-        minSdkVersion(Application.MIN_SDK_VERSION)
-        targetSdkVersion(Application.TARGET_SDK_VERSION)
         versionCode = Application.VERSION_CODE
         versionName = Application.VERSION_NAME
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-
-        manifestPlaceholders[Application.DOCUMENTS_AUTHORITY] = Application.DOCUMENTS_AUTHORITY_VALUE
-
-        buildConfigField("String", Application.DOCUMENTS_AUTHORITY, "\"${Application.DOCUMENTS_AUTHORITY_VALUE}\"")
     }
 
     buildTypes {
-        getByName("release") {
+        getByName(Application.BuildTypes.RELEASE) {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
-        getByName("debug") {
+        getByName(Application.BuildTypes.DEBUG) {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
+    }
+
+    flavorDimensions(Application.Flavor.DIMENSION)
+
+    productFlavors {
+
+        fun createFlavor(flavor: Application.Flavor) {
+
+            create(flavor.flavorName) {
+
+                applicationId = flavor.applicationId
+                minSdkVersion(flavor.minSdkVersion)
+                targetSdkVersion(flavor.targetSdkVersion)
+
+//                manifestPlaceholders[Application.PRIMARY_EXT_STPRAGE_PROVIDER] = Application.PRIMARY_EXTERNAL_STPRAGE_PROVIDER_AUTHORITY
+//                buildConfigField("String", Application.PRIMARY_EXT_STPRAGE_PROVIDER, "\"${Application.PRIMARY_EXTERNAL_STPRAGE_PROVIDER_AUTHORITY}\"")
+            }
+        }
+
+        createFlavor(Application.Flavor.Api22)
+        createFlavor(Application.Flavor.Api29)
+    }
+
+    sourceSets {
+
+        fun setSourceSets(flavor: Application.Flavor) {
+            getByName(flavor.flavorName) {
+                java.srcDirs(flavor.srcDirPath)
+            }
+        }
+
+        setSourceSets(Application.Flavor.Api22)
+        setSourceSets(Application.Flavor.Api29)
     }
 
     kotlinOptions {

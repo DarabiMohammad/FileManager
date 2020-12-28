@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.util.storage
 
 import com.darabi.mohammad.filemanager.model.BaseItem
+import com.darabi.mohammad.filemanager.model.FileItem
 import com.darabi.mohammad.filemanager.model.Result
 import com.darabi.mohammad.filemanager.model.StorageItem
 import com.darabi.mohammad.filemanager.util.safeSuspendCall
@@ -26,9 +27,17 @@ class StorageManager @Inject constructor(
         secondaryStorageManager.getFiles()
     }.also { storageManager = secondaryStorageManager }
 
-    suspend fun getFiles(position: Int): Result<ArrayList<BaseItem>> = safeSuspendCall { storageManager.getFiles(position) }
+    suspend fun getFiles(position: Int): Result<ArrayList<BaseItem>> = safeSuspendCall {
+        storageManager.getFiles(position)
+    }
 
-    suspend fun backToPerviousFolder(): Result<ArrayList<BaseItem>> = safeSuspendCall { storageManager.getFiles(storageManager.perviousFiles) }
+    suspend fun backToPerviousFolder(): Result<ArrayList<BaseItem>> = safeSuspendCall {
+        storageManager.getFiles(storageManager.perviousFiles)
+    }
+
+    suspend fun createFile(fileName: String): Result<FileItem> = safeSuspendCall {
+        storageManager.createFile(fileName)
+    }
 
     suspend fun dcimDirectory() = safeSuspendCall { storageManager.dcimDirectory() }
     suspend fun downloadDirectory() = safeSuspendCall { storageManager.downloadDirectory() }

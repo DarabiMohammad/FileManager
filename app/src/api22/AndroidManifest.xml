@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.darabi.mohammad.filemanager">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".App"
@@ -23,20 +23,6 @@
             </intent-filter>
         </activity>
 
-<!--        <provider-->
-<!--            android:name=".repository.providers.PrimaryExternalStorageProvider"-->
-<!--            android:authorities="${PRIMARY_EXTERNAL_STPRAGE_PROVIDER}"-->
-<!--            android:exported="true"-->
-<!--            android:grantUriPermissions="true"-->
-<!--            android:permission="android.permission.MANAGE_DOCUMENTS" >-->
-<!--        </provider>-->
-
     </application>
-
-<!--    <queries -->
-<!--        tools:node="merge"-->
-<!--        tools:remove="false"-->
-<!--        tools:replace="false"-->
-<!--        tools:strict="false"/>-->
 
 </manifest>

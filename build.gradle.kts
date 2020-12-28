@@ -8,8 +8,8 @@ buildscript {
     }
 
     dependencies {
-        classpath(com.darabi.mohammad.buildsrc.Dependencies.TOOLS_PLUGIN)
-        classpath(com.darabi.mohammad.buildsrc.Dependencies.KOTLIN_PLUGIN)
+        classpath(com.darabi.mohammad.buildsrc.Plugin.ANDROID_GRADLE_PLUGIN)
+        classpath(com.darabi.mohammad.buildsrc.Plugin.KOTLIN_PLUGIN)
 
         // /NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts.kts.kts.kts files
