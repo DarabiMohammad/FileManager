@@ -1,14 +1,17 @@
 package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
-import com.darabi.mohammad.filemanager.model.StorageItem
-import com.darabi.mohammad.filemanager.util.storage.StorageManager
+import androidx.lifecycle.MutableLiveData
+import com.darabi.mohammad.filemanager.model.Result
+import com.darabi.mohammad.filemanager.model.StorageVolume
+import com.darabi.mohammad.filemanager.util.launchInViewModelScope
 import javax.inject.Inject
 
 open class HomeViewModel @Inject constructor (
-    private val app: Application,
-    private val storageManager: StorageManager
-) : BaseViewModel(app) {
+    private val app: Application
+) : StoragesViewModel(app) {
 
-    fun getStorages(): List<StorageItem> = storageManager.storages()
+    val availableVolumes by lazy { MutableLiveData<Result<ArrayList<StorageVolume>>>() }
+
+    fun getVolumes() = launchInViewModelScope(availableVolumes) { volumes.getVolumes() }
 }

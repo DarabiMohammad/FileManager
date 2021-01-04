@@ -11,16 +11,16 @@ import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.dialog_theme_selection.*
 import javax.inject.Inject
 
-class ThemeSelectionDialog @Inject constructor(
-        private val viewModelFactory: ViewModelFactory
-) : BaseDialogFragment(), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+class ThemeSelectionDialog @Inject constructor() : BaseDialogFragment(), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
     override val dialogTAG: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_theme_selection
 
-    enum class SelectedTheme { LIGHT, DARK }
+    enum class SelectedTheme(val theme: String) {
+        LIGHT("Light"), DARK("Dark")
+    }
 
-    private val viewModel: AppearanceViewModel by viewModels { viewModelFactory }
+    private val viewModel: AppearanceViewModel by viewModels( {requireParentFragment()} )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

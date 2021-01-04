@@ -4,19 +4,18 @@ import androidx.fragment.app.Fragment
 import com.darabi.mohammad.filemanager.di.FragmentKey
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
-import com.darabi.mohammad.filemanager.ui.fragment.*
+import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
+import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
-import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
-import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.settings.AppearanceFragment
 import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module
+@Module(includes = [Essentials::class])
 abstract class FragmentBuilderModule {
 
     @Binds
@@ -50,11 +49,6 @@ abstract class FragmentBuilderModule {
     abstract fun bindAppManagerFragment(appManagerFragment: AppManagerFragment): Fragment
 
     // DialogFragments
-    @Binds
-    @IntoMap
-    @FragmentKey(PermissionDescriptionDialog::class)
-    abstract fun bindPermissionDescriptionDialog(permissionDescriptionDialog: PermissionDescriptionDialog): Fragment
-
     @Binds
     @IntoMap
     @FragmentKey(NewFileDialog::class)

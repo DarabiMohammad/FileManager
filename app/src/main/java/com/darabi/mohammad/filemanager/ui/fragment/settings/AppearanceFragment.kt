@@ -1,23 +1,29 @@
 package com.darabi.mohammad.filemanager.ui.fragment.settings
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
-import com.darabi.mohammad.filemanager.vm.MainViewModel
+import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
+import com.darabi.mohammad.filemanager.vm.base.AbstractMainViewModel
+import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.fragment_appearance.*
 import javax.inject.Inject
 
 class AppearanceFragment @Inject constructor(
-        private val appearanceViewModel: AppearanceViewModel,
-        private val themeSelectionDialog: ThemeSelectionDialog
+    private val viewModelFactory: ViewModelFactory,
+    private val themeSelectionDialog: ThemeSelectionDialog
 ) : BaseFragment(R.layout.fragment_appearance), View.OnClickListener {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
-    override val viewModel: MainViewModel  by viewModels ({ requireActivity() })
+    override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+
+    private val appearanceViewModel: AppearanceViewModel by viewModels { viewModelFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -45,7 +51,29 @@ class AppearanceFragment @Inject constructor(
         txt_theme.setOnClickListener(this)
     }
 
-    private fun onLightThemeClick() {}
+    private fun onLightThemeClick() {
+        fragment_appearance.isActivated = false
+        container_appearance_scr_childs.children.forEach {
+            it.isActivated = false
+        }
+    }
 
-    private fun onDarkThemeClick() {}
+    private fun onDarkThemeClick() {
+        fragment_appearance.isActivated = true
+        container_appearance_scr_childs.children.forEach {
+            it.isActivated = true
+        }
+    }
+
+    override fun onPause() {
+        appearanceViewModel.apply {
+            onThemeChange.value?.let {
+                if (it.theme != appearanceViewModel.theme) {
+                    setTheme(it.theme)
+                    viewModel.onThemeChanged.value = it.theme
+                }
+            }
+        }
+        super.onPause()
+    }
 }

@@ -46,14 +46,11 @@ android {
                 applicationId = flavor.applicationId
                 minSdkVersion(flavor.minSdkVersion)
                 targetSdkVersion(flavor.targetSdkVersion)
-
-//                manifestPlaceholders[Application.PRIMARY_EXT_STPRAGE_PROVIDER] = Application.PRIMARY_EXTERNAL_STPRAGE_PROVIDER_AUTHORITY
-//                buildConfigField("String", Application.PRIMARY_EXT_STPRAGE_PROVIDER, "\"${Application.PRIMARY_EXTERNAL_STPRAGE_PROVIDER_AUTHORITY}\"")
             }
         }
 
         createFlavor(Application.Flavor.Api22)
-        createFlavor(Application.Flavor.Api29)
+        createFlavor(Application.Flavor.Api24)
     }
 
     sourceSets {
@@ -65,7 +62,7 @@ android {
         }
 
         setSourceSets(Application.Flavor.Api22)
-        setSourceSets(Application.Flavor.Api29)
+        setSourceSets(Application.Flavor.Api24)
     }
 
     kotlinOptions {

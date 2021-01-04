@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.darabi.mohammad.filemanager.ui.BaseActivity
 import javax.inject.Inject
 
 class PermissionManager @Inject constructor(private val prefsManager: PrefsManager) {

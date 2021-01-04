@@ -1,15 +1,12 @@
 package com.darabi.mohammad.filemanager.di.module
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.darabi.mohammad.filemanager.App
-import com.darabi.mohammad.filemanager.util.storage.AbstractStorageManager
-import com.darabi.mohammad.filemanager.util.storage.PrimaryExternalStorageManager
-import com.darabi.mohammad.filemanager.util.storage.SecondaryExternalStorageManager
+import com.darabi.mohammad.filemanager.repository.volumes.Volumes
+import com.darabi.mohammad.filemanager.repository.volumes.VolumesImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -21,10 +18,7 @@ abstract class AppModule {
     abstract fun bindContext(application: App): Application
 
     @Binds
-    abstract fun bindPrimaryExternalStorageManager(primaryExternalStorageManager: PrimaryExternalStorageManager): AbstractStorageManager
-
-    @Binds
-    abstract fun bindSecondaryExternalStorageManager(secondaryExternalStorageManager: SecondaryExternalStorageManager): AbstractStorageManager
+    abstract fun bindVolumes(volumesImpl: VolumesImpl): Volumes
 
     companion object {
 

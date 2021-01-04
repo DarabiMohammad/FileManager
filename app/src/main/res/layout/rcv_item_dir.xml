@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Downloads"/>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_rcv_item_dir_more"
         android:layout_width="36dp"
         android:layout_height="36dp"
@@ -45,6 +45,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/content_description"
-        app:srcCompat="@drawable/ic_more_vert_black"/>
-
+        />
+<!--    app:srcCompat="@drawable/ic_more_vert_black"-->
 </androidx.constraintlayout.widget.ConstraintLayout>

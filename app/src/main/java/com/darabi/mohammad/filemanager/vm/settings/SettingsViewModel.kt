@@ -1,8 +1,8 @@
 package com.darabi.mohammad.filemanager.vm.settings
 
 import android.app.Application
-import com.darabi.mohammad.filemanager.util.PrefsManager
-import com.darabi.mohammad.filemanager.vm.BaseViewModel
+import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
+import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
 open class SettingsViewModel @Inject constructor(
@@ -12,7 +12,13 @@ open class SettingsViewModel @Inject constructor(
     val isHiddenFilesEnabled by lazy { prefsManager.isHiddenModeEnabled() }
     val isSplitModeEnabled by lazy { prefsManager.isSplitModeEnabled() }
 
-    fun setShowHiddenFiles(isEnabled: Boolean) = prefsManager.setHiddenModeEnable(isEnabled)
+    fun setShowHiddenFiles(isEnabled: Boolean) {
+        if (isEnabled != isHiddenFilesEnabled)
+            prefsManager.setHiddenModeEnable(isEnabled)
+    }
 
-    fun setShowSplitViews(isEnabled: Boolean) = prefsManager.setSplitModeEnable(isEnabled)
+    fun setShowSplitViews(isEnabled: Boolean) {
+        if (isEnabled != isSplitModeEnabled)
+            prefsManager.setSplitModeEnable(isEnabled)
+    }
 }

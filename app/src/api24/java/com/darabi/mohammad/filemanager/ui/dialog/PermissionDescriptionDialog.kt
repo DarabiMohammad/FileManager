@@ -2,11 +2,12 @@ package com.darabi.mohammad.filemanager.ui.dialog
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
-import com.darabi.mohammad.filemanager.vm.MainViewModel
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
+import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import kotlinx.android.synthetic.main.dialog_permission_description.*
 import javax.inject.Inject
 
@@ -71,5 +72,9 @@ class PermissionDescriptionDialog @Inject constructor(
     fun finalDialog(): PermissionDescriptionDialog {
         type = DialogType.SETTINGS_TYPE
         return this
+    }
+
+    fun show(manager: FragmentManager) {
+        manager.beginTransaction().add(this, dialogTAG).commitAllowingStateLoss()
     }
 }

@@ -47,7 +47,9 @@ class NewFileDialog @Inject constructor (
             edt_file_name.setText(R.string.simple_txt_format)
     }
 
-    private fun onCreateButtonClick() = viewModel.createFile(edt_file_name.text.toString()).also { dismiss() }
+    private fun onCreateButtonClick() {
+//        viewModel.createFile(edt_file_name.text.toString()).also { dismiss() }
+    }
 
     fun forFile(): NewFileDialog = this.apply { type = Type.FILE_TYPE }
 

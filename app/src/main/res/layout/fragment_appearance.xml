@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_appearance"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@drawable/selector_switch_theme_bg">
 
     <ScrollView
         android:id="@+id/scr_appearance"
@@ -11,6 +12,7 @@
         android:layout_height="match_parent" >
 
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/container_appearance_scr_childs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >

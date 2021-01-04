@@ -5,7 +5,7 @@ import com.darabi.mohammad.filemanager.R
 
 interface BaseItem : Item
 
-interface BaseFile : BaseItem{
+interface BaseFile : BaseItem {
 
     val name: String
 }

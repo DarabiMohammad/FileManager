@@ -12,8 +12,8 @@
     <style name="AppDarkTheme" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="colorPrimary">@color/colorDarkPrimary</item>
         <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
-        <item name="colorAccent">@color/colorDarkAccent</item>
-        <item name="colorOnBackground">@color/colorDarkAccent</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:colorBackground">@color/colorDarkPrimary</item>
     </style>
 
     <style name="SelectableBackground">
@@ -45,7 +45,7 @@
     <style name="SelectableMediumTextView" parent="MediumTextView">
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/selector_selectable_switch_theme_bg</item>
     </style>
 
     <style name="LargeTextView" parent="ParentTextViewStyle">

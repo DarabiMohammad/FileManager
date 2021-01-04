@@ -10,5 +10,9 @@ class AppearanceViewModel @Inject constructor(
         private val app: Application,
 ) : SettingsViewModel(app,) {
 
+    val theme by lazy { prefsManager.getTheme() }
+
     val onThemeChange = MutableLiveData<ThemeSelectionDialog.SelectedTheme>()
+
+    fun setTheme(theme: String) = prefsManager.setTheme(theme)
 }

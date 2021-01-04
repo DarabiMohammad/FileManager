@@ -1,6 +1,7 @@
 package com.darabi.mohammad.buildsrc
 
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import java.util.*
 
 object Application {
 
@@ -24,25 +25,30 @@ object Application {
 
     sealed class Flavor {
 
-        companion object { const val DIMENSION = "api" }
+        companion object {
+            const val DIMENSION = "dimension"
+        }
 
         abstract val minSdkVersion: Int
         abstract val targetSdkVersion: Int
 
-        val flavorName: String by lazy { "$DIMENSION$targetSdkVersion" }
-        val srcDirPath: String by lazy { "src\\$flavorName\\java" }
-        //todo md remove this field if needed
-        val resDirPath: String by lazy { "src\\$flavorName\\res" }
+        val flavorName: String by lazy { javaClass.simpleName.toLowerCase(Locale.ROOT) }
         val applicationId: String by lazy { "$ID.$flavorName" }
+        val srcDirPath: String by lazy { "src\\$flavorName\\java" }
 
         object Api22 : Flavor() {
             override val minSdkVersion = MIN_SDK_VERSION
             override val targetSdkVersion = 22
         }
 
-        object Api29 : Flavor() {
+        object Api24 : Flavor() {
             override val minSdkVersion = 23
-            override val targetSdkVersion = 29
+            override val targetSdkVersion = 24
+        }
+
+        object Api29 : Flavor() {
+            override val minSdkVersion: Int get() = 25
+            override val targetSdkVersion: Int get() = 29
         }
     }
 }
@@ -82,9 +88,11 @@ object Dependencies {
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${COROUTINES_VERSION}",
         "com.google.dagger:dagger:${DAGGER_VERSION}",
         "com.google.dagger:dagger-android-support:${DAGGER_VERSION}",
+
         // design libs
         "androidx.constraintlayout:constraintlayout:${CONSTRAINT_VERSION}",
         "com.google.android.material:material:${MATERIAL_VERSION}",
+
         // lifeccyle libs
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${LIFECYCLE_VERSION}",
         "androidx.lifecycle:lifecycle-extensions:${LIFECYCLE_VERSION}",

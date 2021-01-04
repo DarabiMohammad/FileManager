@@ -1,17 +1,14 @@
 package com.darabi.mohammad.filemanager.ui.fragment.base
 
-import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.fragment.app.Fragment
-import com.darabi.mohammad.filemanager.ui.MainActivity
-import com.darabi.mohammad.filemanager.vm.BaseViewModel
+import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
+import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 
 abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
     abstract val fragmentTag: String
 
-    abstract val viewModel: BaseViewModel
+    abstract val viewModel: MainViewModel
 
     open fun onBackPressed() { viewModel.onFragmentBackPressed.value = fragmentTag }
 }

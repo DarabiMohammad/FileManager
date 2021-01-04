@@ -20,9 +20,7 @@ interface BaseCategory : DrawerItem {
 
 object Divider : BaseDrawerItem
 
-data class PrimaryStorage(override val name: String, override val icon: Int) : DrawerItem
-
-data class SecondaryStorage(override val name: String, override val icon: Int) : DrawerItem
+data class PrimaryExtStorage(override val name: String, val path: String, override val icon: Int) : DrawerItem
 
 data class Category(override val name: String, override val icon: Int, override val type: CategoryType) : BaseCategory
 

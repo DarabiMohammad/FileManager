@@ -11,18 +11,28 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseResult
 import com.darabi.mohammad.filemanager.model.Result
+import com.darabi.mohammad.filemanager.model.Result.Companion.loading
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.DecimalFormat
 
 fun Activity.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
 fun Application.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
 private fun beginTransaction(
-        fragmentManager: FragmentManager, containerId: Int, fragment: Fragment, addToBackStack: Boolean, isReplace: Boolean
+    fragmentManager: FragmentManager,
+    containerId: Int,
+    fragment: Fragment,
+    addToBackStack: Boolean,
+    isReplace: Boolean
 ) {
     if(fragment.isAdded) return
     else fragmentManager.beginTransaction().also {
@@ -41,11 +51,17 @@ private fun beginTransaction(
 }
 
 fun AppCompatActivity.navigateTo(
-        @IdRes containerId: Int = R.id.container_main, fragment: Fragment, addToBackStack: Boolean = false, isReplace: Boolean = false
+    @IdRes containerId: Int = R.id.container_main,
+    fragment: Fragment,
+    addToBackStack: Boolean = false,
+    isReplace: Boolean = false
 ) = beginTransaction(supportFragmentManager, containerId, fragment, addToBackStack, isReplace)
 
 fun Fragment.navigateTo(
-        @IdRes containerId: Int, fragment: Fragment, addToBackStack: Boolean = false, isReplace: Boolean = false
+    @IdRes containerId: Int,
+    fragment: Fragment,
+    addToBackStack: Boolean = false,
+    isReplace: Boolean = false
 ) = beginTransaction(childFragmentManager, containerId, fragment, addToBackStack, isReplace)
 
 fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
@@ -57,8 +73,16 @@ fun View.fadeIn() { visibility = View.VISIBLE }
 
 fun View.invisible() { visibility = View.INVISIBLE }
 
+inline fun <T> ViewModel.launchInViewModelScope(
+    liveData: MutableLiveData<Result<T>>,
+    crossinline function: suspend () -> Result<T>
+) = viewModelScope.launch {
+    liveData.value = loading()
+    liveData.value = function()
+}
+
 suspend inline fun <T> safeSuspendCall(crossinline function: suspend () -> BaseResult<T>): Result<T> = try {
     withContext(Dispatchers.Default) { Result.success(function().result!!) }
 } catch (exception: Exception) {
-    withContext(Dispatchers.Main) { Result.error(throwable = exception) }
+    withContext(Dispatchers.Main) { Result.error(exception) }
 }
