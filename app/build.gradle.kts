@@ -16,7 +16,6 @@ android {
         versionCode = Application.VERSION_CODE
         versionName = Application.VERSION_NAME
 
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -50,19 +49,19 @@ android {
         }
 
         createFlavor(Application.Flavor.Api22)
-        createFlavor(Application.Flavor.Api24)
+        createFlavor(Application.Flavor.SharedSrc.Api24)
     }
 
     sourceSets {
 
         fun setSourceSets(flavor: Application.Flavor) {
             getByName(flavor.flavorName) {
-                java.srcDirs(flavor.srcDirPath)
+                flavor.srcDirPath.forEach { java.srcDirs(it) }
+                flavor.resDirPath.forEach { res.srcDirs(it) }
             }
         }
-
         setSourceSets(Application.Flavor.Api22)
-        setSourceSets(Application.Flavor.Api24)
+        setSourceSets(Application.Flavor.SharedSrc.Api24)
     }
 
     kotlinOptions {

@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class Essentials {
+abstract class EssentialFragmentsBuilderModule {
 
     @Binds
     @IntoMap

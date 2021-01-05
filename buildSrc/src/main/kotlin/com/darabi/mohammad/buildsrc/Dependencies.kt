@@ -2,13 +2,14 @@ package com.darabi.mohammad.buildsrc
 
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import java.util.*
+import kotlin.collections.ArrayList
 
 object Application {
 
     //Core Infos
     private const val MIN_SDK_VERSION = 19
     private const val TARGET_SDK_VERSION = 30
-    private const val ID = "com.darabi.mohammad.filemanager"
+    const val ID = "com.darabi.mohammad.filemanager"
     const val VERSION_CODE = 1
     const val VERSION_NAME = "1.0.0"
     const val COMPILE_SDK_VERSION = TARGET_SDK_VERSION
@@ -32,23 +33,36 @@ object Application {
         abstract val minSdkVersion: Int
         abstract val targetSdkVersion: Int
 
+        open val dimension: String by lazy { DIMENSION }
         val flavorName: String by lazy { javaClass.simpleName.toLowerCase(Locale.ROOT) }
         val applicationId: String by lazy { "$ID.$flavorName" }
-        val srcDirPath: String by lazy { "src\\$flavorName\\java" }
+        val srcDirPath: ArrayList<String> by lazy { arrayListOf("src\\$flavorName\\java") }
+        val resDirPath: ArrayList<String> by lazy { arrayListOf("src\\$flavorName\\res") }
 
         object Api22 : Flavor() {
             override val minSdkVersion = MIN_SDK_VERSION
             override val targetSdkVersion = 22
         }
 
-        object Api24 : Flavor() {
-            override val minSdkVersion = 23
-            override val targetSdkVersion = 24
-        }
+        abstract class SharedSrc : Flavor() {
 
-        object Api29 : Flavor() {
-            override val minSdkVersion: Int get() = 25
-            override val targetSdkVersion: Int get() = 29
+            val sharedSrcDirPath: String by lazy { "src\\sharedsrc\\java" }
+            val sharedResDirPath: String by lazy { "src\\sharedsrc\\res" }
+
+            init {
+                srcDirPath.add(sharedSrcDirPath)
+                resDirPath.add(sharedResDirPath)
+            }
+
+            object Api24 : SharedSrc() {
+                override val minSdkVersion = 23
+                override val targetSdkVersion = 24
+            }
+
+            object Api29 : SharedSrc() {
+                override val minSdkVersion: Int get() = 25
+                override val targetSdkVersion: Int get() = 29
+            }
         }
     }
 }
@@ -57,6 +71,7 @@ object Plugin {
 
     //Android Gradle Plugin Version
     private const val AGP_VERSION = "4.1.1"
+
     //Kotlin Plugin Version
     private const val KOTLIN_PLUGIN_VERSION = "1.4.10"
 

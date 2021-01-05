@@ -15,7 +15,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [Essentials::class])
+@Module(includes = [EssentialFragmentsBuilderModule::class])
 abstract class FragmentBuilderModule {
 
     @Binds
