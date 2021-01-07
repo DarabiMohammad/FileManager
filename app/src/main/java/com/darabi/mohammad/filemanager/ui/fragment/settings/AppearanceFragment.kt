@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.fragment.settings
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
@@ -9,7 +8,6 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
-import com.darabi.mohammad.filemanager.vm.base.AbstractMainViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.fragment_appearance.*
@@ -33,7 +31,7 @@ class AppearanceFragment @Inject constructor(
     }
 
     override fun onClick(view: View?) = when(view?.id) {
-        R.id.txt_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.dialogTAG)
+        R.id.txt_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.dialogTag)
         else -> {}
     }
 

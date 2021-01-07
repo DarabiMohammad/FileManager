@@ -49,7 +49,8 @@ android {
         }
 
         createFlavor(Application.Flavor.Api22)
-        createFlavor(Application.Flavor.SharedSrc.Api24)
+        createFlavor(Application.Flavor.SharedSrc.Api29)
+        createFlavor(Application.Flavor.SharedSrc.Api30)
     }
 
     sourceSets {
@@ -60,8 +61,10 @@ android {
                 flavor.resDirPath.forEach { res.srcDirs(it) }
             }
         }
+
         setSourceSets(Application.Flavor.Api22)
-        setSourceSets(Application.Flavor.SharedSrc.Api24)
+        setSourceSets(Application.Flavor.SharedSrc.Api29)
+        setSourceSets(Application.Flavor.SharedSrc.Api30)
     }
 
     kotlinOptions {

@@ -1,5 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.fragment.dirs
 
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -16,7 +17,7 @@ import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.DirsListViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
-import java.util.concurrent.CancellationException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -57,20 +58,16 @@ class DirsListFragment @Inject constructor (
     override fun onDetailsClick(item: FileItem) {}
 
     override fun onItemClick(item: FileItem) {
-//        if (item is Directory) dirsListViewModel.getFiles(item.treePosition)
+        if (item is Directory) dirsListViewModel.getFiles(item.path)
     }
 
     override fun onBackPressed() {
-//        dirsListViewModel.upToPervious()
+        dirsListViewModel.onBackPressed()
     }
 
-    fun getPerimaryStorageFiles(path: String) {
-//        dirsListViewModel.getPrimaryStorageRootFiles()
-    }
+    fun getFilesForPath(path: String) = dirsListViewModel.getFiles(path)
 
-    fun getFilesForCategory(categoryType: CategoryType) {
-//        dirsListViewModel.getFilesForCategory(categoryType)
-    }
+    fun getFilesForCategory(categoryType: CategoryType) = dirsListViewModel.getFilesForCategory(categoryType)
 
     private fun initViews() {
         btn_fab.setOnClickListener(this)
@@ -82,21 +79,25 @@ class DirsListFragment @Inject constructor (
         dirsListViewModel.filesLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.LOADING -> {}
-                Status.SUCCESS -> if(it.result!!.isNotEmpty()) adapter.setSource(it.result).also { rcv_dirs.fadeIn() } else rcv_dirs.fadeOut()
+                Status.SUCCESS -> if(it.result!!.isNotEmpty()) adapter.setSource(it.result, it.result.size).also { rcv_dirs.fadeIn() } else rcv_dirs.fadeOut()
                 Status.ERROR -> onError(it.throwable!!)
             }
         })
 
-        dirsListViewModel.singleFileLiveData.observe(viewLifecycleOwner, {
-
+        dirsListViewModel.onFileCreated.observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.LOADING -> {}
+                Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also { rcv_dirs.fadeIn() }
+                Status.ERROR -> onError(it.throwable!!)
+            }
         })
     }
 
     private fun onError(throwable: Throwable) = when (throwable) {
-        is CancellationException -> {}
         is NullPointerException -> super.onBackPressed()
+        is IOException -> makeToast("${throwable.message}")
         else -> {}
     }
 
-    private fun onFabClicked() = newFileDialog.forFolder().show(childFragmentManager, newFileDialog.dialogTAG)
+    private fun onFabClicked() = newFileDialog.forFolder().show(childFragmentManager, newFileDialog.dialogTag)
 }

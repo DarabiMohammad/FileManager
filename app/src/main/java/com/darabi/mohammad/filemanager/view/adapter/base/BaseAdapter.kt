@@ -7,7 +7,11 @@ import kotlin.collections.ArrayList
 
 abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): RecyclerView.Adapter<VH>() {
 
-    protected val objects = ArrayList<O>()
+    protected val objects = arrayListOf<O>()
+
+    override fun onBindViewHolder(holder: VH, position: Int) = holder.bindModel(objects[position])
+
+    override fun getItemCount(): Int = objects.size
 
     open fun setSource(source: List<O>) {
         clear()
@@ -17,14 +21,13 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
 
     fun addSource(source: List<O>, position: Int) {
         objects.addAll(position, source)
-        notifyItemRangeChanged(position, source.size)
+        notifyItemRangeInserted(position, source.size)
     }
 
-    fun updateSource(model: O) = objects.add(model).also { notifyItemInserted(objects.indexOf(model)) }
+    open fun addSource(source: O, position: Int) {
+        objects.add(position, source)
+        notifyItemInserted(position)
+    }
 
     private fun clear() = objects.clear().also { notifyDataSetChanged() }
-
-    override fun onBindViewHolder(holder: VH, position: Int) = holder.bindModel(objects[position])
-
-    override fun getItemCount(): Int = objects.size
 }

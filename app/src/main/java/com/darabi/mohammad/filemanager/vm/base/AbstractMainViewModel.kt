@@ -8,8 +8,8 @@ abstract class AbstractMainViewModel constructor (
     private val app: Application,
 ) : BaseViewModel(app) {
 
-    val externalStorageLiveData by lazy { MutableLiveData<String>() }
-    val drawerPrimaryStorageLiveData by lazy { MutableLiveData<String>() }
+    val volumeClickLiveData by lazy { MutableLiveData<StorageItem>() }
+    val drawerCategoryFolderLiveData by lazy { MutableLiveData<Document>() }
     val drawerCategoryLiveData by lazy { MutableLiveData<Category>() }
     val drawerInstalledAppsLiveData by lazy { MutableLiveData<InstalledApps>() }
     val drawerSettingsLiveData by lazy { MutableLiveData<Settings>() }
@@ -17,7 +17,8 @@ abstract class AbstractMainViewModel constructor (
     val onThemeChanged by lazy { MutableLiveData<String>() }
 
     fun onDrawerItemClick(drawerItem: DrawerItem) = when(drawerItem) {
-        is PrimaryExtStorage -> drawerPrimaryStorageLiveData.value = drawerItem.path
+        is StorageItem -> volumeClickLiveData.value = drawerItem
+        is Document -> drawerCategoryFolderLiveData.value = drawerItem
         is Category -> drawerCategoryLiveData.value = drawerItem
         is InstalledApps -> drawerInstalledAppsLiveData.value = drawerItem
         else -> drawerSettingsLiveData.value = drawerItem as Settings

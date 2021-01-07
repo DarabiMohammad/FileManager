@@ -15,7 +15,7 @@ class PermissionDescriptionDialog @Inject constructor(
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 
-    override val dialogTAG: String get() = this.javaClass.simpleName
+    override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_permission_description
 
     enum class Action { ACTION_OK, ACTION_OPEN_SETTINGS, ACTION_EXIT }
@@ -75,6 +75,6 @@ class PermissionDescriptionDialog @Inject constructor(
     }
 
     fun show(manager: FragmentManager) {
-        manager.beginTransaction().add(this, dialogTAG).commitAllowingStateLoss()
+        manager.beginTransaction().add(this, dialogTag).commitAllowingStateLoss()
     }
 }

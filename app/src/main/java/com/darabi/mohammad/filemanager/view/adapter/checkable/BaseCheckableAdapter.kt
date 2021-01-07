@@ -24,6 +24,11 @@ abstract class BaseCheckableAdapter<O, VH: CheckableViewHolder<O>> internal cons
         super.setSource(source)
     }
 
+    override fun addSource(source: O, position: Int) {
+        checkedItems.add(position, false)
+        super.addSource(source, position)
+    }
+
     override fun hasCheckedItem(): Boolean = checkedItemCount > DESTROY_SELECTION_ACTION_MODE
 
     override fun isChecked(position: Int): Boolean = checkedItems[position]

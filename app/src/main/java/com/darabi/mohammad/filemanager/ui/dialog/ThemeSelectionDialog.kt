@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class ThemeSelectionDialog @Inject constructor() : BaseDialogFragment(), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-    override val dialogTAG: String get() = this.javaClass.simpleName
+    override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_theme_selection
 
     enum class SelectedTheme(val theme: String) {

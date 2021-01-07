@@ -10,7 +10,6 @@ import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.view.adapter.HomeRecyclerAdapter
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 import com.darabi.mohammad.filemanager.vm.HomeViewModel
-import com.darabi.mohammad.filemanager.vm.base.AbstractMainViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
 import javax.inject.Inject
@@ -32,7 +31,7 @@ class HomeFragment @Inject constructor(
     }
 
     override fun onItemClick(item: StorageVolume) {
-        viewModel.externalStorageLiveData.value = item.path
+        viewModel.volumeClickLiveData.value = item
     }
 
     private fun observeViewModel() {

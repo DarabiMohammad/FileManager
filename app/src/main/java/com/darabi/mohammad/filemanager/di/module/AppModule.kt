@@ -5,8 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.darabi.mohammad.filemanager.App
-import com.darabi.mohammad.filemanager.repository.volumes.Volumes
-import com.darabi.mohammad.filemanager.repository.volumes.VolumesImpl
+import com.darabi.mohammad.filemanager.repository.storage.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -19,6 +18,12 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindVolumes(volumesImpl: VolumesImpl): Volumes
+
+    @Binds
+    abstract fun bindDrawerItemProvider(provider: DrawerItemProviderImpl): DrawerItemProvider
+
+    @Binds
+    abstract fun bindStorageManager(storageManager: StorageManagerImpl): StorageManager
 
     companion object {
 

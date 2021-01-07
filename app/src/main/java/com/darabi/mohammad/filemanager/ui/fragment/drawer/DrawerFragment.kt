@@ -10,7 +10,6 @@ import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.view.adapter.DrawerRecyclerAdapter
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
 import com.darabi.mohammad.filemanager.vm.DrawerViewModel
-import com.darabi.mohammad.filemanager.vm.base.AbstractMainViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import kotlinx.android.synthetic.main.fragment_drawer.*
 import javax.inject.Inject
@@ -40,9 +39,7 @@ class DrawerFragment @Inject constructor(
         drawerViewModel.drawerItems.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.LOADING -> {}
-                Status.SUCCESS -> {
-                    adapter.addSource(drawerViewModel.mapToDrawerItems(it.result!!), 0)
-                }
+                Status.SUCCESS -> adapter.addSource(drawerViewModel.mapToDrawerItems(it.result!!), 0)
                 Status.ERROR -> onError(it.throwable!!)
             }
         })

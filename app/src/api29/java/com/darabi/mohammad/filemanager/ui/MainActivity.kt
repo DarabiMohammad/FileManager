@@ -34,28 +34,4 @@ class MainActivity @Inject constructor() : RuntimeActivity() {
         txt_toolbar_delete.setOnClickListener(this)
         txt_toolbar_share.setOnClickListener(this)
     }
-
-    override fun observeViewModel() {
-        super.observeViewModel()
-
-        viewModel.externalStorageLiveData.observe(this, {
-            checkPermissionAndDoWithDirsFragment { getPerimaryStorageFiles(it) }
-        })
-
-        viewModel.drawerPrimaryStorageLiveData.observe(this, {
-            checkPermissionAndDoWithDirsFragment { getPerimaryStorageFiles(it) }
-        })
-
-        viewModel.drawerCategoryLiveData.observe(this, {
-            checkPermissionAndDoWithDirsFragment { getFilesForCategory(it.type) }
-        })
-
-        viewModel.drawerInstalledAppsLiveData.observe(this, {
-
-        })
-
-        viewModel.drawerSettingsLiveData.observe(this, {
-            navigateTo(fragment = settingsFragment, addToBackStack = true).also { closeNavDrawer() }
-        })
-    }
 }

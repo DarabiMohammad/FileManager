@@ -7,7 +7,6 @@ import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.navigateTo
-import com.darabi.mohammad.filemanager.vm.base.AbstractMainViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.settings.SettingsViewModel
 import kotlinx.android.synthetic.main.fragment_settings.*

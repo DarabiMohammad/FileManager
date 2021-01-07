@@ -30,16 +30,17 @@ class MainActivity @Inject constructor() : BaseActivity() {
     }
 
     override fun observeViewModel() {
+        super.observeViewModel()
 
-        viewModel.externalStorageLiveData.observe(this, {
+        viewModel.volumeClickLiveData.observe(this, {
             doWithFragmentAndCloseDrawer(dirsListFragment) {
-                dirsListFragment.getPerimaryStorageFiles(it)
+                dirsListFragment.getFilesForPath(it.path)
             }
         })
 
-        viewModel.drawerPrimaryStorageLiveData.observe(this, {
+        viewModel.drawerCategoryFolderLiveData.observe(this, {
             doWithFragmentAndCloseDrawer(dirsListFragment) {
-                dirsListFragment.getPerimaryStorageFiles(it)
+                dirsListFragment.getFilesForPath(it.path)
             }
         })
 
@@ -54,10 +55,6 @@ class MainActivity @Inject constructor() : BaseActivity() {
 
         viewModel.drawerSettingsLiveData.observe(this, {
             navigateTo(fragment = settingsFragment, addToBackStack = true).also { closeNavDrawer() }
-        })
-
-        viewModel.onFragmentBackPressed.observe(this, {
-            supportFragmentManager.popBackStack()
         })
     }
 

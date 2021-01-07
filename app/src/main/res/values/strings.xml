@@ -56,6 +56,8 @@
 
     <!--  warnings and errors  -->
     <string name="not_found_file_error">Nothing To Show</string>
+    <string name="dir_allready_exist">There Is A Directory With This Name!</string>
+    <string name="file_allready_exist">There Is A File With This Name!</string>
 
     <!--  files and folders  -->
     <string name="files">Files</string>

@@ -62,8 +62,6 @@ abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector,
 
     protected abstract fun initStartupViews()
 
-    protected abstract fun observeViewModel()
-
     override fun androidInjector(): AndroidInjector<Any> = injector
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +95,12 @@ abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         closeNavDrawer()
     else (supportFragmentManager.fragments.last().takeIf { it is BaseFragment } as BaseFragment?)?.onBackPressed()
         ?: super.onBackPressed()
+
+    protected open fun observeViewModel() {
+        viewModel.onFragmentBackPressed.observe(this, {
+            supportFragmentManager.popBackStack()
+        })
+    }
 
     protected fun closeNavDrawer() = layout_drawer.closeDrawer(GravityCompat.START)
 

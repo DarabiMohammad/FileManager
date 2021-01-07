@@ -15,7 +15,7 @@ class DeleteDialog @Inject constructor(
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 
-    override val dialogTAG: String get() = this.javaClass.simpleName
+    override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_delete
 
     private val viewModel: DirsListViewModel by viewModels { viewModelFactory }

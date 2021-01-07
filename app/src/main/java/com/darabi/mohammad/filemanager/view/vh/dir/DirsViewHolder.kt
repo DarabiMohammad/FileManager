@@ -27,8 +27,7 @@ class DirsViewHolder constructor(
     private val popupMenu: PopupMenu
 
     init {
-        popupMenu = PopupMenu(imageMore.context, imageMore, Gravity.END)
-        popupMenu.inflate(R.menu.menu_dir_item)
+        popupMenu = PopupMenu(imageMore.context, imageMore, Gravity.END).apply { inflate(R.menu.menu_dir_item) }
     }
 
     override fun bindModel(model: BaseItem, position: Int) {

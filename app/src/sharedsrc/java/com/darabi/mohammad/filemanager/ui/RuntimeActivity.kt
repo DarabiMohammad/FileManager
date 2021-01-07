@@ -13,7 +13,7 @@ import kotlin.system.exitProcess
 abstract class RuntimeActivity : BaseActivity(), PermissionManager.PermissionManagerCallback {
 
     @Inject
-    protected lateinit var permissionManager: PermissionManager
+    internal lateinit var permissionManager: PermissionManager
 
     @Inject
     internal lateinit var permissionDescDialog: PermissionDescriptionDialog
@@ -21,6 +21,28 @@ abstract class RuntimeActivity : BaseActivity(), PermissionManager.PermissionMan
     private val openAppInfoScreenFlag = 0
 
     override fun observeViewModel() {
+        super.observeViewModel()
+
+        viewModel.volumeClickLiveData.observe(this, {
+            checkPermissionAndDoWithDirsFragment { getFilesForPath(it.path) }
+        })
+
+        viewModel.drawerCategoryFolderLiveData.observe(this, {
+
+        })
+
+        viewModel.drawerCategoryLiveData.observe(this, {
+            checkPermissionAndDoWithDirsFragment { getFilesForCategory(it.type) }
+        })
+
+        viewModel.drawerInstalledAppsLiveData.observe(this, {
+
+        })
+
+        viewModel.drawerSettingsLiveData.observe(this, {
+            navigateTo(fragment = settingsFragment, addToBackStack = true).also { closeNavDrawer() }
+        })
+
         viewModel.permissionDialoLiveData.observe(this, {
             when (it) {
                 PermissionDescriptionDialog.Action.ACTION_OK -> permissionManager.requestPermissions( this)
@@ -52,12 +74,12 @@ abstract class RuntimeActivity : BaseActivity(), PermissionManager.PermissionMan
         else super.onActivityResult(requestCode, resultCode, data)
     }
 
-    protected inline infix fun PermissionManager.checkAndDo(crossinline function: () -> Unit) =
+    private inline infix fun PermissionManager.checkAndDo(crossinline function: () -> Unit) =
         checkPermissionsAndRun(this@RuntimeActivity, this@RuntimeActivity, PermissionManager.Permissions.Storage) {
             function.invoke()
         }.also { closeNavDrawer() }
 
-    protected inline fun checkPermissionAndDoWithDirsFragment(crossinline function: DirsListFragment.() -> Unit) = permissionManager checkAndDo {
+    private inline fun checkPermissionAndDoWithDirsFragment(crossinline function: DirsListFragment.() -> Unit) = permissionManager checkAndDo {
         navigateTo(fragment = dirsListFragment, addToBackStack = true).also { dirsListFragment.function() }
     }
 

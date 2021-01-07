@@ -2,7 +2,6 @@ package com.darabi.mohammad.filemanager.vm.settings
 
 import android.app.Application
 import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
-import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
 open class SettingsViewModel @Inject constructor(

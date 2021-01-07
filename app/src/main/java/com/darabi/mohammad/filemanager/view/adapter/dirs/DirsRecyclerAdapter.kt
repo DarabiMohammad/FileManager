@@ -16,21 +16,20 @@ import javax.inject.Singleton
 class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<BaseItem, CheckableViewHolder<BaseItem>>() {
 
     private val dividerViewType = 0
-    private val fileViewType = 1
+    private val emptyViewType = 1
 
     lateinit var adapterCallback: DirsAdapterCallback<FileItem>
 
     override fun getItemViewType(position: Int): Int = when {
         objects[position] is FileDivider -> dividerViewType
-        objects[position] is Directory -> fileViewType
-        objects[position] is File -> fileViewType
+        objects[position] is EmptyDivider -> emptyViewType
         else -> 2
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder<BaseItem> = when (viewType) {
         dividerViewType -> DirsDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
-        fileViewType -> DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), adapterCallback, this)
-        else -> EmptyViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_empty))
+        emptyViewType -> EmptyViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_empty))
+        else -> DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), adapterCallback, this)
     }
 
     override fun onItemClick(item: BaseItem) = adapterCallback.onItemClick(item as FileItem)
@@ -43,6 +42,10 @@ class DirsRecyclerAdapter @Inject constructor() : BaseCheckableAdapter<BaseItem,
     fun setSource(source: List<BaseItem>, maxCheckableItemCount: Int) {
         this.maxCheckableItemCount = maxCheckableItemCount
         super.setSource(source)
+    }
+
+    fun addSource(source: FileItem, position: Int) = maxCheckableItemCount++.also {
+        super.addSource(source, position)
     }
 
     override fun selectAll() {

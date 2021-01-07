@@ -27,13 +27,12 @@ object Application {
     sealed class Flavor {
 
         companion object {
-            const val DIMENSION = "dimension"
+            const val DIMENSION = "default"
         }
 
         abstract val minSdkVersion: Int
         abstract val targetSdkVersion: Int
 
-        open val dimension: String by lazy { DIMENSION }
         val flavorName: String by lazy { javaClass.simpleName.toLowerCase(Locale.ROOT) }
         val applicationId: String by lazy { "$ID.$flavorName" }
         val srcDirPath: ArrayList<String> by lazy { arrayListOf("src\\$flavorName\\java") }
@@ -54,14 +53,14 @@ object Application {
                 resDirPath.add(sharedResDirPath)
             }
 
-            object Api24 : SharedSrc() {
+            object Api29 : SharedSrc() {
                 override val minSdkVersion = 23
-                override val targetSdkVersion = 24
+                override val targetSdkVersion = 29
             }
 
-            object Api29 : SharedSrc() {
-                override val minSdkVersion: Int get() = 25
-                override val targetSdkVersion: Int get() = 29
+            object Api30 : SharedSrc() {
+                override val minSdkVersion: Int get() = 30
+                override val targetSdkVersion: Int get() = 30
             }
         }
     }

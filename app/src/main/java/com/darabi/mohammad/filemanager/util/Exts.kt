@@ -1,31 +1,19 @@
 package com.darabi.mohammad.filemanager.util
 
-import android.app.Activity
-import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseResult
 import com.darabi.mohammad.filemanager.model.Result
-import com.darabi.mohammad.filemanager.model.Result.Companion.loading
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
-
-fun Activity.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-fun Application.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
 private fun beginTransaction(
     fragmentManager: FragmentManager,
@@ -69,20 +57,6 @@ fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
 
 fun View.fadeOut() { visibility = View.GONE }
 
-fun View.fadeIn() { visibility = View.VISIBLE }
+fun View.fadeIn() { if (!isVisible) visibility = View.VISIBLE }
 
 fun View.invisible() { visibility = View.INVISIBLE }
-
-inline fun <T> ViewModel.launchInViewModelScope(
-    liveData: MutableLiveData<Result<T>>,
-    crossinline function: suspend () -> Result<T>
-) = viewModelScope.launch {
-    liveData.value = loading()
-    liveData.value = function()
-}
-
-suspend inline fun <T> safeSuspendCall(crossinline function: suspend () -> BaseResult<T>): Result<T> = try {
-    withContext(Dispatchers.Default) { Result.success(function().result!!) }
-} catch (exception: Exception) {
-    withContext(Dispatchers.Main) { Result.error(exception) }
-}

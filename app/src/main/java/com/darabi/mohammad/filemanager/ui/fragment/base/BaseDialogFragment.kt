@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment
 
 abstract class BaseDialogFragment : DialogFragment() {
 
-    abstract val dialogTAG: String
+    abstract val dialogTag: String
 
     @get:LayoutRes
     abstract val layoutRes: Int
