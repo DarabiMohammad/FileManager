@@ -6,7 +6,7 @@ import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
 import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
-import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
+import com.darabi.mohammad.filemanager.ui.fragment.contents.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.ui.fragment.settings.AppearanceFragment

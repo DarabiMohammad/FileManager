@@ -1,19 +1,12 @@
 package com.darabi.mohammad.filemanager.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
-import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
-import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.navigateTo
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 import javax.inject.Inject
-import kotlin.system.exitProcess
 
 class MainActivity @Inject constructor() : RuntimeActivity() {
 

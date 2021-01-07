@@ -1,6 +1,5 @@
-package com.darabi.mohammad.filemanager.ui.fragment.dirs
+package com.darabi.mohammad.filemanager.ui.fragment.contents
 
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -76,11 +75,13 @@ class DirsListFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        dirsListViewModel.filesLiveData.observe(viewLifecycleOwner, {
-            when (it.status) {
+        dirsListViewModel.filesLiveData.observe(viewLifecycleOwner, { response ->
+            when (response.status) {
                 Status.LOADING -> {}
-                Status.SUCCESS -> if(it.result!!.isNotEmpty()) adapter.setSource(it.result, it.result.size).also { rcv_dirs.fadeIn() } else rcv_dirs.fadeOut()
-                Status.ERROR -> onError(it.throwable!!)
+                Status.SUCCESS -> adapter.setSource(response.result!!, response.result.size).also {
+                    if(response.result.isNotEmpty()) rcv_dirs.fadeIn() else rcv_dirs.fadeOut()
+                }
+                Status.ERROR -> onError(response.throwable!!)
             }
         })
 

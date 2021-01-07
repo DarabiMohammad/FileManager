@@ -1,9 +1,6 @@
 package com.darabi.mohammad.filemanager.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -16,12 +13,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
-import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
+import com.darabi.mohammad.filemanager.ui.fragment.contents.DirsListFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
 import com.darabi.mohammad.filemanager.util.factory.InjectingFragmentFactory
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
-import com.darabi.mohammad.filemanager.util.navigateTo
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -30,7 +26,6 @@ import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 import javax.inject.Inject
-import kotlin.system.exitProcess
 
 abstract class BaseActivity : AppCompatActivity(), HasAndroidInjector,
     View.OnClickListener, CompoundButton.OnCheckedChangeListener, PopupMenu.OnMenuItemClickListener {

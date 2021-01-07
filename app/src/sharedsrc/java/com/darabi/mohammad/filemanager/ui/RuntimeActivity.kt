@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
-import com.darabi.mohammad.filemanager.ui.fragment.dirs.DirsListFragment
+import com.darabi.mohammad.filemanager.ui.fragment.contents.DirsListFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.navigateTo
 import javax.inject.Inject

@@ -69,7 +69,7 @@ abstract class StorageManager {
             Pair(newFolder!!, list.indexOf(newFolder))
         }
 
-    private fun createFileOrFolder(fileName: String, path: String, type: FileType) =
+    private fun createFileOrFolder(fileName: String, path: String, type: FileType): Boolean =
         if(type is FileType.Directory) newFolder(path, fileName) else newFile(path, fileName)
 
     private fun newFolder(path: String, fileName: String): Boolean =

@@ -7,6 +7,7 @@ import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.repository.storage.StorageManager
 import com.darabi.mohammad.filemanager.util.PathManager
 import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,8 +28,7 @@ class DirsListViewModel @Inject constructor (
     fun onBackPressed() = launchInViewModelScope(filesLiveData) { storageManager.getFiles(pathManager.pervousPath()) }
 
     fun getFiles(path: String) {
-        if (pathManager.addPath(path))
-            launchInViewModelScope(filesLiveData) { storageManager.getFiles(path) }
+        if (pathManager.addPath(path)) launchInViewModelScope(filesLiveData) { storageManager.getFiles(path) }
     }
 
     fun getFilesForCategory(categoryType: CategoryType) {
