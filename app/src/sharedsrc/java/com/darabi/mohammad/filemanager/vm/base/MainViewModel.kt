@@ -11,7 +11,6 @@ class MainViewModel @Inject constructor(app: Application) : AbstractMainViewMode
 
 
     val permissionDialoLiveData = MutableLiveData<PermissionDescriptionDialog.Action>()
-    val onActionModeChange = MutableLiveData<Pair<Int, Boolean>>()
     val onSelectAllClick = MutableLiveData<Boolean>()
     val onDeleteClicked = MutableLiveData<Boolean>()
 }

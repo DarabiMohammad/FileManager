@@ -1,18 +1,14 @@
 package com.darabi.mohammad.filemanager.view.adapter.dirs
 
-import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
+import com.darabi.mohammad.filemanager.model.BaseItem
+import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
+import com.darabi.mohammad.filemanager.view.vh.content.DirsViewHolder
 
-interface DirsAdapterCallback<I> : BaseAdapterCallback<I> {
+interface DirsAdapterCallback<I> : OnItemClickListener<I>, DirsViewHolder.DirsMenuClickListener<I> {
 
-    fun onAllSelected()
+    fun onSelectionChanged(selectedItemCount: Int, isAllSelected: Boolean, item: I)
 
-    fun onClear()
+    fun onSelectAll(selectedItemCount: Int, items: List<BaseItem>)
 
-    fun onCheckStateChange(position: Int, isChecked: Boolean)
-
-    fun onRenameClick(item: I)
-
-    fun onEncryptClick(item: I)
-
-    fun onDetailsClick(item: I)
+    fun onUnselectAll()
 }

@@ -1,6 +1,6 @@
 package com.darabi.mohammad.filemanager.view.adapter.base
 
-interface BaseAdapterCallback<I> {
+interface OnItemClickListener<I> {
 
     fun onItemClick(item: I)
 }

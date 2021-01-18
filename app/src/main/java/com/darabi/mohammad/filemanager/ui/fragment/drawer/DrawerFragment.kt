@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.model.BaseDrawerItem
 import com.darabi.mohammad.filemanager.model.DrawerItem
 import com.darabi.mohammad.filemanager.model.Status
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.view.adapter.DrawerRecyclerAdapter
-import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapterCallback
+import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 import com.darabi.mohammad.filemanager.vm.DrawerViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import kotlinx.android.synthetic.main.fragment_drawer.*
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class DrawerFragment @Inject constructor(
     private val drawerViewModel: DrawerViewModel,
     private val adapter: DrawerRecyclerAdapter
-) : BaseFragment(R.layout.fragment_drawer), BaseAdapterCallback<DrawerItem> {
+) : BaseFragment(R.layout.fragment_drawer), OnItemClickListener<BaseDrawerItem> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
@@ -33,7 +34,9 @@ class DrawerFragment @Inject constructor(
         drawerViewModel.getDrawerItems()
     }
 
-    override fun onItemClick(item: DrawerItem) = viewModel.onDrawerItemClick(item)
+    override fun onItemClick(item: BaseDrawerItem) = (item as DrawerItem).run {
+        viewModel.onDrawerItemClick(item).also { viewModel.updateToobarTitle.value = item.name }
+    }
 
     private fun observeViewModel() {
         drawerViewModel.drawerItems.observe(viewLifecycleOwner, {

@@ -4,13 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
-import com.darabi.mohammad.filemanager.ui.fragment.contents.DirsListFragment
+import com.darabi.mohammad.filemanager.ui.fragment.contents.ContentFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
 import com.darabi.mohammad.filemanager.util.navigateTo
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-abstract class RuntimeActivity : BaseActivity(), PermissionManager.PermissionManagerCallback {
+class MainActivity @Inject constructor() : BaseActivity(), PermissionManager.PermissionManagerCallback {
 
     @Inject
     internal lateinit var permissionManager: PermissionManager
@@ -24,23 +24,21 @@ abstract class RuntimeActivity : BaseActivity(), PermissionManager.PermissionMan
         super.observeViewModel()
 
         viewModel.volumeClickLiveData.observe(this, {
-            checkPermissionAndDoWithDirsFragment { getFilesForPath(it.path) }
+            checkPermissionAndDoWithContentFragment { getFilesForPath(it.path) }
         })
 
         viewModel.drawerCategoryFolderLiveData.observe(this, {
-
+            checkPermissionAndDoWithContentFragment { getFilesForPath(it.path) }
         })
 
         viewModel.drawerCategoryLiveData.observe(this, {
-            checkPermissionAndDoWithDirsFragment { getFilesForCategory(it.type) }
+            checkPermissionAndDoWithContentFragment {
+                getFilesForCategory(it.type)
+            }
         })
 
         viewModel.drawerInstalledAppsLiveData.observe(this, {
 
-        })
-
-        viewModel.drawerSettingsLiveData.observe(this, {
-            navigateTo(fragment = settingsFragment, addToBackStack = true).also { closeNavDrawer() }
         })
 
         viewModel.permissionDialoLiveData.observe(this, {
@@ -69,19 +67,15 @@ abstract class RuntimeActivity : BaseActivity(), PermissionManager.PermissionMan
         }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == openAppInfoScreenFlag)
+        if (requestCode == openAppInfoScreenFlag)
             permissionManager.invokeIfPermissionIsGranted(this)
         else super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private inline infix fun PermissionManager.checkAndDo(crossinline function: () -> Unit) =
-        checkPermissionsAndRun(this@RuntimeActivity, this@RuntimeActivity, PermissionManager.Permissions.Storage) {
-            function.invoke()
+    private inline fun checkPermissionAndDoWithContentFragment(crossinline function: ContentFragment.() -> Unit) =
+        permissionManager.checkPermissionsAndRun(this@MainActivity, this@MainActivity, PermissionManager.Permissions.Storage) {
+            navigateTo(fragment = contentFragment, addToBackStack = true).also { contentFragment.function() }
         }.also { closeNavDrawer() }
-
-    private inline fun checkPermissionAndDoWithDirsFragment(crossinline function: DirsListFragment.() -> Unit) = permissionManager checkAndDo {
-        navigateTo(fragment = dirsListFragment, addToBackStack = true).also { dirsListFragment.function() }
-    }
 
     private fun openAppInfoScreen() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

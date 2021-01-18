@@ -13,5 +13,5 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
     open fun onBackPressed() { viewModel.onFragmentBackPressed.value = fragmentTag }
 
-    protected fun makeToast(message: String) = Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
+    protected fun makeToast(message: String) = Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
 }

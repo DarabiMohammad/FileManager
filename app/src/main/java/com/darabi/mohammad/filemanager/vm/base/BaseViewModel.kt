@@ -25,5 +25,4 @@ abstract class BaseViewModel constructor(private val app: Application) : Android
         liveData.value = Result.loading()
         liveData.value = function()
     }
-
 }

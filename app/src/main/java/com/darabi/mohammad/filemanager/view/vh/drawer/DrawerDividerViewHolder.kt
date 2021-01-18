@@ -4,9 +4,4 @@ import android.view.View
 import com.darabi.mohammad.filemanager.model.BaseDrawerItem
 import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 
-class DrawerDividerViewHolder constructor(val view: View) : BaseViewHolder<BaseDrawerItem>(view) {
-
-    override fun bindModel(model: BaseDrawerItem) {
-        return
-    }
-}
+class DrawerDividerViewHolder constructor(val view: View) : BaseViewHolder<BaseDrawerItem>(view, null)

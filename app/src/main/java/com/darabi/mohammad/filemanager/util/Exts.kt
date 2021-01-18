@@ -55,7 +55,7 @@ fun Fragment.navigateTo(
 fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
     LayoutInflater.from(view.context).inflate(layout, view, false)
 
-fun View.fadeOut() { visibility = View.GONE }
+fun View.fadeOut() { if(isVisible) visibility = View.GONE }
 
 fun View.fadeIn() { if (!isVisible) visibility = View.VISIBLE }
 

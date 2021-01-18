@@ -14,6 +14,9 @@ abstract class AbstractMainViewModel constructor (
     val drawerInstalledAppsLiveData by lazy { MutableLiveData<InstalledApps>() }
     val drawerSettingsLiveData by lazy { MutableLiveData<Settings>() }
 
+    val updateToobarTitle by lazy { MutableLiveData<String>() }
+    val onActionModeChanged by lazy { MutableLiveData<Pair<Int, Boolean>>() }
+
     val onThemeChanged by lazy { MutableLiveData<String>() }
 
     fun onDrawerItemClick(drawerItem: DrawerItem) = when(drawerItem) {

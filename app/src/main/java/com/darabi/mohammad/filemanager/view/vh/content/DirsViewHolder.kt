@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.view.vh.dir
+package com.darabi.mohammad.filemanager.view.vh.content
 
 import android.view.Gravity
 import android.view.View
@@ -9,15 +9,14 @@ import com.bumptech.glide.Glide
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.FileItem
-import com.darabi.mohammad.filemanager.view.adapter.checkable.CheckableAdapter
-import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsAdapterCallback
-import com.darabi.mohammad.filemanager.view.vh.checkable.CheckableViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.selection.AdapterCallback
+import com.darabi.mohammad.filemanager.view.adapter.selection.HasSelectable
+import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 
 class DirsViewHolder constructor(
         private val view: View,
-        private val dirsAdapterCallback: DirsAdapterCallback<FileItem>,
-        checkableAdapter: CheckableAdapter<BaseItem>
-) : CheckableViewHolder<BaseItem>(view, checkableAdapter) {
+        private val callback: DirsViewHolderCallback<BaseItem>
+) : SelectionViewHolder.SelectableViewHolder<BaseItem>(view, callback) {
 
     private val title: TextView = view.findViewById(R.id.txt_rcv_item_dir_name)
     private val image: ImageView = view.findViewById(R.id.img_rcv_item_dir_icon)
@@ -34,13 +33,13 @@ class DirsViewHolder constructor(
         if(model is FileItem) {
             super.bindModel(model, position)
             title.text = model.name
-            image.setOnClickListener { notifyItemCheckedStateChanged(position) }
+            image.setOnClickListener { notifySelectionChanged(model, position) }
             imageMore.setOnClickListener {
                 popupMenu.setOnMenuItemClickListener {menuItem ->
                     when (menuItem.itemId) {
-                        R.id.rename -> dirsAdapterCallback.onRenameClick(model)
-                        R.id.encrypt -> dirsAdapterCallback.onEncryptClick(model)
-                        R.id.details -> dirsAdapterCallback.onDetailsClick(model)
+                        R.id.rename -> callback.onRenameClick(model)
+                        R.id.encrypt -> callback.onEncryptClick(model)
+                        R.id.details -> callback.onDetailsClick(model)
                     }
                     true
                 }
@@ -50,4 +49,15 @@ class DirsViewHolder constructor(
             glide.asDrawable().load(R.drawable.ic_more_vert_black).into(imageMore)
         }
     }
+
+    interface DirsMenuClickListener <I> {
+
+        fun onRenameClick(item: I)
+
+        fun onEncryptClick(item: I)
+
+        fun onDetailsClick(item: I)
+    }
+
+    interface DirsViewHolderCallback <O: HasSelectable> : AdapterCallback <O>, DirsMenuClickListener<O>
 }

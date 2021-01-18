@@ -33,9 +33,9 @@ class SettingsFragment @Inject constructor(
     }
 
     override fun onBackPressed() =
-            if (childFragmentManager.backStackEntryCount > 0)
-                childFragmentManager.popBackStack()
-            else super.onBackPressed()
+        if (childFragmentManager.backStackEntryCount > 0)
+            childFragmentManager.popBackStack()
+        else super.onBackPressed()
 
     private fun observeViewModel() {}
 
