@@ -10,7 +10,7 @@ import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
 import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.invisible
-import com.darabi.mohammad.filemanager.vm.DirsListViewModel
+import com.darabi.mohammad.filemanager.vm.ContentViewModel
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_new_file.*
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class NewFileDialog @Inject constructor (
     override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_new_file
 
-    private val viewModel: DirsListViewModel by viewModels { viewModelFactory }
+    private val viewModel: ContentViewModel by viewModels { viewModelFactory }
     private var type: FileType? = null
 
     override fun onResume() {

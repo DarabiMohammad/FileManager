@@ -2,8 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/add_short_cut"
-        android:title="@string/add_short_cut"/>
+        android:id="@+id/copy"
+        android:title="@string/copy"/>
+
+    <item
+        android:id="@+id/move"
+        android:title="@string/move"/>
 
     <item
         android:id="@+id/hide"

@@ -10,20 +10,20 @@ class MainActivity @Inject constructor() : BaseActivity() {
         super.observeViewModel()
 
         viewModel.volumeClickLiveData.observe(this, {
-            doWithFragmentAndCloseDrawer(dirsListFragment) {
-                dirsListFragment.getFilesForPath(it.path)
+            doWithFragmentAndCloseDrawer(contentFragment) {
+                contentFragment.getFilesForPath(it.path)
             }
         })
 
         viewModel.drawerCategoryFolderLiveData.observe(this, {
-            doWithFragmentAndCloseDrawer(dirsListFragment) {
-                dirsListFragment.getFilesForPath(it.path)
+            doWithFragmentAndCloseDrawer(contentFragment) {
+                contentFragment.getFilesForPath(it.path)
             }
         })
 
         viewModel.drawerCategoryLiveData.observe(this, {
-            doWithFragmentAndCloseDrawer(dirsListFragment) {
-                dirsListFragment.getFilesForCategory(it.type)
+            doWithFragmentAndCloseDrawer(contentFragment) {
+                contentFragment.getFilesForCategory(it.type)
             }
         })
 

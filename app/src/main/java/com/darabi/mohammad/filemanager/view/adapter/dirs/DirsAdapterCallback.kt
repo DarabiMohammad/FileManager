@@ -8,7 +8,7 @@ interface DirsAdapterCallback<I> : OnItemClickListener<I>, DirsViewHolder.DirsMe
 
     fun onSelectionChanged(selectedItemCount: Int, isAllSelected: Boolean, item: I)
 
-    fun onSelectAll(selectedItemCount: Int, items: List<BaseItem>)
+    fun onSelectAll(selectedItemCount: Int, items: List<I>)
 
     fun onUnselectAll()
 }

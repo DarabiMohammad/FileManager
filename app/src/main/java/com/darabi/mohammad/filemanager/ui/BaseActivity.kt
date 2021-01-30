@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
@@ -82,7 +83,7 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         R.id.img_toggle -> openNavDrawer()
         R.id.img_back -> onBackPressed()
         R.id.img_options -> onOptionsClick()
-        R.id.txt_toolbar_delete -> onDeleteClick()
+        R.id.txt_toolbar_delete -> contentFragment.onDeleteClicked()
         else -> {}
     }
 
@@ -91,8 +92,10 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.add_short_cut -> {}
+            R.id.copy -> contentFragment.onCopyClicked()
+            R.id.move -> contentFragment.onMoveClicked()
             R.id.hide -> {}
+            R.id.sort -> {}
         }
         return true
     }
@@ -125,8 +128,6 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
 
     private fun unlockNavDrawer() = layout_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
 
-    private fun onDeleteClick() = contentFragment.onDeleteClicked()
-
     private fun fadeInActionMode(itemCount: Int, isChecked: Boolean) {
         lockNavDrawer()
         txt_toolbar_title.text = itemCount.toString()
@@ -145,6 +146,6 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
 
     private fun onOptionsClick() = PopupMenu(this, img_options, GravityCompat.END).apply {
         setOnMenuItemClickListener(this@BaseActivity)
-        inflate(R.menu.menu_selected_items)
+        inflate(if (chb_select_all.isVisible) R.menu.menu_selection_ops else R.menu.menu_base_ops)
     }.show()
 }

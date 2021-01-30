@@ -29,5 +29,11 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
         notifyItemInserted(position)
     }
 
+    open fun removeSource(items: List<O>) {
+        objects.removeAll(items)
+        // todo : use notifyItemRangeRemoved() method in appropreate way instead of notifyDataSetChanged()
+        notifyDataSetChanged()
+    }
+
     private fun clear() = objects.clear().also { notifyDataSetChanged() }
 }

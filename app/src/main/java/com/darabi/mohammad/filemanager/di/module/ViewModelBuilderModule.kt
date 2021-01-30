@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.darabi.mohammad.filemanager.di.ViewModelKey
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
-import com.darabi.mohammad.filemanager.vm.DirsListViewModel
+import com.darabi.mohammad.filemanager.vm.ContentViewModel
 import com.darabi.mohammad.filemanager.vm.DrawerViewModel
 import com.darabi.mohammad.filemanager.vm.HomeViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
@@ -42,8 +42,8 @@ abstract class ViewModelBuilderModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(DirsListViewModel::class)
-    abstract fun bindDirsListViewModel(dirsListViewModel: DirsListViewModel): ViewModel
+    @ViewModelKey(ContentViewModel::class)
+    abstract fun bindDirsListViewModel(contentViewModel: ContentViewModel): ViewModel
 
     @Binds
     @IntoMap

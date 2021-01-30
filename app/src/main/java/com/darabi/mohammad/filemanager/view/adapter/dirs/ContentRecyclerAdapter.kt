@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DirsRecyclerAdapter @Inject constructor() : SelectionAdapter<BaseItem, SelectionViewHolder<BaseItem>>(),
+class ContentRecyclerAdapter @Inject constructor() : SelectionAdapter<BaseItem, SelectionViewHolder<BaseItem>>(),
     DirsViewHolder.DirsViewHolderCallback<BaseItem> {
 
     var adapterCallback: DirsAdapterCallback<BaseItem>? = null

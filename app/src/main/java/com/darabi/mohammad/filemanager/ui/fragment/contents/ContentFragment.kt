@@ -3,7 +3,6 @@ package com.darabi.mohammad.filemanager.ui.fragment.contents
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
@@ -12,11 +11,10 @@ import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.fadeOut
 import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsAdapterCallback
-import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsRecyclerAdapter
-import com.darabi.mohammad.filemanager.vm.DirsListViewModel
+import com.darabi.mohammad.filemanager.view.adapter.dirs.ContentRecyclerAdapter
+import com.darabi.mohammad.filemanager.vm.ContentViewModel
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
-import kotlinx.coroutines.isActive
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,8 +23,8 @@ import javax.inject.Singleton
 class ContentFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val deleteDialog: DeleteDialog,
-    private val dirsListViewModel: DirsListViewModel,
-    private val adapter: DirsRecyclerAdapter
+    private val contentViewModel: ContentViewModel,
+    private val adapter: ContentRecyclerAdapter
 ) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, DirsAdapterCallback<BaseItem> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
@@ -37,6 +35,7 @@ class ContentFragment @Inject constructor (
         observeViewModel()
         initViews()
         super.onViewCreated(view, savedInstanceState)
+        resources.configuration.uiMode
     }
 
     override fun onClick(view: View?) = when (view?.id) {
@@ -45,19 +44,20 @@ class ContentFragment @Inject constructor (
     }
 
     override fun onSelectionChanged(selectedItemCount: Int, isAllSelected: Boolean, item: BaseItem) {
-        viewModel.onActionModeChanged.value = Pair(selectedItemCount, isAllSelected).also {
-            dirsListViewModel.selectedItemsCount = selectedItemCount
-            if (selectedItemCount == 1) dirsListViewModel.selectedItems = arrayListOf()
-            if (item.isSelected) dirsListViewModel.selectedItems!!.add(item) else dirsListViewModel.selectedItems!!.remove(item)
-        }
+        if (item.isSelected) contentViewModel.selectedItems.add(item) else contentViewModel.selectedItems.remove(item)
+        contentViewModel.selectedItemsCount = selectedItemCount
+        viewModel.onActionModeChanged.value = Pair(selectedItemCount, isAllSelected)
     }
 
     override fun onSelectAll(selectedItemCount: Int, items: List<BaseItem>) {
+        contentViewModel.selectedItemsCount = selectedItemCount
+        contentViewModel.selectedItems.clear().also { contentViewModel.selectedItems.addAll(items) }
         viewModel.onActionModeChanged.value = Pair(selectedItemCount, true)
-        dirsListViewModel.selectedItems = items as ArrayList<BaseItem>
     }
 
     override fun onUnselectAll() {
+        contentViewModel.selectedItemsCount = 0
+        contentViewModel.selectedItems.clear()
         viewModel.onActionModeChanged.value = Pair(0, false)
     }
 
@@ -68,20 +68,25 @@ class ContentFragment @Inject constructor (
     override fun onDetailsClick(item: BaseItem) {}
 
     override fun onItemClick(item: BaseItem) {
-        if (item is Directory) dirsListViewModel.getFiles(item.path)
+        if (item is Directory)
+            contentViewModel.getFiles(item.path)
     }
 
     override fun onBackPressed() {
-        if (adapter.hasSelection()) adapter.unselectAll() else dirsListViewModel.onBackPressed()
+        if (adapter.hasSelection()) adapter.unselectAll() else contentViewModel.onBackPressed()
     }
 
-    fun getFilesForPath(path: String) = dirsListViewModel.getFiles(path)
+    fun getFilesForPath(path: String) = contentViewModel.getFiles(path)
 
-    fun getFilesForCategory(categoryType: CategoryType) = dirsListViewModel.getFilesForCategory(categoryType)
+    fun getFilesForCategory(categoryType: CategoryType) = contentViewModel.getFilesForCategory(categoryType)
 
     fun onAllSelectionClick(isAllSelected: Boolean) = if (isAllSelected) adapter.selectAll() else adapter.unselectAll()
 
     fun onDeleteClicked() = deleteDialog.show(childFragmentManager)
+
+    fun onCopyClicked() = contentViewModel.copy()
+
+    fun onMoveClicked() = contentViewModel.move()
 
     private fun initViews() {
         btn_fab.setOnClickListener(this)
@@ -90,7 +95,7 @@ class ContentFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        dirsListViewModel.filesLiveData.observe(viewLifecycleOwner, { response ->
+        contentViewModel.filesLiveData.observe(viewLifecycleOwner, { response ->
             when (response.status) {
                 Status.LOADING -> {}
                 Status.SUCCESS -> adapter.setSource(response.result!!).also {
@@ -101,7 +106,7 @@ class ContentFragment @Inject constructor (
             }
         })
 
-        dirsListViewModel.onFileCreated.observe(viewLifecycleOwner, {
+        contentViewModel.onFileCreated.observe(viewLifecycleOwner, {
             when (it.status) {
                 Status.LOADING -> {}
                 Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also {
@@ -111,12 +116,21 @@ class ContentFragment @Inject constructor (
                 Status.ERROR -> onError(it.throwable!!)
             }
         })
+
+        contentViewModel.onFilesDeleted.observe(viewLifecycleOwner, {
+            if (it) adapter.apply {
+                removeSource(contentViewModel.selectedItems)
+                if (itemCount == 0) rcv_dirs.fadeOut()
+                unselectAll()
+                deleteDialog.dismiss()
+            } else throw Exception("$fragmentTag delete files failed")
+        })
     }
 
     private fun onError(throwable: Throwable) = when (throwable) {
         is NullPointerException -> super.onBackPressed()
         is IOException -> makeToast("${throwable.message}")
-        else -> {}
+        else -> throw throwable
     }
 
     private fun onFabClicked() = newFileDialog.forFolder().show(childFragmentManager, newFileDialog.dialogTag)

@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 
-open class BaseViewHolder<M> constructor(
+open class BaseViewHolder<in M> constructor(
     private val view: View,
     private val onItemClickListener: OnItemClickListener<M>?
 ) : RecyclerView.ViewHolder(view) {

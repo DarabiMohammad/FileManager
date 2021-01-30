@@ -10,9 +10,12 @@
     <string name="app_info">App Info</string>
     <string name="create">Create</string>
     <string name="delete">Delete</string>
+    <string name="copy">Copy</string>
+    <string name="move">Move</string>
     <string name="share">Share</string>
     <string name="add_short_cut">Add Shortcut</string>
     <string name="hide">Hide</string>
+    <string name="sort">Sort By</string>
     <string name="cancel">Cancel</string>
     <string name="encrypt">Encrypt</string>
     <string name="decrypt">Decrypt</string>

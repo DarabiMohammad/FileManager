@@ -2,47 +2,42 @@ package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.liveData
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.repository.storage.StorageManager
 import com.darabi.mohammad.filemanager.util.PathManager
 import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DirsListViewModel @Inject constructor (
+class ContentViewModel @Inject constructor (
     private val app: Application,
     private val pathManager: PathManager,
     private val storageManager: StorageManager
 ) : BaseViewModel(app) {
 
     var selectedItemsCount: Int = 0
-    var selectedItems: ArrayList<BaseItem>? = null
+    val selectedItems = arrayListOf<BaseItem>()
 
     val filesLiveData by lazy { MutableLiveData<Result<List<BaseItem>>>() }
-    val deleteFilesStatus by lazy { MutableLiveData<Result<Boolean>>() }
     val onFileCreated by lazy { MutableLiveData<Result<Pair<ArrayList<BaseItem>, Int>>>() }
+    val onFilesDeleted by lazy { MutableLiveData<Boolean>() }
 
     fun getCurrentDirectoryName(): String = pathManager.lastPath().run {
         this.substring(this.lastIndexOf(File.separator) + 1, this.length)
     }
 
-    fun onBackPressed() {
-//    = launchInViewModelScope(filesLiveData) {
-        filesLiveData.value = storageManager.getFiles(pathManager.pervousPath(), prefsManager.isSplitModeEnabled())
+    fun onBackPressed() = launchSupervisorJob(filesLiveData) {
+        storageManager.getFiles(pathManager.pervousPath(), prefsManager.isSplitModeEnabled())
     }
 
-    fun getFiles(path: String) {
-        if (pathManager.addPath(path)) //launchInViewModelScope(filesLiveData) {
-            filesLiveData.value = storageManager.getFiles(path, prefsManager.isSplitModeEnabled())
-        //}
-    }
+    fun getFiles(path: String) =
+        if (pathManager.addPath(path))
+            launchSupervisorJob(filesLiveData) { storageManager.getFiles(path, prefsManager.isSplitModeEnabled()) }
+        else null
 
     fun getFilesForCategory(categoryType: CategoryType) = launchInViewModelScope(filesLiveData) {
         when (categoryType) {
@@ -56,17 +51,19 @@ class DirsListViewModel @Inject constructor (
         }
     }
 
-    fun createFile(fileName: String, type: FileType) {
-        onFileCreated.value = Result.loading()
-        onFileCreated.value = storageManager.createNewFolder(fileName, pathManager.lastPath(), prefsManager.isSplitModeEnabled())
+    fun createFile(fileName: String, type: FileType) = launchSupervisorJob(onFileCreated) {
+        storageManager.createNewFolder(fileName, pathManager.lastPath(), prefsManager.isSplitModeEnabled())
     }
-//        launchInViewModelScope(onFileCreated) {
-//        storageManager.createNewFile(fileName, pathManager.lastPath(), type, prefsManager.isSplitModeEnabled())
-//    }
 
-    fun deleteFiles() = selectedItems?.let { list ->
-        list.forEach {
-            launchInViewModelScope(deleteFilesStatus) { storageManager.deleteFile((it as FileItem).path) }
+    fun deleteFiles() = liveData {
+        withContext(Dispatchers.Default) {
+            selectedItems.map {
+                async { storageManager.deleteFile((it as FileItem).path) }
+            }.awaitAll().forEach { emit(it) }
         }
     }
+
+    fun copy() {}
+
+    fun move() {}
 }

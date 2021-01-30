@@ -2,7 +2,6 @@ package com.darabi.mohammad.filemanager.repository.storage
 
 import android.app.Application
 import android.database.MergeCursor
-import android.net.Uri
 import android.provider.MediaStore
 import android.text.format.Formatter
 import com.darabi.mohammad.filemanager.R
@@ -11,27 +10,26 @@ import com.darabi.mohammad.filemanager.repository.safeSuspendCall
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import java.io.File as javaFile
+
 abstract class StorageManager {
 
     @Inject
     protected lateinit var app: Application
 
-    @Suppress("UNCHECKED_CAST")
-    fun getFiles(path: String?, isSplitModeEnabled: Boolean): Result<ArrayList<out BaseItem>> { //safeSuspendCall {
-        return Result.success(addDividersIfNeeded(listFiles(path!!), isSplitModeEnabled))
+    suspend fun getFiles(path: String?, isSplitModeEnabled: Boolean): Result<ArrayList<out BaseItem>> = safeSuspendCall {
+        Result.success(addDividersIfNeeded(listFiles(path!!), isSplitModeEnabled))
+    }
+
+    suspend fun createNewFolder(fileName: String, path: String, isSplitModeEnabled: Boolean): Result<Pair<ArrayList<BaseItem>, Int>> = safeSuspendCall {
+        Result.success(createFolder(fileName, path, isSplitModeEnabled))
     }
 
     suspend fun deleteFile(path: String): Result<Boolean> = safeSuspendCall { Result.success(javaFile(path).deleteRecursively()) }
 
-    suspend fun getImages(): Result<List<File>> = safeSuspendCall { Result.success(getAllImages()) }
+    suspend fun copy(fileName: String, destinationPath: String) {}
 
-    fun createNewFolder(fileName: String, path: String, isSplitModeEnabled: Boolean): Result<Pair<ArrayList<BaseItem>, Int>> =
-        Result.success(createFolder(fileName, path, isSplitModeEnabled))
-//        safeSuspendCall {
-//        Result.success(createFile(fileName, path, type, isSplitModeEnabled))
-//    }
+    suspend fun getImages(): Result<List<File>> = safeSuspendCall { Result.success(getAllImages()) }
 
     protected fun listFiles(path: String): ArrayList<FileItem> = arrayListOf<FileItem>().apply {
         javaFile(path).listFiles()?.let { array ->
@@ -111,4 +109,3 @@ abstract class StorageManager {
         this
     }
 }
-

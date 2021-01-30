@@ -6,7 +6,7 @@ import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> internal constructor()
     : BaseAdapter<O, VH> (), AdapterCallback <O> {
 
-    protected var selectedItemCount: Int = 0
+    private var selectedItemCount: Int = 0
     private var isAllitemSelected: Boolean = false
     private lateinit var selectableItems: ArrayList<O>
 
@@ -22,7 +22,6 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
 
     override fun notifyItemSelectionChanged(item: O, position: Int) {
         if (item.isSelected) selectedItemCount++ else selectedItemCount--
-        isAllitemSelected = selectableItems.size == selectedItemCount
         onSelectionChanged(selectedItemCount, isAllSelected(), item)
     }
 
@@ -38,7 +37,11 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
         updateSelectableItems()
     }
 
-    protected fun isAllSelected(): Boolean = selectedItemCount == selectableItems.size
+    override fun removeSource(items: List<O>) {
+        super.removeSource(items)
+        updateSelectableItems()
+        if (selectableItems.size == 0) objects.clear()
+    }
 
     fun selectAll() {
         selectedItemCount =  selectableItems.size
@@ -55,4 +58,6 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
     }
 
     private fun updateSelectableItems() { selectableItems = objects.filter { it.isSelectable } as ArrayList<O> }
+
+    private fun isAllSelected(): Boolean = selectedItemCount == selectableItems.size
 }
