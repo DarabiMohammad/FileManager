@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.view.adapter.dirs
+package com.darabi.mohammad.filemanager.view.adapter.content
 
 import android.view.ViewGroup
 import com.darabi.mohammad.filemanager.R
@@ -7,18 +7,18 @@ import com.darabi.mohammad.filemanager.model.EmptyDivider
 import com.darabi.mohammad.filemanager.model.FileDivider
 import com.darabi.mohammad.filemanager.util.inflateLayout
 import com.darabi.mohammad.filemanager.view.adapter.selection.SelectionAdapter
-import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
-import com.darabi.mohammad.filemanager.view.vh.content.DirsDividerViewHolder
-import com.darabi.mohammad.filemanager.view.vh.content.DirsViewHolder
+import com.darabi.mohammad.filemanager.view.vh.content.ContentViewHolder
+import com.darabi.mohammad.filemanager.view.vh.content.ContentDividerViewHolder
 import com.darabi.mohammad.filemanager.view.vh.content.EmptyViewHolder
+import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ContentRecyclerAdapter @Inject constructor() : SelectionAdapter<BaseItem, SelectionViewHolder<BaseItem>>(),
-    DirsViewHolder.DirsViewHolderCallback<BaseItem> {
+    ContentViewHolder.DirsViewHolderCallback<BaseItem> {
 
-    var adapterCallback: DirsAdapterCallback<BaseItem>? = null
+    var adapterCallback: ContentAdapterCallback<BaseItem>? = null
 
     private val dividerViewType = 0
     private val emptyViewType = 1
@@ -30,21 +30,17 @@ class ContentRecyclerAdapter @Inject constructor() : SelectionAdapter<BaseItem, 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectionViewHolder<BaseItem> = when (viewType) {
-        dividerViewType -> DirsDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
+        dividerViewType -> ContentDividerViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_divider))
         emptyViewType -> EmptyViewHolder(inflateLayout(parent, R.layout.rcv_item_dir_empty))
-        else -> DirsViewHolder(inflateLayout(parent, R.layout.rcv_item_dir), this)
+        else -> ContentViewHolder(inflateLayout(parent, R.layout.rcv_item_content), this)
     }
 
-    override fun onSelectionChanged(selectedItemCount: Int, isAllSelected: Boolean, item: BaseItem) {
-        adapterCallback?.onSelectionChanged(selectedItemCount, isAllSelected, item)
+    override fun onSelectionChanged(isAllSelected: Boolean, item: BaseItem) {
+        adapterCallback?.onSelectionChanged(isAllSelected, item)
     }
 
-    override fun onSelectAll(selectedItemCount: Int, items: List<BaseItem>) {
-        adapterCallback?.onSelectAll(selectedItemCount, items)
-    }
-
-    override fun onUnselectAll() {
-        adapterCallback?.onUnselectAll()
+    override fun onSelectAll(items: List<BaseItem>) {
+        adapterCallback?.onSelectAll(items)
     }
 
     override fun onItemClick(item: BaseItem) {

@@ -25,11 +25,15 @@ abstract class StorageManager {
         Result.success(createFolder(fileName, path, isSplitModeEnabled))
     }
 
-    suspend fun deleteFile(path: String): Result<Boolean> = safeSuspendCall { Result.success(javaFile(path).deleteRecursively()) }
+    suspend fun deleteFile(file: FileItem): Result<FileItem> = safeSuspendCall {
+        if (javaFile(file.path).deleteRecursively())
+            Result.success(file)
+        else throw IOException(app.getString(R.string.delete_file_error))
+    }
 
     suspend fun copy(fileName: String, destinationPath: String) {}
 
-    suspend fun getImages(): Result<List<File>> = safeSuspendCall { Result.success(getAllImages()) }
+    suspend fun getImages(): Result<ArrayList<File>> = safeSuspendCall { Result.success(getAllImages()) }
 
     protected fun listFiles(path: String): ArrayList<FileItem> = arrayListOf<FileItem>().apply {
         javaFile(path).listFiles()?.let { array ->

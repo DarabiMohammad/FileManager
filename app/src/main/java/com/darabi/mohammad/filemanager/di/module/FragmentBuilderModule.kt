@@ -7,6 +7,7 @@ import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.contents.ContentFragment
+import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
 import com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.ui.fragment.settings.AppearanceFragment
@@ -32,6 +33,11 @@ abstract class FragmentBuilderModule {
     @IntoMap
     @FragmentKey(ContentFragment::class)
     abstract fun bindDirsListFragment(contentFragment: ContentFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(CopyMoveBottomSheetFragment::class)
+    abstract fun bindCopyMoveBottomSheetFragment(copyMoveBottomSheetFragment: CopyMoveBottomSheetFragment): Fragment
 
     @Binds
     @IntoMap

@@ -101,4 +101,10 @@
         <item name="layoutManager">"androidx.recyclerview.widget.LinearLayoutManager"</item>
     </style>
 
+    <!--  Bottom Sheet Themes  -->
+
+    <style name="BaseBottomSheetTheme">
+
+    </style>
+
 </resources>

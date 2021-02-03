@@ -7,7 +7,7 @@ import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.FileDivider
 import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 
-class DirsDividerViewHolder constructor(view: View) : 
+class ContentDividerViewHolder constructor(view: View) :
     SelectionViewHolder.UnSelectableViewHolder<BaseItem>(view, null) {
 
     private val name: TextView = view.findViewById(R.id.txt_rcv_item_dir_divider_name)

@@ -10,7 +10,7 @@ import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
 import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.invisible
-import com.darabi.mohammad.filemanager.vm.ContentViewModel
+import com.darabi.mohammad.filemanager.vm.ccontent.ContentViewModel
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import kotlinx.android.synthetic.main.dialog_new_file.*
 import javax.inject.Inject
@@ -57,7 +57,9 @@ class NewFileDialog @Inject constructor (
             edt_file_name.setText(R.string.simple_txt_format)
     }
 
-    private fun onCreateButtonClick() = viewModel.createFile(edt_file_name.text.toString(), type!!)
+    private fun onCreateButtonClick() = viewModel.createFile(edt_file_name.text.toString(), type!!).observe(this, {
+        viewModel.onFileCreated.value = it
+    })
 
     fun forFile(): NewFileDialog = this.apply { type = FileType.File }
 

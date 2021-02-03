@@ -7,7 +7,9 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PermissionManager @Inject constructor(private val prefsManager: PrefsManager) {
 
     private lateinit var callback: PermissionManagerCallback

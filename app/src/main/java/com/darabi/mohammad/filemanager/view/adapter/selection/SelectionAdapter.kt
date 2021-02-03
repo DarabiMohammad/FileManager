@@ -7,14 +7,11 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
     : BaseAdapter<O, VH> (), AdapterCallback <O> {
 
     private var selectedItemCount: Int = 0
-    private var isAllitemSelected: Boolean = false
-    private lateinit var selectableItems: ArrayList<O>
+    private lateinit var selectableItems: List<O>
 
-    protected abstract fun onSelectionChanged(selectedItemCount: Int, isAllSelected: Boolean, item: O)
+    protected abstract fun onSelectionChanged(isAllSelected: Boolean, item: O)
 
-    protected abstract fun onSelectAll(selectedItemCount: Int, items: List<O>)
-
-    protected abstract fun onUnselectAll()
+    protected abstract fun onSelectAll(items: List<O>)
 
     override fun onBindViewHolder(holder: VH, position: Int) = objects[position].run {
         if (this.isSelectable) holder.bindModel(this, position) else holder.bindModel(this)
@@ -22,7 +19,7 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
 
     override fun notifyItemSelectionChanged(item: O, position: Int) {
         if (item.isSelected) selectedItemCount++ else selectedItemCount--
-        onSelectionChanged(selectedItemCount, isAllSelected(), item)
+        onSelectionChanged(isAllSelected(), item)
     }
 
     override fun hasSelection(): Boolean = selectedItemCount > 0
@@ -40,24 +37,24 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
     override fun removeSource(items: List<O>) {
         super.removeSource(items)
         updateSelectableItems()
-        if (selectableItems.size == 0) objects.clear()
+        if (selectableItems.isEmpty()) objects.clear()
     }
 
     fun selectAll() {
         selectedItemCount =  selectableItems.size
         selectableItems.forEach { it.isSelected = true }
         notifyDataSetChanged()
-        onSelectAll(selectedItemCount, selectableItems)
+        onSelectAll(selectableItems)
     }
 
     fun unselectAll() {
         selectedItemCount = 0
         selectableItems.forEach { it.isSelected = false }
         notifyDataSetChanged()
-        onUnselectAll()
+        onSelectAll(ArrayList())
     }
 
-    private fun updateSelectableItems() { selectableItems = objects.filter { it.isSelectable } as ArrayList<O> }
+    private fun updateSelectableItems() { selectableItems = objects.filter { it.isSelectable } }
 
     private fun isAllSelected(): Boolean = selectedItemCount == selectableItems.size
 }

@@ -3,6 +3,7 @@ package com.darabi.mohammad.filemanager.ui.fragment.contents
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
@@ -10,10 +11,10 @@ import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.fadeOut
-import com.darabi.mohammad.filemanager.view.adapter.dirs.DirsAdapterCallback
-import com.darabi.mohammad.filemanager.view.adapter.dirs.ContentRecyclerAdapter
-import com.darabi.mohammad.filemanager.vm.ContentViewModel
+import com.darabi.mohammad.filemanager.view.adapter.content.ContentAdapterCallback
+import com.darabi.mohammad.filemanager.view.adapter.content.ContentRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
+import com.darabi.mohammad.filemanager.vm.ccontent.ContentViewModel
 import kotlinx.android.synthetic.main.fragment_dirs_list.*
 import java.io.IOException
 import javax.inject.Inject
@@ -23,9 +24,11 @@ import javax.inject.Singleton
 class ContentFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val deleteDialog: DeleteDialog,
+    private val copyMoveBottomSheet: CopyMoveBottomSheetFragment,
     private val contentViewModel: ContentViewModel,
     private val adapter: ContentRecyclerAdapter
-) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, DirsAdapterCallback<BaseItem> {
+) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, ContentAdapterCallback<BaseItem>,
+    Observer<Result<ArrayList<out BaseItem>>?> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
@@ -43,23 +46,28 @@ class ContentFragment @Inject constructor (
         else -> {}
     }
 
-    override fun onSelectionChanged(selectedItemCount: Int, isAllSelected: Boolean, item: BaseItem) {
-        if (item.isSelected) contentViewModel.selectedItems.add(item) else contentViewModel.selectedItems.remove(item)
-        contentViewModel.selectedItemsCount = selectedItemCount
-        viewModel.onActionModeChanged.value = Pair(selectedItemCount, isAllSelected)
+    override fun onChanged(response: Result<java.util.ArrayList<out BaseItem>>?) {
+        response?.let { result ->
+            when (result.status) {
+                Status.LOADING -> {}
+                Status.SUCCESS -> adapter.setSource(result.result!!).also {
+//                    viewModel.updateToobarTitle.value = dirsListViewModel.getCurrentDirectoryName()
+                    if(result.result.isNotEmpty()) rcv_dirs.fadeIn() else rcv_dirs.fadeOut()
+                }
+                Status.ERROR -> onError(result.throwable!!)
+            }
+        }
     }
 
-    override fun onSelectAll(selectedItemCount: Int, items: List<BaseItem>) {
-        contentViewModel.selectedItemsCount = selectedItemCount
-        contentViewModel.selectedItems.clear().also { contentViewModel.selectedItems.addAll(items) }
-        viewModel.onActionModeChanged.value = Pair(selectedItemCount, true)
-    }
+    override fun onSelectionChanged(isAllSelected: Boolean, item: BaseItem) =
+        contentViewModel.onSelectionChanged(item).observe(this, {
+            viewModel.onActionModeChanged.value = Pair(it, isAllSelected)
+        })
 
-    override fun onUnselectAll() {
-        contentViewModel.selectedItemsCount = 0
-        contentViewModel.selectedItems.clear()
-        viewModel.onActionModeChanged.value = Pair(0, false)
-    }
+    override fun onSelectAll(items: List<BaseItem>) =
+        contentViewModel.onSelectAll(items).observe(this, {
+            viewModel.onActionModeChanged.value = it
+        })
 
     override fun onRenameClick(item: BaseItem) {}
 
@@ -68,25 +76,29 @@ class ContentFragment @Inject constructor (
     override fun onDetailsClick(item: BaseItem) {}
 
     override fun onItemClick(item: BaseItem) {
-        if (item is Directory)
-            contentViewModel.getFiles(item.path)
+        if (item is Directory) contentViewModel.getFiles(item.path).observe(this, this)
     }
 
-    override fun onBackPressed() {
-        if (adapter.hasSelection()) adapter.unselectAll() else contentViewModel.onBackPressed()
-    }
+    override fun onBackPressed() = if (contentViewModel.getSelectedItemsCount() > 0)
+        adapter.unselectAll()
+    else
+        contentViewModel.onBackPressed().observe(this, this)
 
-    fun getFilesForPath(path: String) = contentViewModel.getFiles(path)
+    fun getFilesForPath(path: String) = contentViewModel.getFiles(path).observe(this, this)
 
-    fun getFilesForCategory(categoryType: CategoryType) = contentViewModel.getFilesForCategory(categoryType)
+    fun getFilesForCategory(categoryType: CategoryType) = contentViewModel.getFilesForCategory(categoryType).observe(this, this)
 
     fun onAllSelectionClick(isAllSelected: Boolean) = if (isAllSelected) adapter.selectAll() else adapter.unselectAll()
 
     fun onDeleteClicked() = deleteDialog.show(childFragmentManager)
 
-    fun onCopyClicked() = contentViewModel.copy()
+    fun onCopyClicked() = contentViewModel.copy().also {
+        copyMoveBottomSheet.show(childFragmentManager, CopyMoveBottomSheetFragment.Action.COPY)
+    }
 
-    fun onMoveClicked() = contentViewModel.move()
+    fun onMoveClicked() = contentViewModel.move().also {
+        copyMoveBottomSheet.show(childFragmentManager, CopyMoveBottomSheetFragment.Action.MOVE)
+    }
 
     private fun initViews() {
         btn_fab.setOnClickListener(this)
@@ -94,17 +106,6 @@ class ContentFragment @Inject constructor (
     }
 
     private fun observeViewModel() {
-
-        contentViewModel.filesLiveData.observe(viewLifecycleOwner, { response ->
-            when (response.status) {
-                Status.LOADING -> {}
-                Status.SUCCESS -> adapter.setSource(response.result!!).also {
-//                    viewModel.updateToobarTitle.value = dirsListViewModel.getCurrentDirectoryName()
-                    if(response.result.isNotEmpty()) rcv_dirs.fadeIn() else rcv_dirs.fadeOut()
-                }
-                Status.ERROR -> onError(response.throwable!!)
-            }
-        })
 
         contentViewModel.onFileCreated.observe(viewLifecycleOwner, {
             when (it.status) {
@@ -118,12 +119,12 @@ class ContentFragment @Inject constructor (
         })
 
         contentViewModel.onFilesDeleted.observe(viewLifecycleOwner, {
-            if (it) adapter.apply {
-                removeSource(contentViewModel.selectedItems)
+            adapter.apply {
+                removeSource(it)
                 if (itemCount == 0) rcv_dirs.fadeOut()
                 unselectAll()
                 deleteDialog.dismiss()
-            } else throw Exception("$fragmentTag delete files failed")
+            }
         })
     }
 

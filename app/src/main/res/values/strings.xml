@@ -14,6 +14,7 @@
     <string name="move">Move</string>
     <string name="share">Share</string>
     <string name="add_short_cut">Add Shortcut</string>
+    <string name="create_new_folder">Create Folder</string>
     <string name="hide">Hide</string>
     <string name="sort">Sort By</string>
     <string name="cancel">Cancel</string>
@@ -62,6 +63,7 @@
     <string name="dir_allready_exist">There Is A Directory With This Name!</string>
     <string name="file_allready_exist">There Is A File With This Name!</string>
     <string name="delete_files">Delete</string>
+    <string name="delete_file_error">Failed To Delete File</string>
 
     <!--  files and folders  -->
     <string name="files">Files</string>

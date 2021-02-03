@@ -2,7 +2,9 @@ package com.darabi.mohammad.filemanager.ui
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import com.darabi.mohammad.filemanager.ui.dialog.PermissionDescriptionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.contents.ContentFragment
 import com.darabi.mohammad.filemanager.util.PermissionManager
@@ -68,6 +70,7 @@ class MainActivity @Inject constructor() : BaseActivity(), PermissionManager.Per
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == openAppInfoScreenFlag)
+            // todo : app crashes at this line because of not granting permission in the app info screen, in clear word, because of activity recreation
             permissionManager.invokeIfPermissionIsGranted(this)
         else super.onActivityResult(requestCode, resultCode, data)
     }

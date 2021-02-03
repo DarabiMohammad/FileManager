@@ -2,7 +2,7 @@ package com.darabi.mohammad.filemanager.view.adapter.selection
 
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 
-interface AdapterCallback <O: HasSelectable> : OnItemClickListener<O> {
+interface AdapterCallback <in O: HasSelectable> : OnItemClickListener<O> {
 
     fun hasSelection(): Boolean
 

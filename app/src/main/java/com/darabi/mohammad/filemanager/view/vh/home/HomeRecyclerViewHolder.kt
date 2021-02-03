@@ -21,6 +21,7 @@ class HomeRecyclerViewHolder constructor(
     private val image: ImageView = view.findViewById(R.id.img_rcv_item_storage_dev_icon)
     private val glide: RequestManager = Glide.with(view)
 
+    // todo : find a way to remove blow line
     @SuppressLint("SetTextI18n")
     override fun bindModel(model: StorageVolume) {
         name.text = model.name

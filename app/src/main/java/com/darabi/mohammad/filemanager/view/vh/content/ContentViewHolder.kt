@@ -13,7 +13,7 @@ import com.darabi.mohammad.filemanager.view.adapter.selection.AdapterCallback
 import com.darabi.mohammad.filemanager.view.adapter.selection.HasSelectable
 import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 
-class DirsViewHolder constructor(
+class ContentViewHolder constructor(
         private val view: View,
         private val callback: DirsViewHolderCallback<BaseItem>
 ) : SelectionViewHolder.SelectableViewHolder<BaseItem>(view, callback) {

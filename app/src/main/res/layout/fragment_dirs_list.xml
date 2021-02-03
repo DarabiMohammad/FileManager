@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         tools:ignore="MissingConstraints"
-        tools:listitem="@layout/rcv_item_dir"/>
+        tools:listitem="@layout/rcv_item_content"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_fab"
