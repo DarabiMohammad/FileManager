@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         tools:ignore="AllowBackup">
 
-        <activity android:name=".ui.MainActivity">
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -58,8 +58,8 @@ class ContentViewModel @Inject constructor (
         emit(getSelectedItemsCount())
     }
 
-    fun onSelectAll(items: List<BaseItem>) = liveData {
-        selectedItems = items as ArrayList<BaseItem>
+    fun onSelectAll(items: ArrayList<BaseItem>) = liveData {
+        selectedItems = items
         emit(Pair(getSelectedItemsCount(), selectedItems.isNotEmpty()))
     }
 

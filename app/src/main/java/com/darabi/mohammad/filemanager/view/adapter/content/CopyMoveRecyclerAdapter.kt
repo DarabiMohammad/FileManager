@@ -2,9 +2,7 @@ package com.darabi.mohammad.filemanager.view.adapter.content
 
 import android.view.ViewGroup
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.BaseFile
-import com.darabi.mohammad.filemanager.model.BaseItem
-import com.darabi.mohammad.filemanager.model.FileDivider
+import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.util.inflateLayout
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
 import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
@@ -17,7 +15,7 @@ class CopyMoveRecyclerAdapter @Inject constructor() : BaseAdapter<BaseItem, Base
     private val folderViewType = 1
 
     override fun getItemViewType(position: Int): Int = when(objects[position]) {
-        is FileDivider -> position
+        is EmptyDivider -> position
         else -> folderViewType
     }
 

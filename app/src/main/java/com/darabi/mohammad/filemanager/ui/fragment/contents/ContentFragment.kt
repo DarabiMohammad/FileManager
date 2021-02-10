@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.ui.fragment.contents
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,7 +16,8 @@ import com.darabi.mohammad.filemanager.view.adapter.content.ContentAdapterCallba
 import com.darabi.mohammad.filemanager.view.adapter.content.ContentRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ccontent.ContentViewModel
-import kotlinx.android.synthetic.main.fragment_dirs_list.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.fragment_content.*
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,14 +26,15 @@ import javax.inject.Singleton
 class ContentFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val deleteDialog: DeleteDialog,
-    private val copyMoveBottomSheet: CopyMoveBottomSheetFragment,
     private val contentViewModel: ContentViewModel,
     private val adapter: ContentRecyclerAdapter
-) : BaseFragment(R.layout.fragment_dirs_list), View.OnClickListener, ContentAdapterCallback<BaseItem>,
+) : BaseFragment(R.layout.fragment_content), View.OnClickListener, ContentAdapterCallback<BaseItem>,
     Observer<Result<ArrayList<out BaseItem>>?> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -64,7 +67,7 @@ class ContentFragment @Inject constructor (
             viewModel.onActionModeChanged.value = Pair(it, isAllSelected)
         })
 
-    override fun onSelectAll(items: List<BaseItem>) =
+    override fun onSelectAll(items: ArrayList<BaseItem>) =
         contentViewModel.onSelectAll(items).observe(this, {
             viewModel.onActionModeChanged.value = it
         })
@@ -93,16 +96,27 @@ class ContentFragment @Inject constructor (
     fun onDeleteClicked() = deleteDialog.show(childFragmentManager)
 
     fun onCopyClicked() = contentViewModel.copy().also {
-        copyMoveBottomSheet.show(childFragmentManager, CopyMoveBottomSheetFragment.Action.COPY)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     fun onMoveClicked() = contentViewModel.move().also {
-        copyMoveBottomSheet.show(childFragmentManager, CopyMoveBottomSheetFragment.Action.MOVE)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     private fun initViews() {
         btn_fab.setOnClickListener(this)
         if(rcv_dirs.adapter == null) rcv_dirs.adapter = adapter.also { it.adapterCallback = this@ContentFragment }
+        bottomSheetBehavior = BottomSheetBehavior.from(view!!.findViewById(R.id.copy_move_bottom_sheet))
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Log.d("test" , "===========onStateChanged $newState")
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                Log.d("test" , "===========onSlide")
+            }
+        })
     }
 
     private fun observeViewModel() {

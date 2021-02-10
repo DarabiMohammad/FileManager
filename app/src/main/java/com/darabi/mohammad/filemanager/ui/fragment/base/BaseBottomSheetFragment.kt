@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 abstract class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
-    val fragmentTag = this.javaClass.simpleName
+    val fragmentTag: String = this.javaClass.simpleName
 
     @get:LayoutRes
     abstract val layoutRes: Int

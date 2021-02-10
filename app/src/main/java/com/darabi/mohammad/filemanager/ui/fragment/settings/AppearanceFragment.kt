@@ -2,6 +2,7 @@ package com.darabi.mohammad.filemanager.ui.fragment.settings
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
@@ -38,6 +39,7 @@ class AppearanceFragment @Inject constructor(
     private fun observeViewModel() {
 
         appearanceViewModel.onThemeChange.observe(viewLifecycleOwner, {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             when(it) {
                 ThemeSelectionDialog.SelectedTheme.DARK -> onDarkThemeClick()
                 else -> onLightThemeClick()
@@ -51,16 +53,16 @@ class AppearanceFragment @Inject constructor(
 
     private fun onLightThemeClick() {
         fragment_appearance.isActivated = false
-        container_appearance_scr_childs.children.forEach {
-            it.isActivated = false
-        }
+//        container_appearance_scr_childs.children.forEach {
+//            it.isActivated = false
+//        }
     }
 
     private fun onDarkThemeClick() {
         fragment_appearance.isActivated = true
-        container_appearance_scr_childs.children.forEach {
-            it.isActivated = true
-        }
+//        container_appearance_scr_childs.children.forEach {
+//            it.isActivated = true
+//        }
     }
 
     override fun onPause() {

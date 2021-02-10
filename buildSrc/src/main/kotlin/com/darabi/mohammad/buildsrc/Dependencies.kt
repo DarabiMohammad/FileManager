@@ -72,7 +72,7 @@ object Plugin {
     private const val AGP_VERSION = "4.1.1"
 
     //Kotlin Plugin Version
-    private const val KOTLIN_PLUGIN_VERSION = "1.4.10"
+    private const val KOTLIN_PLUGIN_VERSION = "1.4.30"
 
     const val ANDROID_GRADLE_PLUGIN = "com.android.tools.build:gradle:${AGP_VERSION}"
     const val KOTLIN_PLUGIN = "org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_PLUGIN_VERSION}"
@@ -85,7 +85,7 @@ object Dependencies {
 
     private const val CORE_VERSION = "1.3.1"
     private const val APPCOMPAT_VERSION = "1.1.0"
-    private const val COROUTINES_VERSION = "1.3.3"
+    private const val COROUTINES_VERSION = "1.4.2"
     private const val CONSTRAINT_VERSION = "2.0.1"
     private const val MATERIAL_VERSION = "1.2.1"
     private const val LIFECYCLE_VERSION = "2.2.0"
@@ -94,7 +94,6 @@ object Dependencies {
 
     private val libs = listOf (
         // core libs
-//        "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}",
         "androidx.core:core-ktx:${CORE_VERSION}",
         "androidx.appcompat:appcompat:${APPCOMPAT_VERSION}",
         "androidx.activity:activity-ktx:${APPCOMPAT_VERSION}",
@@ -111,12 +110,17 @@ object Dependencies {
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${LIFECYCLE_VERSION}",
         "androidx.lifecycle:lifecycle-extensions:${LIFECYCLE_VERSION}",
         "androidx.lifecycle:lifecycle-livedata-ktx:${LIFECYCLE_VERSION}",
+
+        // glide
         "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
     )
 
     private val proccessors = listOf (
+        // dagger
         "com.google.dagger:dagger-android-processor:${DAGGER_VERSION}",
         "com.google.dagger:dagger-compiler:${DAGGER_VERSION}",
+
+        // glide
         "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
     )
 

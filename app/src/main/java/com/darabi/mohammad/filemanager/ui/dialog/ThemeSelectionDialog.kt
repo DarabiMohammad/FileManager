@@ -17,7 +17,7 @@ class ThemeSelectionDialog @Inject constructor() : BaseDialogFragment(), View.On
     override val layoutRes: Int get() = R.layout.dialog_theme_selection
 
     enum class SelectedTheme(val theme: String) {
-        LIGHT("Light"), DARK("Dark")
+        LIGHT("Light"), DARK("Dark"), BATTRY("Depending On Battry"), SYSTEM_FOLLOW("Follow System's Theme")
     }
 
     private val viewModel: AppearanceViewModel by viewModels( {requireParentFragment()} )

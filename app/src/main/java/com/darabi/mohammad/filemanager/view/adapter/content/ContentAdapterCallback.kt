@@ -7,5 +7,5 @@ interface ContentAdapterCallback<I> : OnItemClickListener<I>, ContentViewHolder.
 
     fun onSelectionChanged(isAllSelected: Boolean, item: I)
 
-    fun onSelectAll(items: List<I>)
+    fun onSelectAll(items: ArrayList<I>)
 }

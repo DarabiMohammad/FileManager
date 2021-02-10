@@ -7,8 +7,8 @@ import com.darabi.mohammad.filemanager.model.EmptyDivider
 import com.darabi.mohammad.filemanager.model.FileDivider
 import com.darabi.mohammad.filemanager.util.inflateLayout
 import com.darabi.mohammad.filemanager.view.adapter.selection.SelectionAdapter
-import com.darabi.mohammad.filemanager.view.vh.content.ContentViewHolder
 import com.darabi.mohammad.filemanager.view.vh.content.ContentDividerViewHolder
+import com.darabi.mohammad.filemanager.view.vh.content.ContentViewHolder
 import com.darabi.mohammad.filemanager.view.vh.content.EmptyViewHolder
 import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 import javax.inject.Inject
@@ -39,7 +39,7 @@ class ContentRecyclerAdapter @Inject constructor() : SelectionAdapter<BaseItem, 
         adapterCallback?.onSelectionChanged(isAllSelected, item)
     }
 
-    override fun onSelectAll(items: List<BaseItem>) {
+    override fun onSelectAll(items: ArrayList<BaseItem>) {
         adapterCallback?.onSelectAll(items)
     }
 

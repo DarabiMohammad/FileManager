@@ -20,18 +20,21 @@ sealed class SelectionViewHolder <O: HasSelectable> constructor(
             throw UnsupportedOperationException("Can't perform bindModel(model: O, position: Int) in an unselectable view holder.")
     }
 
-    open class SelectableViewHolder <O: HasSelectable> constructor(
+    open class SelectableViewHolder <O: HasSelectable> constructor (
         private val view: View, private val callback: AdapterCallback<O>?
     ) : SelectionViewHolder<O>(view, callback) {
 
         override fun bindModel(model: O, position: Int) {
             callback?.let {
+
                 itemView.isActivated = model.isSelected
+
                 view.setOnClickListener {
                     if (callback.hasSelection())
                         notifySelectionChanged(model, position)
                     else callback.onItemClick(model)
                 }
+
                 view.setOnLongClickListener {
                     notifySelectionChanged(model, position)
                     return@setOnLongClickListener true

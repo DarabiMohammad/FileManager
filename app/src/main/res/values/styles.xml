@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@android:color/white</item>
+<!--        <item name="bottomSheetDialogTheme">@style/BaseBottomSheetTheme</item>-->
     </style>
 
     <style name="AppDarkTheme" parent="Theme.AppCompat.Light.NoActionBar" >
@@ -104,7 +105,12 @@
     <!--  Bottom Sheet Themes  -->
 
     <style name="BaseBottomSheetTheme">
-
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+    
+    <style name="BottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="layout_behavior">"android.support.design.widget.BottomSheetBehavior"</item>
+        <item name="behavior_peekHeight">300dp</item>
     </style>
 
 </resources>

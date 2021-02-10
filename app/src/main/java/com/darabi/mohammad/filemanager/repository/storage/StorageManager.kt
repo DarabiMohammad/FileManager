@@ -10,6 +10,7 @@ import com.darabi.mohammad.filemanager.repository.safeSuspendCall
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import java.io.File as javaFile
 
 abstract class StorageManager {
@@ -36,18 +37,19 @@ abstract class StorageManager {
     suspend fun getImages(): Result<ArrayList<File>> = safeSuspendCall { Result.success(getAllImages()) }
 
     protected fun listFiles(path: String): ArrayList<FileItem> = arrayListOf<FileItem>().apply {
-        javaFile(path).listFiles()?.let { array ->
-            val files = arrayListOf<FileItem>()
-            array.forEach {
-                if (it.isDirectory)
-                    this.add(Directory(it.name, it.path, it.totalSpace.toString()))
-                else
-                    files.add(File(it.name, it.path, it.totalSpace.toString()))
-            }
-            this.sortBy { it.name.toLowerCase(Locale.getDefault()) }
-            files.sortBy { it.name.toLowerCase(Locale.getDefault()) }
-            this.addAll(files)
-        }
+        javaFile(path).listFiles()?.let { this.addAll(folders(it).plus(files(it))) }
+    }
+
+    private fun folders(list: Array<javaFile>): ArrayList<Directory> = arrayListOf<Directory>().apply {
+        this.addAll(list.filter { it.isDirectory }.map {
+            Directory(it.name, it.path, it.totalSpace.toString())
+        }.sortedBy { it.name.toLowerCase(Locale.getDefault()) })
+    }
+
+    private fun files(list: Array<javaFile>): ArrayList<File> = arrayListOf<File>().apply {
+        this.addAll(list.filter { it.isFile }.map {
+            File(it.name, it.path, it.totalSpace.toString())
+        }.sortedBy { it.name.toLowerCase(Locale.getDefault()) })
     }
 
     @Suppress("UNCHECKED_CAST")

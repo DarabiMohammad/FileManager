@@ -1,6 +1,8 @@
 package com.darabi.mohammad.filemanager.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -67,6 +69,10 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         initStartupViews()
         observeViewModel()
         navigateTo(fragment = homeFragment, isReplace = true)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
     }
 
     fun initStartupViews() {
