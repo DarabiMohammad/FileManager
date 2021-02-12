@@ -31,7 +31,7 @@ class HomeFragment @Inject constructor(
     }
 
     override fun onItemClick(item: StorageVolume) {
-        viewModel.volumeClickLiveData.value = item
+        viewModel.volumeClickLiveData.setValueOrNull(item)
         viewModel.updateToobarTitle.value = item.name
     }
 

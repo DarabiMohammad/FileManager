@@ -2,9 +2,7 @@ package com.darabi.mohammad.filemanager.vm.base
 
 import android.app.Application
 import androidx.annotation.StringRes
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.darabi.mohammad.filemanager.model.Result
 import com.darabi.mohammad.filemanager.util.PrefsManager
 import kotlinx.coroutines.Dispatchers
@@ -25,5 +23,10 @@ abstract class BaseViewModel constructor(private val app: Application) : Android
     ) = viewModelScope.launch(Dispatchers.Main) {
         liveData.value = Result.loading()
         liveData.value = function()
+    }
+
+    protected inline fun <T> loadingLiveData(crossinline function: suspend () -> Result<T>): LiveData<Result<T>> = liveData {
+        emit(Result.loading())
+        emit(function())
     }
 }

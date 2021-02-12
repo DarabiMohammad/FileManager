@@ -17,7 +17,7 @@ class ContentViewModel @Inject constructor (
     private val app: Application,
     private val pathManager: PathManager,
     private val storageManager: StorageManager
-) : BaseViewModel(app) {
+) : NavigationContentViewModel(app, pathManager, storageManager) {
 
     private var selectedItems = arrayListOf<BaseItem>()
     private lateinit var copiedPaths: List<String>
@@ -31,16 +31,7 @@ class ContentViewModel @Inject constructor (
         this.substring(this.lastIndexOf(File.separator) + 1, this.length)
     }
 
-    fun onBackPressed() = liveData {
-        emit(storageManager.getFiles(pathManager.pervousPath(), prefsManager.isSplitModeEnabled()))
-    }
-
-    fun getFiles(path: String) = liveData {
-        if (pathManager.addPath(path))
-            emit(storageManager.getFiles(path, prefsManager.isSplitModeEnabled()))
-    }
-
-    fun getFilesForCategory(categoryType: CategoryType) = liveData {
+    fun getFilesForCategory(categoryType: CategoryType?) = liveData {
         val result = when (categoryType) {
 //            CategoryType.QUICK_ACCESS -> {}
 //            CategoryType.RECENT_FILES -> {}

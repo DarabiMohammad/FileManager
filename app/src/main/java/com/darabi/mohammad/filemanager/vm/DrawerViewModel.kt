@@ -37,9 +37,8 @@ class DrawerViewModel @Inject constructor(
         drawerItemProvider.settings()
     )
 
-    fun mapToDrawerItems(volume: ArrayList<StorageVolume>) = arrayListOf<BaseDrawerItem>().run {
-        volume.forEach { this.add(PrimaryExtStorage(it.name, it.path, it.type, it.icon)) }
-        if (this.isNotEmpty()) this.add(Divider)
-        this
+    fun mapToDrawerItems(volume: ArrayList<StorageVolume>) = arrayListOf<BaseDrawerItem>().apply {
+        this.addAll(volume.map { PrimaryExtStorage(it.name, it.path, it.type, it.icon) })
+        this.add(Divider)
     }
 }

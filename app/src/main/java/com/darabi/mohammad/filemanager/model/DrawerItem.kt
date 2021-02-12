@@ -46,19 +46,32 @@ interface DocumentItem : BaseCategory {
 
 object Divider : BaseDrawerItem
 
-data class PrimaryExtStorage(override val name: String, override val path: String,
-                             override val type: StorageType, override val icon: Int
-                             ) : StorageItem
-
-data class Category(override val name: String, override val icon: Int, override val type: CategoryType) : BaseCategory
+data class PrimaryExtStorage(
+    override val name: String,
+    override val path: String,
+    override val type: StorageType,
+    override val icon: Int,
+) : StorageItem
 
 data class Document (
     override val name: String,
     override val type: CategoryType,
     override val path: String,
-    override val icon: Int
+    override val icon: Int,
 ) : DocumentItem
 
-data class InstalledApps(override val name: String, override val icon: Int) : DrawerItem
+data class Category(
+    override val name: String,
+    override val icon: Int,
+    override val type: CategoryType,
+) : BaseCategory
 
-data class Settings(override val name: String, override val icon: Int) : DrawerItem
+data class InstalledApps(
+    override val name: String,
+    override val icon: Int,
+) : DrawerItem
+
+data class Settings(
+    override val name: String,
+    override val icon: Int,
+) : DrawerItem

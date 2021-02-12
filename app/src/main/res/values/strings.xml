@@ -18,6 +18,7 @@
     <string name="hide">Hide</string>
     <string name="sort">Sort By</string>
     <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
     <string name="encrypt">Encrypt</string>
     <string name="decrypt">Decrypt</string>
     <string name="rename">Rename</string>
@@ -64,6 +65,7 @@
     <string name="file_allready_exist">There Is A File With This Name!</string>
     <string name="delete_files">Delete</string>
     <string name="delete_file_error">Failed To Delete File</string>
+    <string name="unimplemented_error">Attempted To Call An Unimplemented Method.</string>
 
     <!--  files and folders  -->
     <string name="files">Files</string>

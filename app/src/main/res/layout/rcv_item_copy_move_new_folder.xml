@@ -9,4 +9,4 @@
     android:text="@string/create_new_folder"
     android:drawablePadding="16dp"
     app:layout_constraintTop_toTopOf="parent"
-    app:drawableStartCompat="@drawable/ic_settings_black" />
+    app:drawableStartCompat="@drawable/ic_add_circle_outline_black" />

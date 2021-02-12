@@ -15,7 +15,9 @@ import com.darabi.mohammad.filemanager.model.StorageVolume
 import com.darabi.mohammad.filemanager.repository.safeSuspendCall
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class VolumesImpl @Inject constructor(private val app: Application) : Volumes() {
 
     override suspend fun getVolumes(): Result<ArrayList<StorageVolume>> = safeSuspendCall {

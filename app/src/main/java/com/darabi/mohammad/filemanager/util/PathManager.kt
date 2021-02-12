@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.util
 
 import javax.inject.Inject
+import kotlin.jvm.Throws
 
 class PathManager @Inject constructor() {
 
@@ -13,7 +14,7 @@ class PathManager @Inject constructor() {
             paths.add(path)
 
     fun pervousPath(): String? = paths.run {
-        removeLast()
+        removeLastOrNull()
         lastOrNull()
     }
 

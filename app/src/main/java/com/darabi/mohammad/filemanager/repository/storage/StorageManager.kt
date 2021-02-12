@@ -22,6 +22,10 @@ abstract class StorageManager {
         Result.success(addDividersIfNeeded(listFiles(path!!), isSplitModeEnabled))
     }
 
+    suspend fun getFolders(path: String?): Result<ArrayList<Directory>> = safeSuspendCall {
+        Result.success(folders(javaFile(path!!).listFiles()!!))
+    }
+
     suspend fun createNewFolder(fileName: String, path: String, isSplitModeEnabled: Boolean): Result<Pair<ArrayList<BaseItem>, Int>> = safeSuspendCall {
         Result.success(createFolder(fileName, path, isSplitModeEnabled))
     }

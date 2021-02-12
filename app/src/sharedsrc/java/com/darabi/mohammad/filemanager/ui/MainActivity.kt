@@ -26,16 +26,16 @@ class MainActivity @Inject constructor() : BaseActivity(), PermissionManager.Per
         super.observeViewModel()
 
         viewModel.volumeClickLiveData.observe(this, {
-            checkPermissionAndDoWithContentFragment { getFilesForPath(it.path) }
+            checkPermissionAndDoWithContentFragment { getFilesForPath(it?.path) }
         })
 
         viewModel.drawerCategoryFolderLiveData.observe(this, {
-            checkPermissionAndDoWithContentFragment { getFilesForPath(it.path) }
+            checkPermissionAndDoWithContentFragment { getFilesForPath(it?.path) }
         })
 
         viewModel.drawerCategoryLiveData.observe(this, {
             checkPermissionAndDoWithContentFragment {
-                getFilesForCategory(it.type)
+                it?.let { getFilesForCategory(it.type) }
             }
         })
 
