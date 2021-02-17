@@ -30,6 +30,10 @@ abstract class StorageManager {
         Result.success(createFolder(fileName, path, isSplitModeEnabled))
     }
 
+    suspend fun createNewFolder(fileName: String, path: String): Result<Pair<Directory, Int>> = safeSuspendCall {
+        Result.success(createFolder(fileName, path))
+    }
+
     suspend fun deleteFile(file: FileItem): Result<FileItem> = safeSuspendCall {
         if (javaFile(file.path).deleteRecursively())
             Result.success(file)
@@ -80,6 +84,13 @@ abstract class StorageManager {
                 else index++
             Pair(result, index)
         }
+
+    protected fun createFolder(fileName: String, path: String): Pair<Directory, Int> = newFolder(path, fileName).run {
+        val list = folders(javaFile(path).listFiles()!!)
+        val createdFolder = list.find { it.name == fileName } as Directory
+        val index = list.indexOf(createdFolder)
+        Pair(createdFolder, index)
+    }
 
     private fun newFolder(path: String, fileName: String): Boolean =
         if(javaFile("$path${javaFile.separator}$fileName").mkdir())

@@ -1,6 +1,7 @@
 package com.darabi.mohammad.filemanager.ui.fragment.contents
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -13,22 +14,25 @@ import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.fadeOut
 import com.darabi.mohammad.filemanager.util.navigateTo
+import com.darabi.mohammad.filemanager.util.removeFromBackstack
 import com.darabi.mohammad.filemanager.view.adapter.content.ContentAdapterCallback
 import com.darabi.mohammad.filemanager.view.adapter.content.ContentRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ccontent.ContentViewModel
 import com.darabi.mohammad.filemanager.vm.ccontent.CopyMoveViewModel
+import com.darabi.mohammad.filemanager.vm.ccontent.FileCreationViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.fragment_content.*
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Singleton
 class ContentFragment @Inject constructor (
     private val newFileDialog: NewFileDialog,
     private val deleteDialog: DeleteDialog,
-    private val copyMoveFragment: CopyMoveBottomSheetFragment,
+    private val provider: Provider<CopyMoveBottomSheetFragment>,
     private val viewModelFactory: ViewModelFactory,
     private val contentViewModel: ContentViewModel,
     private val adapter: ContentRecyclerAdapter
@@ -39,7 +43,9 @@ class ContentFragment @Inject constructor (
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
 
     private val copyMoveViewModel: CopyMoveViewModel by viewModels { viewModelFactory }
+    private val fileCreationViewModel: FileCreationViewModel by viewModels { viewModelFactory }
 
+    private lateinit var copyBottomSheet: CopyMoveBottomSheetFragment
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +56,7 @@ class ContentFragment @Inject constructor (
     }
 
     override fun onClick(view: View?) = when (view?.id) {
-        R.id.btn_fab -> onFabClicked()
+        R.id.btn_fab -> openNewFileDialog(FileType.Directory)
         else -> {}
     }
 
@@ -87,12 +93,10 @@ class ContentFragment @Inject constructor (
         if (item is Directory) contentViewModel.getFiles(item.path).observe(this, this)
     }
 
-    override fun onBackPressed() {
-        when {
-            bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN -> copyMoveFragment.onBackPressed()
-            contentViewModel.getSelectedItemsCount() > 0 -> adapter.unselectAll()
-            else -> contentViewModel.onBackPressed().observe(this, this)
-        }
+    override fun onBackPressed() = when {
+        bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN -> copyBottomSheet.onBackPressed()
+        contentViewModel.getSelectedItemsCount() > 0 -> adapter.unselectAll()
+        else -> contentViewModel.onBackPressed().observe(this, this)
     }
 
     fun getFilesForPath(path: String?) = contentViewModel.getFiles(path).observe(this, this)
@@ -121,15 +125,9 @@ class ContentFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        contentViewModel.onFileCreated.observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.LOADING -> {}
-                Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also {
-                    newFileDialog.dismiss()
-                    rcv_content.fadeIn()
-                }
-                Status.ERROR -> onError(it.throwable!!)
-            }
+        fileCreationViewModel.onCreateFile.observe(viewLifecycleOwner, {
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN)
+                it.getContentIfNotHandled()?.let { event -> createFile(event.first, event.second) }
         })
 
         contentViewModel.onFilesDeleted.observe(viewLifecycleOwner, {
@@ -144,21 +142,40 @@ class ContentFragment @Inject constructor (
         copyMoveViewModel.onPathSelected.observe(viewLifecycleOwner, {
             if (it == null) bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         })
+
+        copyMoveViewModel.openNewFileDialog.observe(viewLifecycleOwner, {
+            if (it != null) openNewFileDialog(it) else newFileDialog.dismiss()
+        })
     }
+
+    private fun createFile(fileName: String, type: FileType) =
+        contentViewModel.createFile(fileName, type).observe(viewLifecycleOwner, {
+            when (it.status) {
+                Status.LOADING -> {}
+                Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also {
+                    newFileDialog.dismiss()
+                    rcv_content.fadeIn()
+                }
+                Status.ERROR -> onError(it.throwable!!)
+            }
+        })
 
     private fun onError(throwable: Throwable) = when (throwable) {
         is NullPointerException -> super.onBackPressed()
         is IOException -> makeToast("${throwable.message}")
+        is IllegalArgumentException -> {} // todo handle refresh content list here.
         else -> throw throwable
     }
 
-    private fun onFabClicked() = newFileDialog.forFolder().show(childFragmentManager, newFileDialog.dialogTag)
+    private fun openNewFileDialog(type: FileType) = newFileDialog.apply {
+        if (type is FileType.Directory) forFolder() else forFile()
+    }.show(childFragmentManager, newFileDialog.dialogTag)
 
     private inner class BottomSheetStateCallback : BottomSheetBehavior.BottomSheetCallback() {
 
         override fun onStateChanged(bottomSheet: View, newState: Int) = when (newState) {
-            BottomSheetBehavior.STATE_HIDDEN -> childFragmentManager.popBackStack()
-            BottomSheetBehavior.STATE_HALF_EXPANDED -> navigateTo(R.id.copy_move_container, copyMoveFragment)
+            BottomSheetBehavior.STATE_HIDDEN -> removeFromBackstack(copyBottomSheet)
+            BottomSheetBehavior.STATE_HALF_EXPANDED -> navigateToBottomSheet()
             BottomSheetBehavior.STATE_COLLAPSED -> {}
             BottomSheetBehavior.STATE_DRAGGING -> {}
             BottomSheetBehavior.STATE_SETTLING -> {}
@@ -166,6 +183,11 @@ class ContentFragment @Inject constructor (
         }
 
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
+        }
+
+        private fun navigateToBottomSheet() {
+            copyBottomSheet = provider.get()
+            navigateTo(R.id.copy_move_container, copyBottomSheet)
         }
     }
 }

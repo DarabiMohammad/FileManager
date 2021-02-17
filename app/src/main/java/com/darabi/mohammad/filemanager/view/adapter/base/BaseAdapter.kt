@@ -24,7 +24,7 @@ abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): Rec
         notifyItemRangeInserted(position, source.size)
     }
 
-    fun addSource(source: O, position: Int) {
+    open fun addSource(source: O, position: Int) {
         objects.add(position, source)
         notifyItemInserted(position)
     }

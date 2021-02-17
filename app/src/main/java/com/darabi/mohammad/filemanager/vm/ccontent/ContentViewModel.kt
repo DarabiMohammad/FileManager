@@ -6,9 +6,7 @@ import androidx.lifecycle.liveData
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.repository.storage.StorageManager
 import com.darabi.mohammad.filemanager.util.PathManager
-import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
 import kotlinx.coroutines.*
-import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,19 +15,18 @@ class ContentViewModel @Inject constructor (
     private val app: Application,
     private val pathManager: PathManager,
     private val storageManager: StorageManager
-) : NavigationContentViewModel(app, pathManager, storageManager) {
+) : BaseContentViewModel(app, pathManager, storageManager) {
 
     private var selectedItems = arrayListOf<BaseItem>()
     private lateinit var copiedPaths: List<String>
 
-    val onFileCreated by lazy { MutableLiveData<Result<Pair<ArrayList<BaseItem>, Int>>>() }
     val onFilesDeleted by lazy { MutableLiveData<ArrayList<BaseItem>>() }
 
     fun getSelectedItemsCount() = selectedItems.size
 
-    fun getCurrentDirectoryName(): String = pathManager.lastPath().run {
-        this.substring(this.lastIndexOf(File.separator) + 1, this.length)
-    }
+//    fun getCurrentDirectoryName(): String = pathManager.lastPath().run {
+//        this.substring(this.lastIndexOf(File.separator) + 1, this.length)
+//    }
 
     fun getFilesForCategory(categoryType: CategoryType?) = liveData {
         val result = when (categoryType) {
@@ -52,10 +49,6 @@ class ContentViewModel @Inject constructor (
     fun onSelectAll(items: ArrayList<BaseItem>) = liveData {
         selectedItems = items
         emit(Pair(getSelectedItemsCount(), selectedItems.isNotEmpty()))
-    }
-
-    fun createFile(fileName: String, type: FileType) = liveData {
-        emit(storageManager.createNewFolder(fileName, pathManager.lastPath(), prefsManager.isSplitModeEnabled()))
     }
 
     fun deleteFiles() = liveData {

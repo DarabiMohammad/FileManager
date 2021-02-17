@@ -52,6 +52,10 @@ fun Fragment.navigateTo(
     isReplace: Boolean = false
 ) = beginTransaction(childFragmentManager, containerId, fragment, addToBackStack, isReplace)
 
+fun Fragment.removeFromBackstack(fragment: Fragment) {
+    childFragmentManager.beginTransaction().also { it.remove(fragment) }.commit()
+}
+
 fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
     LayoutInflater.from(view.context).inflate(layout, view, false)
 

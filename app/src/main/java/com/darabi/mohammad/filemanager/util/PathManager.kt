@@ -9,7 +9,7 @@ class PathManager @Inject constructor() {
 
     fun addPath(path: String): Boolean =
         if (paths.lastOrNull() == path)
-            false
+            throw IllegalArgumentException()
         else
             paths.add(path)
 
@@ -18,5 +18,5 @@ class PathManager @Inject constructor() {
         lastOrNull()
     }
 
-    fun lastPath(): String = paths.last()
+    fun lastPath(): String? = paths.lastOrNull()
 }

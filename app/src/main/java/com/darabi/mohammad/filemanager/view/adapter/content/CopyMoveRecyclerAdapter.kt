@@ -23,4 +23,8 @@ class CopyMoveRecyclerAdapter @Inject constructor() : BaseAdapter<BaseItem, Base
         folderViewType -> FolderViewHolder(inflateLayout(parent, R.layout.rcv_item_folder), callback)
         else -> NewFolderViewHolder(inflateLayout(parent, R.layout.rcv_item_copy_move_new_folder), callback)
     }
+
+    override fun addSource(source: BaseItem, position: Int) {
+        super.addSource(source, position + 1)
+    }
 }

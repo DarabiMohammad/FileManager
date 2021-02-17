@@ -2,6 +2,7 @@ package com.darabi.mohammad.filemanager.ui.fragment.contents
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -12,10 +13,14 @@ import com.darabi.mohammad.filemanager.util.invisible
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 import com.darabi.mohammad.filemanager.view.adapter.content.CopyMoveRecyclerAdapter
 import com.darabi.mohammad.filemanager.vm.ccontent.CopyMoveViewModel
+import com.darabi.mohammad.filemanager.vm.ccontent.FileCreationViewModel
 import kotlinx.android.synthetic.main.bottom_sheet_fragment_copy_move.*
 import kotlinx.android.synthetic.main.bottom_sheet_fragment_copy_move.view.*
+import kotlinx.android.synthetic.main.fragment_content.*
+import java.io.IOException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class CopyMoveBottomSheetFragment @Inject constructor (
     private val adapter: CopyMoveRecyclerAdapter
@@ -23,6 +28,8 @@ class CopyMoveBottomSheetFragment @Inject constructor (
     Observer<Result<ArrayList<out BaseItem>>>, View.OnClickListener {
 
     private val viewModel: CopyMoveViewModel by viewModels ( { requireParentFragment() } )
+    private val fileCreationViewModel: FileCreationViewModel by viewModels ( { requireParentFragment() } )
+    private val volumesHandler by lazy { VolumesHandler() }
 
     enum class Action { COPY, MOVE }
 
@@ -31,7 +38,7 @@ class CopyMoveBottomSheetFragment @Inject constructor (
 
         initViews()
         observeViewModel()
-        viewModel.getVolumes()
+        viewModel.getVolumes().observe(viewLifecycleOwner, volumesHandler)
     }
 
     override fun onClick(view: View?) = when (view?.id) {
@@ -51,12 +58,10 @@ class CopyMoveBottomSheetFragment @Inject constructor (
         }
     }
 
-    override fun onItemClick(item: BaseItem) {
-        if (item is Directory)
-            viewModel.getFolders(item.path).observe(this, this)
-        else {
-        }
-    }
+    override fun onItemClick(item: BaseItem) = if (item is Directory)
+        viewModel.getFolders(item.path).observe(this, this)
+    else
+        viewModel.openNewFileDialog.value = FileType.Directory
 
     fun onBackPressed() = if (txt_done.visibility == View.INVISIBLE)
         viewModel.onPathSelected.value = null
@@ -71,21 +76,41 @@ class CopyMoveBottomSheetFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        viewModel.availableVolumes.observe(viewLifecycleOwner, {
+        fileCreationViewModel.onCreateFile.observe(viewLifecycleOwner, {
+            it.getContentIfNotHandled()?.let { event -> createFolder(event.first) }
+        })
+    }
+
+    private fun createFolder(fileName: String) =
+        viewModel.createFolder(fileName).observe(viewLifecycleOwner, {
             when (it.status) {
-                Status.LOADING -> txt_done.invisible()
-                Status.SUCCESS -> {
-                    adapter.setSource(it.result!!.map { storageVolume ->
-                        Directory(storageVolume.name, storageVolume.path, storageVolume.totalSpace)
-                    })
+                Status.LOADING -> {}
+                Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also {
+                    viewModel.openNewFileDialog.value = null
                 }
                 Status.ERROR -> onError(it.throwable!!)
             }
         })
-    }
 
     private fun onError(throwable: Throwable) = when (throwable) {
-        is NullPointerException -> viewModel.getVolumes()
+        is NullPointerException -> viewModel.getVolumes().observe(viewLifecycleOwner, volumesHandler)
+        is IOException -> Toast.makeText(requireContext(), "${throwable.message}", Toast.LENGTH_SHORT).show()
         else -> throw throwable
+    }
+
+    private inner class VolumesHandler : Observer<Result<ArrayList<StorageVolume>>> {
+        override fun onChanged(response: Result<ArrayList<StorageVolume>>?) {
+            response?.let {
+                when (it.status) {
+                    Status.LOADING -> txt_done.invisible()
+                    Status.SUCCESS -> {
+                        adapter.setSource(it.result!!.map { storageVolume ->
+                            Directory(storageVolume.name, storageVolume.path, storageVolume.totalSpace)
+                        }).also { rcv_folders.fadeIn() }
+                    }
+                    Status.ERROR -> onError(it.throwable!!)
+                }
+            }
+        }
     }
 }

@@ -3,7 +3,9 @@ package com.darabi.mohammad.filemanager.ui.fragment.home
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
+import com.darabi.mohammad.filemanager.model.Result
 import com.darabi.mohammad.filemanager.model.Status
 import com.darabi.mohammad.filemanager.model.StorageVolume
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class HomeFragment @Inject constructor(
         private val homeViewModel: HomeViewModel,
         private val adapter: HomeRecyclerAdapter
-) : BaseFragment(R.layout.fragment_home), OnItemClickListener<StorageVolume> {
+) : BaseFragment(R.layout.fragment_home), OnItemClickListener<StorageVolume>,
+    Observer<Result<ArrayList<StorageVolume>>> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
     override val viewModel: MainViewModel by viewModels( { requireActivity() } )
@@ -25,9 +28,8 @@ class HomeFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeViewModel()
         rcv_storage.adapter = adapter.apply { callback = this@HomeFragment }
-        homeViewModel.getVolumes()
+        homeViewModel.getVolumes().observe(viewLifecycleOwner, this)
     }
 
     override fun onItemClick(item: StorageVolume) {
@@ -35,14 +37,14 @@ class HomeFragment @Inject constructor(
         viewModel.updateToobarTitle.value = item.name
     }
 
-    private fun observeViewModel() {
-        homeViewModel.availableVolumes.observe(viewLifecycleOwner, {
+    override fun onChanged(response: Result<ArrayList<StorageVolume>>?) {
+        response?.let {
             when (it.status) {
                 Status.LOADING -> {}
                 Status.SUCCESS -> adapter.setSource(it.result!!)
                 Status.ERROR -> throw it.throwable!! //onError(it.throwable!!)
             }
-        })
+        }
     }
 
     private fun onError(throwable: Throwable) {}

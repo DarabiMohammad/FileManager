@@ -2,11 +2,8 @@ package com.darabi.mohammad.filemanager.vm
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.repository.storage.DrawerItemProvider
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DrawerViewModel @Inject constructor(
