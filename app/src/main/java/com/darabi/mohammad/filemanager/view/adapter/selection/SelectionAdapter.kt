@@ -30,7 +30,7 @@ abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> i
     }
 
     override fun addSource(source: List<O>, position: Int) {
-        if (selectableItems.addAll(source)) super.addSource(source, position)
+        if (selectableItems.addAll(source.filter { it.isSelectable })) super.addSource(source, position)
     }
 
     override fun removeSource(source: List<O>) {
