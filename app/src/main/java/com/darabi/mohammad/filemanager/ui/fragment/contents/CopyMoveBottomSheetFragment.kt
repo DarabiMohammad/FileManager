@@ -38,6 +38,7 @@ class CopyMoveBottomSheetFragment @Inject constructor (
 
         initViews()
         observeViewModel()
+        viewModel.clearTempDirectories()
         viewModel.getVolumes().observe(viewLifecycleOwner, volumesHandler)
     }
 
@@ -51,8 +52,7 @@ class CopyMoveBottomSheetFragment @Inject constructor (
         response?.let {
             when(it.status) {
                 Status.LOADING -> txt_done.fadeIn()
-                Status.SUCCESS ->
-                    adapter.setSource(arrayListOf<BaseItem>(EmptyDivider).apply { addAll(it.result!!) })
+                Status.SUCCESS -> adapter.setSource(arrayListOf<BaseItem>(EmptyDivider).apply { addAll(it.result!!) })
                 Status.ERROR -> onError(response.throwable!!)
             }
         }
@@ -92,7 +92,7 @@ class CopyMoveBottomSheetFragment @Inject constructor (
             }
         })
 
-    private fun onError(throwable: Throwable) = when (throwable) {
+    private fun onError(throwable: Throwable): Unit = when (throwable) {
         is NullPointerException -> viewModel.getVolumes().observe(viewLifecycleOwner, volumesHandler)
         is IOException -> Toast.makeText(requireContext(), "${throwable.message}", Toast.LENGTH_SHORT).show()
         else -> throw throwable

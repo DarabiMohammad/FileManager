@@ -11,9 +11,7 @@ class DrawerViewModel @Inject constructor(
     private val drawerItemProvider: DrawerItemProvider
 ) : StoragesViewModel(app) {
 
-    val drawerItems by lazy { MutableLiveData<Result<ArrayList<StorageVolume>>>() }
-
-    fun getDrawerItems() = launchInViewModelScope(drawerItems) { volumes.getVolumes() }
+    fun getDrawerItems() = loadingLiveData { volumes.getVolumes() }
 
     fun getStaticItems() = arrayListOf(
         drawerItemProvider.dcimDirectory(),

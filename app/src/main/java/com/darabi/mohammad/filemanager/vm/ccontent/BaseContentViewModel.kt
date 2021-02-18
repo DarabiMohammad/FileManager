@@ -16,7 +16,7 @@ abstract class BaseContentViewModel constructor(
 ) : BaseViewModel(app) {
 
     fun onBackPressed() = loadingLiveData {
-        storageManager.getFiles(pathManager.pervousPath(), prefsManager.isSplitModeEnabled())
+        storageManager.getFiles(pathManager.perviousPath(), prefsManager.isSplitModeEnabled())
     }
 
     fun createFile(fileName: String, type: FileType) = liveData {

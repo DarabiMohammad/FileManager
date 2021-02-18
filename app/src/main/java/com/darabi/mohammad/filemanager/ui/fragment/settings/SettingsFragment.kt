@@ -18,7 +18,7 @@ class SettingsFragment @Inject constructor(
 ) : BaseFragment(R.layout.fragment_settings), View.OnClickListener {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
-    override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 

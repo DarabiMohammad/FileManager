@@ -13,7 +13,7 @@ class PathManager @Inject constructor() {
         else
             paths.add(path)
 
-    fun pervousPath(): String? = paths.run {
+    fun perviousPath(): String? = paths.run {
         removeLastOrNull()
         lastOrNull()
     }

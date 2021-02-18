@@ -3,7 +3,6 @@ package com.darabi.mohammad.filemanager.ui.fragment.settings
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
@@ -20,7 +19,7 @@ class AppearanceFragment @Inject constructor(
 ) : BaseFragment(R.layout.fragment_appearance), View.OnClickListener {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
-    override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
 
     private val appearanceViewModel: AppearanceViewModel by viewModels { viewModelFactory }
 
@@ -70,7 +69,7 @@ class AppearanceFragment @Inject constructor(
             onThemeChange.value?.let {
                 if (it.theme != appearanceViewModel.theme) {
                     setTheme(it.theme)
-                    viewModel.onThemeChanged.value = it.theme
+                    mainViewModel.onThemeChanged.value = it.theme
                 }
             }
         }

@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.ui.fragment.contents
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -36,11 +35,11 @@ class ContentFragment @Inject constructor (
     private val viewModelFactory: ViewModelFactory,
     private val contentViewModel: ContentViewModel,
     private val adapter: ContentRecyclerAdapter
-) : BaseFragment(R.layout.fragment_content), View.OnClickListener, ContentAdapterCallback<BaseItem>,
+) : BaseFragment (R.layout.fragment_content), View.OnClickListener, ContentAdapterCallback<BaseItem>,
     Observer<Result<ArrayList<out BaseItem>>?> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
-    override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
 
     private val copyMoveViewModel: CopyMoveViewModel by viewModels { viewModelFactory }
     private val fileCreationViewModel: FileCreationViewModel by viewModels { viewModelFactory }
@@ -75,12 +74,12 @@ class ContentFragment @Inject constructor (
 
     override fun onSelectionChanged(isAllSelected: Boolean, item: BaseItem) =
         contentViewModel.onSelectionChanged(item).observe(this, {
-            viewModel.onActionModeChanged.value = Pair(it, isAllSelected)
+            mainViewModel.onActionModeChanged.value = Pair(it, isAllSelected)
         })
 
     override fun onSelectAll(items: ArrayList<BaseItem>) =
         contentViewModel.onSelectAll(items).observe(this, {
-            viewModel.onActionModeChanged.value = it
+            mainViewModel.onActionModeChanged.value = it
         })
 
     override fun onRenameClick(item: BaseItem) {}
@@ -108,6 +107,8 @@ class ContentFragment @Inject constructor (
     fun onDeleteClicked() = deleteDialog.show(childFragmentManager)
 
     fun onCopyClicked() {
+        copyBottomSheet = provider.get()
+        navigateTo(R.id.copy_move_container, copyBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
@@ -173,21 +174,11 @@ class ContentFragment @Inject constructor (
 
     private inner class BottomSheetStateCallback : BottomSheetBehavior.BottomSheetCallback() {
 
-        override fun onStateChanged(bottomSheet: View, newState: Int) = when (newState) {
-            BottomSheetBehavior.STATE_HIDDEN -> removeFromBackstack(copyBottomSheet)
-            BottomSheetBehavior.STATE_HALF_EXPANDED -> navigateToBottomSheet()
-            BottomSheetBehavior.STATE_COLLAPSED -> {}
-            BottomSheetBehavior.STATE_DRAGGING -> {}
-            BottomSheetBehavior.STATE_SETTLING -> {}
-            else -> {}
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            if (newState == BottomSheetBehavior.STATE_HIDDEN) removeFromBackstack(copyBottomSheet)
         }
 
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
-        }
-
-        private fun navigateToBottomSheet() {
-            copyBottomSheet = provider.get()
-            navigateTo(R.id.copy_move_container, copyBottomSheet)
         }
     }
 }

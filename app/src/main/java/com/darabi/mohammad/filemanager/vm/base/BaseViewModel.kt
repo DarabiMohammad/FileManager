@@ -18,13 +18,6 @@ abstract class BaseViewModel constructor(private val app: Application) : Android
 
     protected fun getString(@StringRes string: Int) = app.getString(string)
 
-    protected inline fun <T> launchInViewModelScope(
-        liveData: MutableLiveData<Result<T>>, crossinline function: suspend () -> Result<T>
-    ) = viewModelScope.launch(Dispatchers.Main) {
-        liveData.value = Result.loading()
-        liveData.value = function()
-    }
-
     protected inline fun <T> loadingLiveData(crossinline function: suspend () -> Result<T>): LiveData<Result<T>> = liveData {
         emit(Result.loading())
         emit(function())

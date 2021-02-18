@@ -8,10 +8,10 @@ abstract class BaseFragment constructor(layoutRes: Int) : Fragment(layoutRes) {
 
     abstract val fragmentTag: String
 
-    abstract val viewModel: MainViewModel
+    abstract val mainViewModel: MainViewModel
 
     // todo avoid passing fragmentTag if is not needed.
-    open fun onBackPressed() { viewModel.onFragmentBackPressed.value = fragmentTag }
+    open fun onBackPressed() { mainViewModel.onFragmentBackPressed.value = fragmentTag }
 
     protected fun makeToast(message: String) = Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
 }

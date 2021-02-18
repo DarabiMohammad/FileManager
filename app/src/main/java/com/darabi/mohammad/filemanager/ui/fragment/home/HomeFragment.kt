@@ -23,7 +23,7 @@ class HomeFragment @Inject constructor(
     Observer<Result<ArrayList<StorageVolume>>> {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
-    override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,8 +33,8 @@ class HomeFragment @Inject constructor(
     }
 
     override fun onItemClick(item: StorageVolume) {
-        viewModel.volumeClickLiveData.setValueOrNull(item)
-        viewModel.updateToobarTitle.value = item.name
+        mainViewModel.volumeClickLiveData.setValueOrNull(item)
+        mainViewModel.updateToobarTitle.value = item.name
     }
 
     override fun onChanged(response: Result<ArrayList<StorageVolume>>?) {

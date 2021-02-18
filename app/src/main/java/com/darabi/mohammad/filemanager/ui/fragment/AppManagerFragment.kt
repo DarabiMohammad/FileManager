@@ -13,5 +13,5 @@ class AppManagerFragment @Inject constructor(
 ) : BaseFragment(R.layout.fragment_app_manager) {
 
     override val fragmentTag: String get() = this.javaClass.simpleName
-    override val viewModel: MainViewModel by viewModels( { requireActivity() } )
+    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
 }
