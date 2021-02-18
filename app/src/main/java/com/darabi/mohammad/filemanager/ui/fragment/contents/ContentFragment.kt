@@ -175,7 +175,9 @@ class ContentFragment @Inject constructor (
     private inner class BottomSheetStateCallback : BottomSheetBehavior.BottomSheetCallback() {
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) removeFromBackstack(copyBottomSheet)
+            if (newState == BottomSheetBehavior.STATE_HIDDEN)
+                removeFromBackstack(copyBottomSheet).also { view_shadow.fadeOut() }
+            else view_shadow.fadeIn()
         }
 
         override fun onSlide(bottomSheet: View, slideOffset: Float) {

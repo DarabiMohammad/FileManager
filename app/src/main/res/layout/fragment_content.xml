@@ -20,39 +20,50 @@
             android:layout_height="wrap_content"
             android:text="@string/not_found_file_error"
             android:textSize="24sp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:drawableTopCompat="@drawable/ic_file_black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:drawableTopCompat="@drawable/ic_file_black" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            style="@style/RecyclerStyle"
             android:id="@+id/rcv_content"
+            style="@style/RecyclerStyle"
             android:layout_height="match_parent"
             android:background="@android:color/white"
             tools:ignore="MissingConstraints"
-            tools:listitem="@layout/rcv_item_content"/>
+            tools:listitem="@layout/rcv_item_content" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_add_white"
+            android:contentDescription="@string/content_description"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="@string/content_description" />
+            app:srcCompat="@drawable/ic_add_white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient_top_shadow"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_anchor="@id/copy_move_container" />
 
     <FrameLayout
         android:id="@+id/copy_move_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         app:behavior_hideable="true"
         app:behavior_peekHeight="360dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"/>
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
