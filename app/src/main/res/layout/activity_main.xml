@@ -42,4 +42,24 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"/>
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/shadow_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient_top_shadow"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" >
+
+        <FrameLayout
+            android:id="@+id/copy_move_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight="360dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </androidx.drawerlayout.widget.DrawerLayout>

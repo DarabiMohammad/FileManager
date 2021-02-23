@@ -95,12 +95,12 @@ abstract class StorageManager {
     private fun newFolder(path: String, fileName: String): Boolean =
         if(javaFile("$path${javaFile.separator}$fileName").mkdir())
             true
-        else throw IOException(app.getString(R.string.dir_allready_exist))
+        else throw IOException(app.getString(R.string.dir_allready_exist_error))
 
     private fun newFile(path: String, fileName: String): Boolean =
         if (javaFile("$path${javaFile.separator}${addDefaultExtensionIfNeeded(fileName)}").createNewFile())
             true
-        else throw IOException(app.getString(R.string.file_allready_exist))
+        else throw IOException(app.getString(R.string.file_allready_exist_error))
 
     private fun addDefaultExtensionIfNeeded(fileName: String): String =
         if (fileName.contains(".")) fileName else "$fileName${app.getString(R.string.simple_txt_format)}"

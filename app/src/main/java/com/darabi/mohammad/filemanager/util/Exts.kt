@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseResult
@@ -52,8 +53,8 @@ fun Fragment.navigateTo(
     isReplace: Boolean = false
 ) = beginTransaction(childFragmentManager, containerId, fragment, addToBackStack, isReplace)
 
-fun Fragment.removeFromBackstack(fragment: Fragment) {
-    childFragmentManager.beginTransaction().also { it.remove(fragment) }.commit()
+fun FragmentActivity.removeFromBackstack(fragment: Fragment) {
+    supportFragmentManager.beginTransaction().also { it.remove(fragment) }.commit()
 }
 
 fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =

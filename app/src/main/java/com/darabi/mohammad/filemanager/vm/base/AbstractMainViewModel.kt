@@ -4,16 +4,23 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.util.NonDuplicativeLiveData
+import com.darabi.mohammad.filemanager.util.SingleEventWrapper
 
 abstract class AbstractMainViewModel constructor (
     private val app: Application,
 ) : BaseViewModel(app) {
 
     val volumeClickLiveData by lazy { NonDuplicativeLiveData<StorageItem?>() }
+
     val drawerCategoryFolderLiveData by lazy { NonDuplicativeLiveData<Document?>() }
     val drawerCategoryLiveData by lazy { NonDuplicativeLiveData<Category?>() }
     val drawerInstalledAppsLiveData by lazy { MutableLiveData<InstalledApps?>() }
     val drawerSettingsLiveData by lazy { MutableLiveData<Settings?>() }
+
+    val onCreateFile by lazy { MutableLiveData<Pair<String, FileType>>() }
+    val onCreateFileError by lazy { MutableLiveData<SingleEventWrapper<String>>() }
+    val onPathSelected by lazy { MutableLiveData<String?>() }
+    val openNewFileDialog by lazy { MutableLiveData<FileType?>() }
 
     val updateToobarTitle by lazy { MutableLiveData<String>() }
     val onActionModeChanged by lazy { MutableLiveData<Pair<Int, Boolean>>() }

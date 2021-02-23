@@ -18,6 +18,15 @@
         android:inputType="text"
         tools:ignore="LabelFor" />
 
+    <TextView
+        android:id="@+id/txt_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/edt_file_name"
+        tools:text="@string/dir_allready_exist_error"/>
+
     <Button
         android:id="@+id/btn_create_file"
         android:layout_width="wrap_content"
@@ -25,7 +34,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/create"
         android:visibility="invisible"
-        app:layout_constraintTop_toBottomOf="@+id/edt_file_name"
+        app:layout_constraintTop_toBottomOf="@+id/txt_error"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
@@ -35,7 +44,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/cancel"
-        app:layout_constraintTop_toBottomOf="@+id/edt_file_name"
+        app:layout_constraintTop_toBottomOf="@+id/txt_error"
         app:layout_constraintEnd_toStartOf="@+id/btn_create_file"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

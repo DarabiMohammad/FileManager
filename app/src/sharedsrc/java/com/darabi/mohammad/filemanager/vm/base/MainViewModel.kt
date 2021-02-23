@@ -9,8 +9,5 @@ import javax.inject.Singleton
 @Singleton
 class MainViewModel @Inject constructor(app: Application) : AbstractMainViewModel(app) {
 
-
     val permissionDialoLiveData = MutableLiveData<PermissionDescriptionDialog.Action>()
-    val onSelectAllClick = MutableLiveData<Boolean>()
-    val onDeleteClicked = MutableLiveData<Boolean>()
 }

@@ -2,7 +2,6 @@ package com.darabi.mohammad.filemanager.vm.ccontent
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
@@ -12,8 +11,6 @@ import com.darabi.mohammad.filemanager.util.EMPTY_STRING
 import com.darabi.mohammad.filemanager.util.PathManager
 import com.darabi.mohammad.filemanager.vm.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
@@ -28,9 +25,6 @@ class CopyMoveViewModel @Inject constructor (
     private val pathManagerProvider: Provider<PathManager>,
     private val storageManager: StorageManager
 ) : BaseViewModel(app) {
-
-    val onPathSelected by lazy { MutableLiveData<String?>() }
-    val openNewFileDialog by lazy { MutableLiveData<FileType?>() }
 
     private val tempDirectories by lazy { mutableMapOf<String, ArrayList<Directory>>() }
 
@@ -48,7 +42,7 @@ class CopyMoveViewModel @Inject constructor (
             val directory = Directory(fileName, "$this${File.separator}$fileName", EMPTY_STRING)
             tempDirectories[this]!!.run {
                 this.find { directory -> directory.name == fileName }?.let {
-                    emit(Result.error<Pair<Directory, Int>>(IOException(getString(R.string.dir_allready_exist))))
+                    emit(Result.error<Pair<Directory, Int>>(IOException(getString(R.string.dir_allready_exist_error))))
                     return@liveData
                 }
                 tempDirectories[directory.path] = ArrayList()

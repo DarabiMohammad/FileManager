@@ -8,27 +8,30 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
+import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
+import com.darabi.mohammad.filemanager.util.SingleEventWrapper
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.invisible
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 import com.darabi.mohammad.filemanager.view.adapter.content.CopyMoveRecyclerAdapter
+import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.ccontent.CopyMoveViewModel
-import com.darabi.mohammad.filemanager.vm.ccontent.FileCreationViewModel
 import kotlinx.android.synthetic.main.bottom_sheet_fragment_copy_move.*
 import kotlinx.android.synthetic.main.bottom_sheet_fragment_copy_move.view.*
 import kotlinx.android.synthetic.main.fragment_content.*
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class CopyMoveBottomSheetFragment @Inject constructor (
+    private val viewModel: CopyMoveViewModel,
     private val adapter: CopyMoveRecyclerAdapter
-) : Fragment(R.layout.bottom_sheet_fragment_copy_move), OnItemClickListener<BaseItem>,
+) : BaseFragment(R.layout.bottom_sheet_fragment_copy_move), OnItemClickListener<BaseItem>,
     Observer<Result<ArrayList<out BaseItem>>>, View.OnClickListener {
 
-    private val viewModel: CopyMoveViewModel by viewModels ( { requireParentFragment() } )
-    private val fileCreationViewModel: FileCreationViewModel by viewModels ( { requireParentFragment() } )
+    override val fragmentTag: String get() = this.javaClass.simpleName
+    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
+
     private val volumesHandler by lazy { VolumesHandler() }
 
     enum class Action { COPY, MOVE }
@@ -44,7 +47,7 @@ class CopyMoveBottomSheetFragment @Inject constructor (
 
     override fun onClick(view: View?) = when (view?.id) {
         R.id.txt_done -> {}
-        R.id.txt_cancel -> viewModel.onPathSelected.value = null
+        R.id.txt_cancel -> mainViewModel.onPathSelected.value = null
         else -> {}
     }
 
@@ -61,12 +64,22 @@ class CopyMoveBottomSheetFragment @Inject constructor (
     override fun onItemClick(item: BaseItem) = if (item is Directory)
         viewModel.getFolders(item.path).observe(this, this)
     else
-        viewModel.openNewFileDialog.value = FileType.Directory
+        mainViewModel.openNewFileDialog.value = FileType.Directory
 
-    fun onBackPressed() = if (txt_done.visibility == View.INVISIBLE)
-        viewModel.onPathSelected.value = null
+    override fun onBackPressed() = if (txt_done.visibility == View.INVISIBLE)
+        mainViewModel.onPathSelected.value = null
     else
         viewModel.onBackPressed().observe(this, this)
+
+    fun onNewFileCreated(fileName: String) = viewModel.createFolder(fileName).observe(viewLifecycleOwner, {
+        when (it.status) {
+            Status.LOADING -> {}
+            Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also {
+                mainViewModel.openNewFileDialog.value = null
+            }
+            Status.ERROR -> mainViewModel.onCreateFileError.value = SingleEventWrapper(it.throwable!!.message!!)
+        }
+    })
 
     private fun initViews() {
         txt_done.setOnClickListener(this)
@@ -76,25 +89,11 @@ class CopyMoveBottomSheetFragment @Inject constructor (
 
     private fun observeViewModel() {
 
-        fileCreationViewModel.onCreateFile.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { event -> createFolder(event.first) }
-        })
     }
-
-    private fun createFolder(fileName: String) =
-        viewModel.createFolder(fileName).observe(viewLifecycleOwner, {
-            when (it.status) {
-                Status.LOADING -> {}
-                Status.SUCCESS -> adapter.addSource(it.result!!.first, it.result.second).also {
-                    viewModel.openNewFileDialog.value = null
-                }
-                Status.ERROR -> onError(it.throwable!!)
-            }
-        })
 
     private fun onError(throwable: Throwable): Unit = when (throwable) {
         is NullPointerException -> viewModel.getVolumes().observe(viewLifecycleOwner, volumesHandler)
-        is IOException -> Toast.makeText(requireContext(), "${throwable.message}", Toast.LENGTH_SHORT).show()
+//        is IOException -> makeToast("${throwable.message}")
         else -> throw throwable
     }
 
