@@ -35,13 +35,6 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_drawer"
-        android:name="com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment"
-        android:layout_width="320dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"/>
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/shadow_view"
         android:layout_width="match_parent"
@@ -51,7 +44,7 @@
         android:focusable="true"
         android:visibility="gone" >
 
-        <FrameLayout
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/copy_move_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -61,5 +54,12 @@
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_drawer"
+        android:name="com.darabi.mohammad.filemanager.ui.fragment.drawer.DrawerFragment"
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

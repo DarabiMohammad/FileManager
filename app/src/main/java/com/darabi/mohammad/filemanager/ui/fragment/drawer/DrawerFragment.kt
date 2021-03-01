@@ -45,6 +45,7 @@ class DrawerFragment @Inject constructor(
     }
 
     override fun onItemClick(item: BaseDrawerItem) = (item as DrawerItem).run {
+        val sdf = this
         mainViewModel.onDrawerItemClick(item).also { mainViewModel.updateToobarTitle.value = item.name }
     }
 

@@ -17,11 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 private fun beginTransaction(
-    fragmentManager: FragmentManager,
-    containerId: Int,
-    fragment: Fragment,
-    addToBackStack: Boolean,
-    isReplace: Boolean
+    fragmentManager: FragmentManager, containerId: Int, fragment: Fragment, addToBackStack: Boolean, isReplace: Boolean
 ) {
     if(fragment.isAdded) return
     else fragmentManager.beginTransaction().also {
@@ -40,25 +36,18 @@ private fun beginTransaction(
 }
 
 fun AppCompatActivity.navigateTo(
-    @IdRes containerId: Int = R.id.container_main,
-    fragment: Fragment,
-    addToBackStack: Boolean = false,
-    isReplace: Boolean = false
+    @IdRes containerId: Int = R.id.container_main, fragment: Fragment, addToBackStack: Boolean = false, isReplace: Boolean = false
 ) = beginTransaction(supportFragmentManager, containerId, fragment, addToBackStack, isReplace)
 
 fun Fragment.navigateTo(
-    @IdRes containerId: Int,
-    fragment: Fragment,
-    addToBackStack: Boolean = false,
-    isReplace: Boolean = false
+    @IdRes containerId: Int, fragment: Fragment, addToBackStack: Boolean = false, isReplace: Boolean = false
 ) = beginTransaction(childFragmentManager, containerId, fragment, addToBackStack, isReplace)
 
 fun FragmentActivity.removeFromBackstack(fragment: Fragment) {
     supportFragmentManager.beginTransaction().also { it.remove(fragment) }.commit()
 }
 
-fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View =
-    LayoutInflater.from(view.context).inflate(layout, view, false)
+fun inflateLayout(view: ViewGroup, @LayoutRes layout: Int): View = LayoutInflater.from(view.context).inflate(layout, view, false)
 
 fun View.fadeOut() { if(isVisible) visibility = View.GONE }
 
