@@ -4,13 +4,16 @@ import android.app.Application
 import android.database.MergeCursor
 import android.provider.MediaStore
 import android.text.format.Formatter
+import android.util.Log
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.repository.safeSuspendCall
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.file.Path
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import java.io.File as javaFile
 
 abstract class StorageManager {
@@ -40,7 +43,9 @@ abstract class StorageManager {
         else throw IOException(app.getString(R.string.delete_file_error))
     }
 
-    suspend fun copy(fileName: String, destinationPath: String) {}
+    suspend fun copy(fileName: String, destinationPath: String, progressHandler: OnProgressChanged) = safeSuspendCall {
+        Result.success(copyFile(fileName, destinationPath, progressHandler))
+    }
 
     suspend fun getImages(): Result<ArrayList<File>> = safeSuspendCall { Result.success(getAllImages()) }
 
@@ -70,6 +75,33 @@ abstract class StorageManager {
             }
         }
 
+    private fun copyFile(fileName: String, destinationPath: String, progressHandler: OnProgressChanged) {
+        val sourceFile = javaFile(fileName)
+        val targetFile = javaFile("$destinationPath${javaFile.separator}${sourceFile.name}")
+        if (destinationPath.startsWith(fileName))
+            throw IllegalArgumentException(app.getString(R.string.parent_to_Child_copy_error))
+        if (sourceFile.isDirectory) {
+//            if (targetFile.exists())
+            targetFile.mkdirs()
+            sourceFile.listFiles()?.let {
+                it.forEach { subFile ->
+                    copyFile(subFile.path, "$destinationPath/${sourceFile.name}", progressHandler)
+                }
+            }
+        } else {
+            FileInputStream(sourceFile).use { sourceSteam ->
+                FileOutputStream(targetFile).use { targetStream ->
+                    val buffer = ByteArray(1024)
+                    var length = -1
+                    while (sourceSteam.read(buffer).let { length = it; it > 0 }) {
+                        targetStream.write(buffer, 0, length)
+                        progressHandler.onChanged(length)
+                    }
+                }
+            }
+        }
+    }
+
     protected fun createFolder(fileName: String, path: String, isSplitModeEnabled: Boolean): Pair<ArrayList<BaseItem>, Int> =
         newFolder(path, fileName).run {
             val list = listFiles(path)
@@ -95,7 +127,8 @@ abstract class StorageManager {
     private fun newFolder(path: String, fileName: String): Boolean =
         if(javaFile("$path${javaFile.separator}$fileName").mkdir())
             true
-        else throw IOException(app.getString(R.string.dir_allready_exist_error))
+        else
+            throw IOException(app.getString(R.string.dir_allready_exist_error))
 
     private fun newFile(path: String, fileName: String): Boolean =
         if (javaFile("$path${javaFile.separator}${addDefaultExtensionIfNeeded(fileName)}").createNewFile())

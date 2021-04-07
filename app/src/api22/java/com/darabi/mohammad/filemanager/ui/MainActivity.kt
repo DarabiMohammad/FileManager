@@ -11,19 +11,19 @@ class MainActivity @Inject constructor() : BaseActivity() {
 
         viewModel.volumeClickLiveData.observe(this, {
             doWithFragmentAndCloseDrawer(contentFragment) {
-                contentFragment.getFilesForPath(it.path)
+                contentFragment.getFilesForPath(it?.path)
             }
         })
 
         viewModel.drawerCategoryFolderLiveData.observe(this, {
             doWithFragmentAndCloseDrawer(contentFragment) {
-                contentFragment.getFilesForPath(it.path)
+                contentFragment.getFilesForPath(it?.path)
             }
         })
 
         viewModel.drawerCategoryLiveData.observe(this, {
             doWithFragmentAndCloseDrawer(contentFragment) {
-                contentFragment.getFilesForCategory(it.type)
+                contentFragment.getFilesForCategory(it?.type)
             }
         })
 

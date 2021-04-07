@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.view.adapter.selection
 
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
-import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
 
 abstract class SelectionAdapter <O: HasSelectable, VH: SelectionViewHolder<O>> internal constructor()
     : BaseAdapter<O, VH> (), AdapterCallback <O> {

@@ -3,10 +3,17 @@ package com.darabi.mohammad.filemanager.vm.ccontent
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import com.darabi.mohammad.filemanager.model.*
+import com.darabi.mohammad.filemanager.model.BaseItem
+import com.darabi.mohammad.filemanager.model.CategoryType
+import com.darabi.mohammad.filemanager.model.FileItem
+import com.darabi.mohammad.filemanager.repository.storage.OnProgressChanged
 import com.darabi.mohammad.filemanager.repository.storage.StorageManager
+import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
 import com.darabi.mohammad.filemanager.util.PathManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -59,9 +66,11 @@ class ContentViewModel @Inject constructor (
         }
     }
 
-    fun copy() {
-        copiedPaths = selectedItems.map { (it as FileItem).path }
+    fun copyOrMove(destinationPath: String, actionType: CopyMoveBottomSheetFragment.Action, progressHandler: OnProgressChanged) = liveData {
+        withContext(Dispatchers.Default) {
+            selectedItems.map {
+                async { storageManager.copy((it as FileItem).path, destinationPath, progressHandler) }
+            }.awaitAll().forEach { emit(it) }
+        }
     }
-
-    fun move() {}
 }

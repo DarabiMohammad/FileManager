@@ -8,7 +8,6 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
-import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.fragment_appearance.*
 import javax.inject.Inject
@@ -17,9 +16,6 @@ class AppearanceFragment @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val themeSelectionDialog: ThemeSelectionDialog
 ) : BaseFragment(R.layout.fragment_appearance), View.OnClickListener {
-
-    override val fragmentTag: String get() = this.javaClass.simpleName
-    override val mainViewModel: MainViewModel by viewModels( { requireActivity() } )
 
     private val appearanceViewModel: AppearanceViewModel by viewModels { viewModelFactory }
 

@@ -24,13 +24,4 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindStorageManager(storageManager: StorageManagerImpl): StorageManager
-
-    companion object {
-
-        @Provides
-        fun provideBundle(): Bundle = Bundle()
-
-        @Provides
-        fun provideHandler(): Handler = Handler(Looper.getMainLooper())
-    }
 }

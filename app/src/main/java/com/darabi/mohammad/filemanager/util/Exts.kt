@@ -1,8 +1,12 @@
 package com.darabi.mohammad.filemanager.util
 
+import android.content.Context
+import android.os.IBinder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.darabi.mohammad.filemanager.R
-import com.darabi.mohammad.filemanager.model.BaseResult
-import com.darabi.mohammad.filemanager.model.Result
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 private fun beginTransaction(
     fragmentManager: FragmentManager, containerId: Int, fragment: Fragment, addToBackStack: Boolean, isReplace: Boolean
@@ -54,3 +54,12 @@ fun View.fadeOut() { if(isVisible) visibility = View.GONE }
 fun View.fadeIn() { if (!isVisible) visibility = View.VISIBLE }
 
 fun View.invisible() { visibility = View.INVISIBLE }
+
+fun FragmentActivity.showSoftKeyboard() = (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).run {
+    currentFocus?.let { showSoftInput(it, InputMethodManager.SHOW_FORCED) }
+//    toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+}
+
+fun FragmentActivity.hideSoftKeyboard() = (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).run {
+    currentFocus?.windowToken?.let { hideSoftInputFromWindow(it, 0) }
+}

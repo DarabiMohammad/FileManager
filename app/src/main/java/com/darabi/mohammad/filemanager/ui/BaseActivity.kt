@@ -1,6 +1,8 @@
 package com.darabi.mohammad.filemanager.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -19,12 +21,9 @@ import com.darabi.mohammad.filemanager.ui.fragment.contents.ContentFragment
 import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
 import com.darabi.mohammad.filemanager.ui.fragment.home.HomeFragment
 import com.darabi.mohammad.filemanager.ui.fragment.settings.SettingsFragment
+import com.darabi.mohammad.filemanager.util.*
 import com.darabi.mohammad.filemanager.util.factory.InjectingFragmentFactory
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
-import com.darabi.mohammad.filemanager.util.fadeIn
-import com.darabi.mohammad.filemanager.util.fadeOut
-import com.darabi.mohammad.filemanager.util.navigateTo
-import com.darabi.mohammad.filemanager.util.removeFromBackstack
 import com.darabi.mohammad.filemanager.vm.base.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.android.AndroidInjection
@@ -66,6 +65,9 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
     @Inject
     protected lateinit var bottomSheetProvider: Provider<CopyMoveBottomSheetFragment>
 
+    @Inject
+    protected lateinit var handler: Handler
+
     protected val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     private lateinit var tempCopyBottomSheet: CopyMoveBottomSheetFragment
@@ -85,18 +87,9 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         navigateTo(fragment = homeFragment, isReplace = true)
     }
 
-    fun initStartupViews() {
-        // initializing toolbar
-        layout_toolbar.fadeIn()
-        img_toggle.setOnClickListener(this)
-        img_back.setOnClickListener(this)
-        img_options.setOnClickListener(this)
-        txt_toolbar_delete.setOnClickListener(this)
-        txt_toolbar_share.setOnClickListener(this)
-
-        bottomSheetBehavior = BottomSheetBehavior.from(copy_move_container)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.addBottomSheetCallback(BottomSheetStateCallback())
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) hideSoftKeyboard()
     }
 
     override fun onClick(view: View?) = when (view?.id) {
@@ -142,7 +135,7 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         })
 
         viewModel.onPathSelected.observe(this, {
-            if (it == null) bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         })
 
         viewModel.openNewFileDialog.observe(this, {
@@ -158,6 +151,20 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
     }
 
     protected fun closeNavDrawer() = layout_drawer.closeDrawer(GravityCompat.START)
+
+    private fun initStartupViews() {
+        // initializing toolbar
+        layout_toolbar.fadeIn()
+        img_toggle.setOnClickListener(this)
+        img_back.setOnClickListener(this)
+        img_options.setOnClickListener(this)
+        txt_toolbar_delete.setOnClickListener(this)
+        txt_toolbar_share.setOnClickListener(this)
+
+        bottomSheetBehavior = BottomSheetBehavior.from(copy_move_container)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehavior.addBottomSheetCallback(BottomSheetStateCallback())
+    }
 
     private fun openNavDrawer() = layout_drawer.openDrawer(GravityCompat.START)
 
@@ -192,15 +199,22 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
     }.show()
 
     private fun onCopyClicked() {
-        tempCopyBottomSheet = bottomSheetProvider.get()
-        shadow_view.fadeIn()
-        navigateTo(R.id.copy_move_container, tempCopyBottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        tempCopyBottomSheet = bottomSheetProvider.get().forCopy()
+        showBottomSheet()
     }
 
-    private fun onMoveClicked() {}
+    private fun onMoveClicked() {
+        tempCopyBottomSheet = bottomSheetProvider.get().forMove()
+        showBottomSheet()
+    }
 
-    private inner class BottomSheetStateCallback : BottomSheetBehavior.BottomSheetCallback() {
+    private fun showBottomSheet() {
+        shadow_view.fadeIn()
+        navigateTo(R.id.copy_move_container, tempCopyBottomSheet)
+        handler.postDelayed( { bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED }, 150)
+    }
+
+    internal inner class BottomSheetStateCallback : BottomSheetBehavior.BottomSheetCallback() {
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             if (newState == BottomSheetBehavior.STATE_HIDDEN)

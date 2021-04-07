@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:fitsSystemWindows="true">
 
     <EditText
         android:id="@+id/edt_file_name"
@@ -13,6 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:textSize="24sp"
+        android:focusable="true"
         app:layout_constraintTop_toTopOf="parent"
         android:importantForAutofill="no"
         android:inputType="text"

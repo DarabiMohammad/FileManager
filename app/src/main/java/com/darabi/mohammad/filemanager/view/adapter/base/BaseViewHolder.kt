@@ -1,8 +1,7 @@
-package com.darabi.mohammad.filemanager.view.vh
+package com.darabi.mohammad.filemanager.view.adapter.base
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 
 open class BaseViewHolder<in M> constructor(
     private val view: View,

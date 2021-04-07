@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.view.vh.home
+package com.darabi.mohammad.filemanager.view.adapter.home
 
 import android.annotation.SuppressLint
 import android.view.View
@@ -9,7 +9,7 @@ import com.bumptech.glide.RequestManager
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.StorageVolume
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseViewHolder
 
 class HomeRecyclerViewHolder constructor(
     private val view: View,

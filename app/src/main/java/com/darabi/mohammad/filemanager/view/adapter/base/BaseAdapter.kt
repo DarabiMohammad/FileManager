@@ -1,7 +1,6 @@
 package com.darabi.mohammad.filemanager.view.adapter.base
 
 import androidx.recyclerview.widget.RecyclerView
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
 
 abstract class BaseAdapter<O, VH: BaseViewHolder<O>> internal constructor(): RecyclerView.Adapter<VH>() {
 

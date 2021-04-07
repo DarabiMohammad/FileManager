@@ -5,9 +5,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.util.inflateLayout
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseAdapter
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
-import com.darabi.mohammad.filemanager.view.vh.content.FolderViewHolder
-import com.darabi.mohammad.filemanager.view.vh.content.NewFolderViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseViewHolder
 import javax.inject.Inject
 
 class CopyMoveRecyclerAdapter @Inject constructor() : BaseAdapter<BaseItem, BaseViewHolder<BaseItem>>() {

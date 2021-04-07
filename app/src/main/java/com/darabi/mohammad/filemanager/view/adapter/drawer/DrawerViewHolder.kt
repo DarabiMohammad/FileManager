@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.view.vh.drawer
+package com.darabi.mohammad.filemanager.view.adapter.drawer
 
 import android.view.View
 import android.widget.ImageView
@@ -8,7 +8,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseDrawerItem
 import com.darabi.mohammad.filemanager.model.DrawerItem
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseViewHolder
 
 class DrawerViewHolder constructor(
         val view: View,

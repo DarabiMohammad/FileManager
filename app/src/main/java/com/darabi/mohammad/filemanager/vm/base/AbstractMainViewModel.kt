@@ -3,6 +3,7 @@ package com.darabi.mohammad.filemanager.vm.base
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.darabi.mohammad.filemanager.model.*
+import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
 import com.darabi.mohammad.filemanager.util.NonDuplicativeLiveData
 import com.darabi.mohammad.filemanager.util.SingleEventWrapper
 
@@ -19,7 +20,7 @@ abstract class AbstractMainViewModel constructor (
 
     val onCreateFile by lazy { MutableLiveData<Pair<String, FileType>>() }
     val onCreateFileError by lazy { MutableLiveData<SingleEventWrapper<String>>() }
-    val onPathSelected by lazy { MutableLiveData<String?>() }
+    val onPathSelected by lazy { MutableLiveData<SingleEventWrapper<Pair<String, CopyMoveBottomSheetFragment.Action>>?>() }
     val openNewFileDialog by lazy { MutableLiveData<FileType?>() }
 
     val updateToobarTitle by lazy { MutableLiveData<String>() }

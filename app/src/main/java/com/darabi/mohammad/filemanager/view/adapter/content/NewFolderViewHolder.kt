@@ -1,10 +1,9 @@
-package com.darabi.mohammad.filemanager.view.vh.content
+package com.darabi.mohammad.filemanager.view.adapter.content
 
 import android.view.View
-import com.darabi.mohammad.filemanager.model.BaseFile
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseViewHolder
 
 class NewFolderViewHolder constructor(
     private val view: View,

@@ -1,14 +1,12 @@
-package com.darabi.mohammad.filemanager.view.vh.selection
+package com.darabi.mohammad.filemanager.view.adapter.selection
 
 import android.view.View
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
-import com.darabi.mohammad.filemanager.view.adapter.selection.AdapterCallback
-import com.darabi.mohammad.filemanager.view.adapter.selection.HasSelectable
-import com.darabi.mohammad.filemanager.view.vh.BaseViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.base.BaseViewHolder
 
 sealed class SelectionViewHolder <O: HasSelectable> constructor(
     view: View, callback: OnItemClickListener<O>?
-) : BaseViewHolder <O> (view, callback) {
+) : BaseViewHolder<O>(view, callback) {
 
     abstract fun bindModel(model: O, position: Int)
 

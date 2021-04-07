@@ -30,6 +30,8 @@ class CopyMoveViewModel @Inject constructor (
 
     private lateinit var pathManager: PathManager
 
+    fun getPath() = pathManager.lastPath()!!
+
     fun onBackPressed(): LiveData<Result<ArrayList<out BaseItem>>> = loadingLiveData {
         pathManager.perviousPath().run {
             if (tempDirectories.containsKey(this)) getTemDirectories(this!!) else storageManager.getFolders(this)

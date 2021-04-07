@@ -1,11 +1,11 @@
 package com.darabi.mohammad.filemanager.ui.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.FileType
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseDialogFragment
@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.dialog_new_file.*
 import javax.inject.Inject
 
 
-class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickListener {
+class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickListener,
+    Observer<SingleEventWrapper<String>> {
 
     override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_new_file
@@ -29,12 +30,12 @@ class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickL
 
         initViews()
 
-        viewModel.onCreateFileError.observe(viewLifecycleOwner, {
-            it.getContentIfNotHandled()?.let { message ->
-                txt_error.fadeIn().also { txt_error.text = message }
-                btn_create_file.invisible()
-            }
-        })
+        viewModel.onCreateFileError.observe(viewLifecycleOwner, this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        edt_file_name.requestFocus()
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
@@ -43,6 +44,7 @@ class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickL
     }
 
     override fun dismiss() {
+        requireActivity().hideSoftKeyboard()
         super.dismiss()
         // todo maybe unesseccary
         requireActivity().removeFromBackstack(this)
@@ -53,14 +55,26 @@ class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickL
         else -> dismiss()
     }
 
+    override fun onChanged(response: SingleEventWrapper<String>) {
+        response.getContentIfNotHandled()?.let { message ->
+            txt_error.fadeIn().also { txt_error.text = message }
+            btn_create_file.invisible()
+        }
+    }
+
     private fun initViews() {
 
         btn_create_file.setOnClickListener(this)
         btn_cancel.setOnClickListener(this)
 
-        edt_file_name.doAfterTextChanged {
-            txt_error.fadeOut()
-            if(it.toString().isEmpty()) btn_create_file.invisible() else btn_create_file.fadeIn()
+        edt_file_name.apply {
+
+            setOnFocusChangeListener { _, hasFocus -> if (hasFocus) requireActivity().showSoftKeyboard() }
+
+            doAfterTextChanged {
+                txt_error.fadeOut()
+                if(it.toString().isEmpty()) btn_create_file.invisible() else btn_create_file.fadeIn()
+            }
         }
 
         if(type == FileType.Directory)

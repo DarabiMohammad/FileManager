@@ -20,6 +20,7 @@ abstract class BaseContentViewModel constructor(
     }
 
     fun createFile(fileName: String, type: FileType) = liveData {
+//        /storage/081B-101D
         emit(storageManager.createNewFolder(fileName, pathManager.lastPath()!!, prefsManager.isSplitModeEnabled()))
     }
 

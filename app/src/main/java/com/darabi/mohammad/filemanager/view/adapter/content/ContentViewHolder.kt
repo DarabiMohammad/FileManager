@@ -1,4 +1,4 @@
-package com.darabi.mohammad.filemanager.view.vh.content
+package com.darabi.mohammad.filemanager.view.adapter.content
 
 import android.view.Gravity
 import android.view.View
@@ -11,7 +11,7 @@ import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.FileItem
 import com.darabi.mohammad.filemanager.view.adapter.selection.AdapterCallback
 import com.darabi.mohammad.filemanager.view.adapter.selection.HasSelectable
-import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.selection.SelectionViewHolder
 
 class ContentViewHolder constructor(
         private val view: View,
@@ -59,5 +59,6 @@ class ContentViewHolder constructor(
         fun onDetailsClick(item: I)
     }
 
-    interface DirsViewHolderCallback <O: HasSelectable> : AdapterCallback <O>, DirsMenuClickListener<O>
+    interface DirsViewHolderCallback <O: HasSelectable> : AdapterCallback <O>,
+        DirsMenuClickListener<O>
 }

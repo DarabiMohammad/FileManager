@@ -1,11 +1,11 @@
-package com.darabi.mohammad.filemanager.view.vh.content
+package com.darabi.mohammad.filemanager.view.adapter.content
 
 import android.view.View
 import android.widget.TextView
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.BaseItem
 import com.darabi.mohammad.filemanager.model.FileDivider
-import com.darabi.mohammad.filemanager.view.vh.selection.SelectionViewHolder
+import com.darabi.mohammad.filemanager.view.adapter.selection.SelectionViewHolder
 
 class ContentDividerViewHolder constructor(view: View) :
     SelectionViewHolder.UnSelectableViewHolder<BaseItem>(view, null) {

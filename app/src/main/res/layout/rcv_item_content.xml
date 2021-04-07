@@ -44,7 +44,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/content_description"
-        />
-<!--    app:srcCompat="@drawable/ic_more_vert_black"-->
+        android:contentDescription="@string/content_description" />
 </androidx.constraintlayout.widget.ConstraintLayout>
