@@ -10,12 +10,11 @@ import com.darabi.mohammad.filemanager.repository.storage.OnProgressChanged
 import com.darabi.mohammad.filemanager.repository.storage.StorageManager
 import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
 import com.darabi.mohammad.filemanager.util.PathManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
+import com.darabi.mohammad.filemanager.util.TransferAction
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.suspendCoroutine
 
 @Singleton
 class ContentViewModel @Inject constructor (
@@ -58,6 +57,9 @@ class ContentViewModel @Inject constructor (
         emit(Pair(getSelectedItemsCount(), selectedItems.isNotEmpty()))
     }
 
+    fun isSubFolderOFSelectedItems(targetPath: String): Boolean =
+        targetPath.startsWith((selectedItems[0] as FileItem).path)
+
     fun deleteFiles() = liveData {
         withContext(Dispatchers.Default) {
             selectedItems.map {
@@ -66,7 +68,7 @@ class ContentViewModel @Inject constructor (
         }
     }
 
-    fun copyOrMove(destinationPath: String, actionType: CopyMoveBottomSheetFragment.Action, progressHandler: OnProgressChanged) = liveData {
+    fun copyOrMove(destinationPath: String, actionType: TransferAction, progressHandler: OnProgressChanged) = liveData {
         withContext(Dispatchers.Default) {
             selectedItems.map {
                 async { storageManager.copy((it as FileItem).path, destinationPath, progressHandler) }

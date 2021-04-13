@@ -14,7 +14,7 @@ import dagger.Provides
 abstract class AppModule {
 
     @Binds
-    abstract fun bindContext(application: App): Application
+    abstract fun bindApplication(application: App): Application
 
     @Binds
     abstract fun bindVolumes(volumesImpl: VolumesImpl): Volumes
@@ -24,4 +24,10 @@ abstract class AppModule {
 
     @Binds
     abstract fun bindStorageManager(storageManager: StorageManagerImpl): StorageManager
+
+    companion object {
+
+        @Provides
+        fun provideHandler(): Handler = Handler(Looper.getMainLooper())
+    }
 }

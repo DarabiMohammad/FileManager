@@ -6,6 +6,7 @@ import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
 import com.darabi.mohammad.filemanager.util.NonDuplicativeLiveData
 import com.darabi.mohammad.filemanager.util.SingleEventWrapper
+import com.darabi.mohammad.filemanager.util.TransferAction
 
 abstract class AbstractMainViewModel constructor (
     private val app: Application,
@@ -18,9 +19,9 @@ abstract class AbstractMainViewModel constructor (
     val drawerInstalledAppsLiveData by lazy { MutableLiveData<InstalledApps?>() }
     val drawerSettingsLiveData by lazy { MutableLiveData<Settings?>() }
 
-    val onCreateFile by lazy { MutableLiveData<Pair<String, FileType>>() }
+    val onCreateFile by lazy { MutableLiveData<SingleEventWrapper<Pair<String, FileType>>>() }
     val onCreateFileError by lazy { MutableLiveData<SingleEventWrapper<String>>() }
-    val onPathSelected by lazy { MutableLiveData<SingleEventWrapper<Pair<String, CopyMoveBottomSheetFragment.Action>>?>() }
+    val onPathSelected by lazy { MutableLiveData<SingleEventWrapper<Pair<String, TransferAction>>?>() }
     val openNewFileDialog by lazy { MutableLiveData<FileType?>() }
 
     val updateToobarTitle by lazy { MutableLiveData<String>() }

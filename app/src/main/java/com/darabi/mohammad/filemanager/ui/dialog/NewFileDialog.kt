@@ -18,7 +18,6 @@ import javax.inject.Inject
 class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickListener,
     Observer<SingleEventWrapper<String>> {
 
-    override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_new_file
 
     private val viewModel: MainViewModel by viewModels ( { requireActivity() } )
@@ -51,7 +50,9 @@ class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickL
     }
 
     override fun onClick(view: View?) = when(view?.id) {
-        R.id.btn_create_file -> txt_error.fadeOut().also { viewModel.onCreateFile.value = Pair(edt_file_name.text.toString(), type!!) }
+        R.id.btn_create_file -> txt_error.fadeOut().also {
+            viewModel.onCreateFile.value = SingleEventWrapper(Pair(edt_file_name.text.toString(), type!!))
+        }
         else -> dismiss()
     }
 
@@ -83,7 +84,5 @@ class NewFileDialog @Inject constructor () : BaseDialogFragment(), View.OnClickL
             edt_file_name.setText(R.string.simple_txt_format)
     }
 
-    fun forFile(): NewFileDialog = this.apply { type = FileType.File }
-
-    fun forFolder(): NewFileDialog = this.apply { type = FileType.Directory }
+    fun forType(type: FileType): NewFileDialog = this.apply { this.type = type }
 }

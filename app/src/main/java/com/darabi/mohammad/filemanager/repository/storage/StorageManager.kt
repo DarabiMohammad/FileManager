@@ -11,6 +11,7 @@ import com.darabi.mohammad.filemanager.repository.safeSuspendCall
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.UnsupportedOperationException
 import java.nio.file.Path
 import java.util.*
 import javax.inject.Inject
@@ -76,12 +77,16 @@ abstract class StorageManager {
         }
 
     private fun copyFile(fileName: String, destinationPath: String, progressHandler: OnProgressChanged) {
+
         val sourceFile = javaFile(fileName)
         val targetFile = javaFile("$destinationPath${javaFile.separator}${sourceFile.name}")
-        if (destinationPath.startsWith(fileName))
-            throw IllegalArgumentException(app.getString(R.string.parent_to_Child_copy_error))
+
+        javaFile(destinationPath).list()?.let {
+            if (it.contains(sourceFile.name))
+                throw UnsupportedOperationException("${app.getString(R.string.replace_or_rename_desc)} ${sourceFile.name}.")
+        }
+
         if (sourceFile.isDirectory) {
-//            if (targetFile.exists())
             targetFile.mkdirs()
             sourceFile.listFiles()?.let {
                 it.forEach { subFile ->
@@ -89,13 +94,21 @@ abstract class StorageManager {
                 }
             }
         } else {
-            FileInputStream(sourceFile).use { sourceSteam ->
+            FileInputStream(sourceFile).use { sourceStream ->
                 FileOutputStream(targetFile).use { targetStream ->
-                    val buffer = ByteArray(1024)
-                    var length = -1
-                    while (sourceSteam.read(buffer).let { length = it; it > 0 }) {
-                        targetStream.write(buffer, 0, length)
-                        progressHandler.onChanged(length)
+                    val buffer = ByteArray(10240)
+                    val length = sourceFile.length().toInt()
+                    var bytes = -1
+                    var totalBytes = 0L
+                    var lastProgress = 0L
+                    while (sourceStream.read(buffer).let { bytes = it; it > 0 }) {
+                        targetStream.write(buffer, 0, bytes)
+                        totalBytes += bytes
+                        val currentProgress: Long = (totalBytes * 100) / length
+                        if (currentProgress > lastProgress) {
+                            lastProgress = currentProgress
+                            progressHandler.onChanged(lastProgress.toInt())
+                        }
                     }
                 }
             }

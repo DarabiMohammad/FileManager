@@ -12,8 +12,10 @@
     <string name="delete">Delete</string>
     <string name="copy">Copy</string>
     <string name="copy_to">Copy To:</string>
+    <string name="copying_to">Copying</string>
     <string name="move">Move</string>
     <string name="move_to">Move To:</string>
+    <string name="moving_to">Moving</string>
     <string name="share">Share</string>
     <string name="add_short_cut">Add Shortcut</string>
     <string name="create_new_folder">Create Folder</string>
@@ -25,6 +27,9 @@
     <string name="decrypt">Decrypt</string>
     <string name="rename">Rename</string>
     <string name="details">Details</string>
+    <string name="apply_to_all">Apply To All Items</string>
+    <string name="skip">Skip</string>
+    <string name="replace">Replace</string>
 
     <!--  storage types  -->
     <string name="storage">Storage</string>
@@ -67,8 +72,9 @@
     <string name="file_allready_exist_error">There Is A File With This Name!</string>
     <string name="delete_files">Delete</string>
     <string name="delete_file_error">Failed To Delete File</string>
-    <string name="unimplemented_error">Attempted To Call An Unimplemented Method.</string>
     <string name="parent_to_Child_copy_error">The Chosen Folder Is Subfolder Of The Source.</string>
+    <string name="replace_or_rename">Replace File Or Rename It?</string>
+    <string name="replace_or_rename_desc">You Already Have A File Named </string>
 
     <!--  files and folders  -->
     <string name="files">Files</string>

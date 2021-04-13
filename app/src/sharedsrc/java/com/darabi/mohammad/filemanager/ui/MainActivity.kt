@@ -58,10 +58,10 @@ class MainActivity @Inject constructor() : BaseActivity(), PermissionManager.Per
     override fun onPermissionGranted(function: () -> Unit) = function.invoke()
 
     override fun onPermissionDenied(permissionGroup: PermissionManager.Permissions) =
-        permissionDescDialog.detailedDialog().show(supportFragmentManager)
+        permissionDescDialog.dialogType(PermissionDescriptionDialog.DialogType.DETAILED_TYPE).show(supportFragmentManager)
 
     override fun onPermissionWasDeniedForever(permissionGroup: PermissionManager.Permissions) =
-        permissionDescDialog.finalDialog().show(supportFragmentManager)
+        permissionDescDialog.dialogType(PermissionDescriptionDialog.DialogType.SETTINGS_TYPE).show(supportFragmentManager)
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
         permissionManager.invokeIfPermissionIsGranted(grantResults).run {

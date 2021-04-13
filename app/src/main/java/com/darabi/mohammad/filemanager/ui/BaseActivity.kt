@@ -2,7 +2,6 @@ package com.darabi.mohammad.filemanager.ui
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
@@ -105,8 +104,8 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.copy -> onCopyClicked()
-            R.id.move -> onMoveClicked()
+            R.id.copy -> onCopyOrMoveClicked(TransferAction.COPY)
+            R.id.move -> onCopyOrMoveClicked(TransferAction.MOVE)
             R.id.hide -> {}
             R.id.sort -> {}
         }
@@ -143,10 +142,12 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         })
 
         viewModel.onCreateFile.observe(this, {
-            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN)
-                tempCopyBottomSheet.onNewFileCreated(it.first)
-            else
-                contentFragment.onNewFileCreated(it.first, it.second)
+            it.getContentIfNotHandled()?.let { singleEventWrapper ->
+                if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN)
+                    tempCopyBottomSheet.onNewFileCreated(singleEventWrapper.first)
+                else
+                    contentFragment.onNewFileCreated(singleEventWrapper.first, singleEventWrapper.second)
+            }
         })
     }
 
@@ -188,23 +189,17 @@ open class BaseActivity : AppCompatActivity(), HasAndroidInjector,
         container_more_options.fadeOut()
     }
 
-    private fun openNewFileDialog(type: FileType) = newFileDialogProvider.get().apply {
-        if (type is FileType.Directory) forFolder() else forFile()
+    private fun openNewFileDialog(type: FileType) = newFileDialogProvider.get().forType(type).apply {
         tempNewFileDialog = this
-    }.show(supportFragmentManager, tempNewFileDialog.dialogTag)
+    }.show(supportFragmentManager)
 
     private fun onOptionsClick() = PopupMenu(this, img_options, GravityCompat.END).apply {
         setOnMenuItemClickListener(this@BaseActivity)
         inflate(if (chb_select_all.isVisible) R.menu.menu_selection_ops else R.menu.menu_base_ops)
     }.show()
 
-    private fun onCopyClicked() {
-        tempCopyBottomSheet = bottomSheetProvider.get().forCopy()
-        showBottomSheet()
-    }
-
-    private fun onMoveClicked() {
-        tempCopyBottomSheet = bottomSheetProvider.get().forMove()
+    private fun onCopyOrMoveClicked(action: TransferAction) {
+        tempCopyBottomSheet = bottomSheetProvider.get().forAction(action)
         showBottomSheet()
     }
 

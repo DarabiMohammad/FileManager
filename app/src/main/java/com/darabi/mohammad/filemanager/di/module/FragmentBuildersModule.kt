@@ -2,9 +2,6 @@ package com.darabi.mohammad.filemanager.di.module
 
 import androidx.fragment.app.Fragment
 import com.darabi.mohammad.filemanager.di.FragmentKey
-import com.darabi.mohammad.filemanager.ui.dialog.DeleteDialog
-import com.darabi.mohammad.filemanager.ui.dialog.NewFileDialog
-import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.AppManagerFragment
 import com.darabi.mohammad.filemanager.ui.fragment.contents.ContentFragment
 import com.darabi.mohammad.filemanager.ui.fragment.contents.CopyMoveBottomSheetFragment
@@ -16,8 +13,13 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module(includes = [EssentialFragmentsBuilderModule::class])
-abstract class FragmentBuilderModule {
+@Module(
+    includes = [
+        EssentialFragmentsBuilderModule::class,
+        DialogBuildersModule::class
+    ]
+)
+abstract class FragmentBuildersModule {
 
     @Binds
     @IntoMap
@@ -53,20 +55,4 @@ abstract class FragmentBuilderModule {
     @IntoMap
     @FragmentKey(AppManagerFragment::class)
     abstract fun bindAppManagerFragment(appManagerFragment: AppManagerFragment): Fragment
-
-    // DialogFragments
-    @Binds
-    @IntoMap
-    @FragmentKey(NewFileDialog::class)
-    abstract fun bindNewFileDialog(newFileDialog: NewFileDialog): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(DeleteDialog::class)
-    abstract fun bindDeleteDialog(deleteDialog: DeleteDialog): Fragment
-
-    @Binds
-    @IntoMap
-    @FragmentKey(ThemeSelectionDialog::class)
-    abstract fun bindThemeSelectionDialog(themeSelectionDialog: ThemeSelectionDialog): Fragment
 }

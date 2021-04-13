@@ -15,11 +15,10 @@ class PermissionDescriptionDialog @Inject constructor(
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener {
 
-    override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_permission_description
 
     enum class Action { ACTION_OK, ACTION_OPEN_SETTINGS, ACTION_EXIT }
-    private enum class DialogType { COMMON_TYPE, DETAILED_TYPE, SETTINGS_TYPE }
+    enum class DialogType { COMMON_TYPE, DETAILED_TYPE, SETTINGS_TYPE }
 
     private val viewModel: MainViewModel by viewModels { viewModelFactory }
     private var type = DialogType.COMMON_TYPE
@@ -30,11 +29,9 @@ class PermissionDescriptionDialog @Inject constructor(
         initViews()
     }
 
-    override fun onClick(view: View?) {
-        when(view?.id) {
-            R.id.btn_dialog_permission_desc_ok -> onOkButtonClick()
-            else -> onExitButtonClick()
-        }
+    override fun onClick(view: View?) = when(view?.id) {
+        R.id.btn_dialog_permission_desc_ok -> onOkButtonClick()
+        else -> onExitButtonClick()
     }
 
     private fun initViews() {
@@ -64,17 +61,11 @@ class PermissionDescriptionDialog @Inject constructor(
         viewModel.permissionDialoLiveData.value = Action.ACTION_EXIT
     }
 
-    fun detailedDialog(): PermissionDescriptionDialog {
-        type = DialogType.DETAILED_TYPE
-        return this
+    fun dialogType(type: DialogType): PermissionDescriptionDialog = this.apply {
+        this.type = type
     }
 
-    fun finalDialog(): PermissionDescriptionDialog {
-        type = DialogType.SETTINGS_TYPE
-        return this
-    }
-
-    fun show(manager: FragmentManager) {
+    override fun show(manager: FragmentManager) {
         manager.beginTransaction().add(this, dialogTag).commitAllowingStateLoss()
     }
 }

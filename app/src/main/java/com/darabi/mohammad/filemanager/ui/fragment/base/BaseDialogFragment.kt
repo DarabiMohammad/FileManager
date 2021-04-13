@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 
 abstract class BaseDialogFragment : DialogFragment() {
 
-    abstract val dialogTag: String
+    val dialogTag: String = this.javaClass.simpleName
 
     @get:LayoutRes
     abstract val layoutRes: Int
@@ -21,4 +22,6 @@ abstract class BaseDialogFragment : DialogFragment() {
         super.onStart()
         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
+
+    open fun show(manager: FragmentManager) = super.show(manager, dialogTag)
 }

@@ -7,6 +7,7 @@ import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.model.*
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
 import com.darabi.mohammad.filemanager.util.SingleEventWrapper
+import com.darabi.mohammad.filemanager.util.TransferAction
 import com.darabi.mohammad.filemanager.util.fadeIn
 import com.darabi.mohammad.filemanager.util.invisible
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
@@ -26,15 +27,12 @@ class CopyMoveBottomSheetFragment @Inject constructor (
 
     private val volumesHandler by lazy { VolumesHandler() }
 
-    enum class Action { COPY, MOVE }
-
-    private lateinit var actionType: Action
+    private lateinit var actionType: TransferAction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        observeViewModel()
         viewModel.clearTempDirectories()
         viewModel.getVolumes().observe(viewLifecycleOwner, volumesHandler)
     }
@@ -75,19 +73,13 @@ class CopyMoveBottomSheetFragment @Inject constructor (
         }
     })
 
-    fun forCopy(): CopyMoveBottomSheetFragment = this.apply { actionType = Action.COPY }
-
-    fun forMove(): CopyMoveBottomSheetFragment = this.apply { actionType = Action.MOVE }
+    fun forAction(action: TransferAction): CopyMoveBottomSheetFragment = this.apply { actionType = action }
 
     private fun initViews() {
-        txt_operation_type.text = if (actionType == Action.COPY) getString(R.string.copy_to) else getString(R.string.move_to)
+        txt_operation_type.text = if (actionType == TransferAction.COPY) getString(R.string.copy_to) else getString(R.string.move_to)
         txt_done.setOnClickListener(this)
         txt_cancel.setOnClickListener(this)
         rcv_folders.adapter = adapter.apply { callback = this@CopyMoveBottomSheetFragment }
-    }
-
-    private fun observeViewModel() {
-
     }
 
     private fun onError(throwable: Throwable): Unit = when (throwable) {

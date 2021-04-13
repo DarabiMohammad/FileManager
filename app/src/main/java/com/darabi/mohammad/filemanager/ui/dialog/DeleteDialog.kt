@@ -21,7 +21,6 @@ class DeleteDialog @Inject constructor(
     private val viewModelFactory: ViewModelFactory
 ) : BaseDialogFragment(), View.OnClickListener, Observer<Result<FileItem>> {
 
-    override val dialogTag: String get() = this.javaClass.simpleName
     override val layoutRes: Int get() = R.layout.dialog_delete
 
     private val viewModel: ContentViewModel by viewModels { viewModelFactory }
@@ -42,7 +41,7 @@ class DeleteDialog @Inject constructor(
     override fun onClick(view: View?) =
         if(view?.id == R.id.delete_dialog_btn_delete) onDeleteClicked() else dismiss()
 
-    fun show(manager: FragmentManager) = super.show(manager, dialogTag).also { isCancelable = true }
+    override fun show(manager: FragmentManager) = super.show(manager).also { isCancelable = true }
 
     private fun initViews() {
         delete_dialog_btn_delete.setOnClickListener(this)

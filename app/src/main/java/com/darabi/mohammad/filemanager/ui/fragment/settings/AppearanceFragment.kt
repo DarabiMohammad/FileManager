@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import com.darabi.mohammad.filemanager.R
 import com.darabi.mohammad.filemanager.ui.dialog.ThemeSelectionDialog
 import com.darabi.mohammad.filemanager.ui.fragment.base.BaseFragment
+import com.darabi.mohammad.filemanager.util.SelectedTheme
 import com.darabi.mohammad.filemanager.util.factory.ViewModelFactory
 import com.darabi.mohammad.filemanager.vm.settings.AppearanceViewModel
 import kotlinx.android.synthetic.main.fragment_appearance.*
@@ -27,7 +28,7 @@ class AppearanceFragment @Inject constructor(
     }
 
     override fun onClick(view: View?) = when(view?.id) {
-        R.id.txt_theme -> themeSelectionDialog.show(childFragmentManager, themeSelectionDialog.dialogTag)
+        R.id.txt_theme -> themeSelectionDialog.show(childFragmentManager)
         else -> {}
     }
 
@@ -36,7 +37,7 @@ class AppearanceFragment @Inject constructor(
         appearanceViewModel.onThemeChange.observe(viewLifecycleOwner, {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             when(it) {
-                ThemeSelectionDialog.SelectedTheme.DARK -> onDarkThemeClick()
+                SelectedTheme.DARK -> onDarkThemeClick()
                 else -> onLightThemeClick()
             }
         })

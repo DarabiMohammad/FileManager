@@ -4,7 +4,7 @@ import android.view.View
 import com.darabi.mohammad.filemanager.view.adapter.base.OnItemClickListener
 import com.darabi.mohammad.filemanager.view.adapter.base.BaseViewHolder
 
-sealed class SelectionViewHolder <O: HasSelectable> constructor(
+sealed class SelectionViewHolder <O: HasSelectable> constructor (
     view: View, callback: OnItemClickListener<O>?
 ) : BaseViewHolder<O>(view, callback) {
 

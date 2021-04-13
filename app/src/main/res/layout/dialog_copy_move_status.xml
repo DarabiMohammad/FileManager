@@ -1,16 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="16dp">
 
-<!--    <ProgressBar-->
-<!--        style="?android:attr/progressBarStyleHorizontal"-->
-<!--        android:id="@+id/delete_dialog_prg_status"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:visibility="gone"-->
-<!--        />-->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/copying_to" />
+
+    <ProgressBar
+        android:id="@+id/prg_copy"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:max="100"
+        app:layout_constraintTop_toBottomOf="@+id/txt_title" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txt_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/prg_copy"
+        app:layout_constraintTop_toBottomOf="@+id/prg_copy"
+        tools:text="25 %" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/chb_apply_to_all"
+        style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/apply_to_all"
+        android:visibility="gone"
+        android:saveEnabled="false"
+        app:layout_constraintTop_toBottomOf="@+id/txt_percentage" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_rename_or_cancle"
+        style="@style/NormalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_normal_dimen"
+        android:text="@string/cancel"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/chb_apply_to_all"
+        app:layout_constraintTop_toBottomOf="@+id/chb_apply_to_all" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_replace"
+        style="@style/NormalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/material_normal_dimen"
+        android:text="@string/replace"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/btn_rename_or_cancle"
+        app:layout_constraintTop_toTopOf="@+id/btn_rename_or_cancle" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_skip"
+        style="@style/NormalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/material_normal_dimen"
+        android:text="@string/skip"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/material_normal_dimen"
+        app:layout_constraintEnd_toStartOf="@+id/btn_replace"
+        app:layout_constraintTop_toBottomOf="@+id/chb_apply_to_all" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,6 +49,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
+        android:layout_marginEnd="@dimen/material_normal_dimen"
+        android:layout_marginTop="@dimen/material_normal_dimen"
         app:layout_constraintTop_toBottomOf="@+id/container_radio_group"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

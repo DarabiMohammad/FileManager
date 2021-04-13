@@ -89,8 +89,6 @@
 
     <style name="NormalButton" parent="ParentButton">
         <item name="android:padding">@dimen/material_small_dimen</item>
-        <item name="android:layout_marginEnd">@dimen/material_normal_dimen</item>
-        <item name="android:layout_marginTop">@dimen/material_normal_dimen</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">?attr/selectableItemBackground</item>

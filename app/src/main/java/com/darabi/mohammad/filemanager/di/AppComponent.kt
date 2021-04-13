@@ -14,8 +14,10 @@ import javax.inject.Singleton
         AppModule::class,
         ActivityBuilderModule::class,
         BroadCastReceiverBuilderModule::class,
-        FragmentBuilderModule::class,
-        ViewModelBuilderModule::class
+        FragmentBuildersModule::class,
+        FragmentFactoryBuilderModule::class,
+        ViewModelBuildersModule::class,
+        ViewModelFactoryBuilderModule::class
     ]
 )
 interface AppComponent : AndroidInjector<App> {
